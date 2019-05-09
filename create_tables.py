@@ -38,6 +38,7 @@ def create_tables(data):
                 # Define our rows
                 row_string = '('
                 for row in rows:
+                    #ISSUE HERE: need to figure out escaping numbers?
                     row_string += '`%s`,' % row
                 row_string = row_string[:-1]
                 row_string += ')'
