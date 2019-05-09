@@ -7,19 +7,23 @@ cursor = db.cursor()
 # key is table name, value is [(key, value), (key, value)]
 data = {}
 
-
-
 def create_tables(data):
 	for table in data.keys():
-		columns = []
-		for leaf_pair in data[table]:
+		if ( table ):
+			columns = []
+			for leaf_pair in data[table]:
+				columns.append(leaf_pair[0])
 
-			columns.append(leaf_pair[0])
+			if ( len(columns) > 0 ):
+				#print('creating table %s\ncolumns: %s' % (table, columns))
+				create_string = 'CREATE TABLE IF NOT EXISTS`%s` (' % table
+				for column in columns:
+					create_string += '`%s` TEXT, ' % column
+				create_string = create_string[:-2]
+				create_string += ')'
 
-		print('creating table %s\ncolumns: %s' % (table, columns))
-
-
-
+				print(create_string)
+				cursor.execute(create_string)
 
 def find_leaf(parent, d):
 	global data
