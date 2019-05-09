@@ -18,36 +18,42 @@ def create_tables(data):
 
             if ( len(columns) > 0 ):
                 #print('creating table %s\ncolumns: %s' % (table, columns))
-                create_string = 'CREATE TABLE IF NOT EXISTS `%s`(' % table
+
+                primary_key = 'ID INT NOT NULL,PRIMARY KEY (ID)'
+                phone_key = 'PhoneID INT, FOREIGN KEY (PhoneID) REFERENCES Phones(ID)'
+                client_key = 'ClientID INT, FOREIGN KEY (ClientID) REFERENCES Clients(ID)'
+                site_key = 'SiteID INT, FOREIGN KEY (SiteID) REFERENCES Sites(ID)'
+
+                keys_string = '%s,%s,%s,%s' % (primary_key, phone_key, client_key, site_key)
+
+                create_string = 'CREATE TABLE IF NOT EXISTS `%s`(%s,' % (table, keys_string)
                 for column in columns:
-                    create_string += '`%s` TEXT,' % column
+                    create_string += '`%s`TEXT,' % column
                 create_string = create_string[:-1]
                 create_string += ')'
-                #print(create_string)
+                print(create_string)
                 cursor.execute(create_string)
-                # Now input data into the freshly created tables
 
+                # Now input data into the freshly created tables
                 # Define our columns
                 column_string = '('
                 for column in columns:
                     column_string += '`%s`,' % column
                 column_string = column_string[:-1]
                 column_string += ')'
-                print(column_string)
 
                 # Define our rows
                 row_string = '('
                 for row in rows:
-                    # if ( row == '' ):
-                    #     print('NULL ROW')
-                    #     row = 'NULL'
-                    row_string += '%s,' % row
+                    if ( row == '' ):
+                        row = 'NULL'
+                    row_string += '\'%s\',' % row
                 row_string = row_string[:-1]
                 row_string += ')'
-                print(row_string)
-                insert_string = 'INSERT INTO `%s` %s VALUES %s' % (table, column_string, row_string)
-                print(insert_string)
-                cursor.execute(insert_string, )
+
+                replace_string = 'REPLACE INTO `%s` %s VALUES %s' % (table, column_string, row_string)
+                print(replace_string)
+                #cursor.execute(replace_string)
 
 
 
@@ -60,7 +66,6 @@ def find_leaf(parent, d):
         else:   
             #print('found leaf -- parent: %s key: %s value: %s' % (parent, key, value))
             leaf_pairs.append((key, value))
-
     data[parent] = leaf_pairs
 
 with open('./configs/site.cfg') as fd:
