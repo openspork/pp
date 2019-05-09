@@ -12,8 +12,8 @@ class BaseModel(Model):
 	class Meta:
 		database = mysql_db
 
-class Leaf(BaseModel):
-	attr = 0
+class Leaf(BaseModel)
+
 
 
 
