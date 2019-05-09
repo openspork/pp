@@ -1,1 +1,1 @@
-from ppaapp import app
+from ppapp import app
