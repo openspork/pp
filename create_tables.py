@@ -38,16 +38,16 @@ def create_tables(data):
                 # Define our rows
                 row_string = '('
                 for row in rows:
+                    # if ( row == '' ):
+                    #     print('NULL ROW')
+                    #     row = 'NULL'
                     row_string += '%s,' % row
                 row_string = row_string[:-1]
                 row_string += ')'
                 print(row_string)
-
                 insert_string = 'INSERT INTO `%s` %s VALUES %s' % (table, column_string, row_string)
-
                 print(insert_string)
-
-                cursor.execute(insert_string)
+                cursor.execute(insert_string, )
 
 
 
