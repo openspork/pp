@@ -1,0 +1,30 @@
+{% extends "base.j2" %}
+{% block title %}
+Index
+{% endblock %}
+{% block content %}
+
+<b>Hey it's me ur pp</b>
+<br />
+<br />
+<div>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>MAC Address</th>
+			<td><a href="{{ url_for('new_phone') | safe }}">Edit</a>
+
+		</tr>
+			{% for phone in phones %}
+			<tr>
+				<td>{{ phone.id }}</td>
+				<td>{{ phone.name }}</td>
+				<td>{{ phone.mac_address }}</td>
+				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
+			</tr>
+			{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

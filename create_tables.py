@@ -10,24 +10,24 @@ data = {}
 def create_tables(data):
     # Define static tables
     create_strings = [
-    'CREATE TABLE IF NOT EXISTS Phones (ID INT NOT NULL, PRIMARY KEY(ID), MACAddress VARCHAR(255) NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS Clients (ID INT NOT NULL, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS Sites (ID INT NOT NULL, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS Models (ID INT NOT NULL, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS Expansions (ID INT NOT NULL, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)'
+    'CREATE TABLE IF NOT EXISTS Phone (ID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL, MACAddress VARCHAR(255) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS Client (ID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS Site (ID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS Model (ID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS Expansion (ID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID), `Name` VARCHAR(255) NOT NULL)'
     ]
     # Create static tables
     for create_string in create_strings:
         cursor.execute(create_string)
 
+    # Create our dynamic tables
     # Begin our creation string
     create_string = 'CREATE TABLE IF NOT EXISTS '
-    primary_key = 'ID INT NOT NULL,PRIMARY KEY (ID)'
-    phone_key = 'PhoneID INT, FOREIGN KEY (PhoneID) REFERENCES Phones(ID)'
-    client_key = 'ClientID INT, FOREIGN KEY (ClientID) REFERENCES Clients(ID)'
-    site_key = 'SiteID INT, FOREIGN KEY (SiteID) REFERENCES Sites(ID)'
-    expansion_key = 'ExpansionID INT, FOREIGN KEY (ExpansionID) REFERENCES Expansions(ID)'
-    parent_key = 'ParentID INT, FOREIGN KEY (ExpansionID) REFERENCES Expansions(ID)'
+    primary_key = 'ID INT NOT NULL AUTO_INCREMENT,PRIMARY KEY (ID)'
+    phone_key = 'PhoneID INT, FOREIGN KEY (PhoneID) REFERENCES Phone(ID)'
+    client_key = 'ClientID INT, FOREIGN KEY (ClientID) REFERENCES Client(ID)'
+    site_key = 'SiteID INT, FOREIGN KEY (SiteID) REFERENCES Site(ID)'
+    expansion_key = 'ExpansionID INT, FOREIGN KEY (ExpansionID) REFERENCES Expansion(ID)'
     keys_string = '%s,%s,%s,%s,%s' % (primary_key, phone_key, client_key, site_key, expansion_key)
 
     # Begin our insertion string

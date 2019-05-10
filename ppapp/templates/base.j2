@@ -1,0 +1,36 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    {% block head %}
+    <title>
+        {% block title %}
+        {% endblock %}
+        - PP
+    </title>
+    {% endblock %}    
+</head>
+    <body>
+        <div id='header'>
+            <a href = '{{ url_for('index') | safe }}'> Index</a>
+            <a href = '{{ url_for('new_phone') | safe }}'> New Phone</a>
+        </div>
+        <div id='content'>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class='alert'>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <h1>PP</h1>
+            {% block content %} {% endblock %}
+        </div>
+        <div id='footer'>
+            <br>
+            &copy; 2019
+        </div>
+    </body>
+</html>
