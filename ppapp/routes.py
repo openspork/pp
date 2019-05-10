@@ -1,5 +1,5 @@
 import os
-from flask import flash, send_from_directory, render_template, redirect, url_for
+from flask import flash, send_from_directory, render_template, request, redirect, url_for
 from ppapp.forms import *
 
 from ppapp import app
@@ -20,9 +20,9 @@ def config(mac_address):
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
-    form = NewPhoneForm()
+    form = PhoneForm()
     if form.validate_on_submit():
-        flash('New phone={}, MAC Address={}'.format(
+        flash('New phone: {}, MAC Address: {}'.format(
             form.name.data, form.mac_address.data))
         Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
         return redirect('/')
@@ -30,8 +30,29 @@ def new_phone():
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
+    form = PhoneForm()
+    query = Phone.select().where(Phone.id == id)
+    if not query.exists():
+        flash('Invalid ID!')
+        return redirect('/')
+    else:
+        phone = query.get()
+    if request.method == 'GET':
+        form.mac_address.data = phone.mac_address
+        form.name.data = phone.name
+        return render_template('edit_phone.j2', form = form)
 
-    return render_template('edit_phone.j2')
+    elif request.method == 'POST':
+        if form.validate_on_submit():
+            flash('Updated Phone: {}, MAC Address: {}'.format(
+                form.name.data, form.mac_address.data))
+            phone.name = form.name.data
+            phone.mac_address = form.mac_address.data
+            phone.save()
+            return redirect('/')
+        else:
+            flash('Invalid Input!')
+        return render_template('edit_phone.j2', form = form)
 
 
 
