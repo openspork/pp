@@ -24,19 +24,17 @@ def params():
     if request.method == 'POST':
         if form.validate_on_submit():
             flash('Parameter added:: {}, Value: {}'.format(
-                form.param.data, form.param.data))
+                form.param.data, form.value.data))
 
             # Need to dynamically select class
             # How?
 
-            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
-
+            #model = eval(form.param.data)
+            #print(model)
         else:
             flash('Invalid Input!')
-    return render_template('new_phone.j2', form = form)
-
-
     return render_template('params.j2', form = form)
+
 
 
 
