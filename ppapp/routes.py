@@ -6,12 +6,6 @@ from ppapp import app
 
 from ppapp.models import *
 
-# Create tupled array of DB tables for dropdowns:
-params = database.get_tables()
-pair_params = []
-for param in params:
-    pair_params.append((param, param))
-
 @app.route('/')
 def index():
     phones = Phone.select()
@@ -20,14 +14,11 @@ def index():
 @app.route('/params', methods=['GET', 'POST'])
 def params():
     form = ParamForm()
-    form.param.choices = pair_params
+    form.param_level.choices = ParamLevel.select()
     if request.method == 'POST':
         if form.validate_on_submit():
             flash('Parameter added:: {}, Value: {}'.format(
                 form.param.data, form.value.data))
-
-            # Need to dynamically select class
-            # How?
 
             model = eval("form.param.data")
             print(model)
@@ -72,11 +63,11 @@ def edit_phone(id):
     elif request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
-                flash('Deleted Phone: {}, MAC Address: {}'.format(
+                flash('Deleted phone: {}, MAC Address: {}'.format(
                     form.name.data, form.mac_address.data))
                 phone.delete_instance()
             else:
-                flash('Updated Phone: {}, MAC Address: {}'.format(
+                flash('Updated phone: {}, MAC Address: {}'.format(
                     form.name.data, form.mac_address.data))
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data

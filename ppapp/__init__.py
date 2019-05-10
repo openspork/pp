@@ -1,20 +1,18 @@
 #from re import sub
 from ppapp.app import app
 from ppapp.models import *
+from ppapp.util.utils import init_db, build_params
 
-# db.connect()
-# print('db init')
-# db.create_tables([Domain, MXToolboxReport], safe = True)
-# db.close()
+init_db()
 
-# @app.before_request
-# def before_request():
-#     db.connect()
+@app.before_request
+def before_request():
+    db.connect()
 
-# @app.after_request
-# def after_request(response):
-#     db.close()
-#     return response
+@app.after_request
+def after_request(response):
+    db.close()
+    return response
 
 # @app.template_filter('type')
 # def type(value):
