@@ -29,8 +29,9 @@ def params():
             # Need to dynamically select class
             # How?
 
-            #model = eval(form.param.data)
-            #print(model)
+            model = eval("form.param.data")
+            print(model)
+            print(type(model))
         else:
             flash('Invalid Input!')
     return render_template('params.j2', form = form)
