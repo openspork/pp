@@ -44,10 +44,16 @@ def edit_phone(id):
 
     elif request.method == 'POST':
         if form.validate_on_submit():
-            flash('Updated Phone: {}, MAC Address: {}'.format(
-                form.name.data, form.mac_address.data))
-            phone.name = form.name.data
-            phone.mac_address = form.mac_address.data
+            if ( form.delete.data ):
+                flash('Deleted Phone: {}, MAC Address: {}'.format(
+                    form.name.data, form.mac_address.data))
+                phone.delete_instance()
+            else:
+                flash('Updated Phone: {}, MAC Address: {}'.format(
+                    form.name.data, form.mac_address.data))
+                phone.name = form.name.data
+                phone.mac_address = form.mac_address.data
+
             phone.save()
             return redirect('/')
         else:
