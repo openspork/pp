@@ -6,26 +6,41 @@ from ppapp import app
 
 from ppapp.models import *
 
+# Create tupled array of DB tables:
+
+params = database.get_tables()
+pair_params = []
+for param in params:
+    pair_params.append((param, param))
+
+
+
 @app.route('/')
 def index():
     phones = Phone.select()
     return render_template('index.j2', phones = phones)
 
-@app.route('/config/<mac_address>')
-def config(mac_address):
-    query = Phone.select().where(Phone.mac_address == mac_address)
-    if not query.exists():
-        mac_address = 'not found!'
-    return render_template('config.j2', mac_address = mac_address)
+@app.route('/params')
+def params():
+    
+
+    form = ParamForm()
+    form.params.choices = pair_params
+
+    return render_template('params.j2', form = form)
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
     form = PhoneForm()
-    if form.validate_on_submit():
-        flash('New phone: {}, MAC Address: {}'.format(
-            form.name.data, form.mac_address.data))
-        Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
-        return redirect('/')
+    if request.method == 'POST':   
+        if form.validate_on_submit():
+            flash('New phone: {}, MAC Address: {}'.format(
+                form.name.data, form.mac_address.data))
+            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
+            return redirect('/')
+        else:
+            flash('Invalid Input!')
+            return render_template('new_phone.j2', form = form)
     return render_template('new_phone.j2', form = form)
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
@@ -60,7 +75,12 @@ def edit_phone(id):
             flash('Invalid Input!')
         return render_template('edit_phone.j2', form = form)
 
-
+@app.route('/config/<mac_address>')
+def config(mac_address):
+    query = Phone.select().where(Phone.mac_address == mac_address)
+    if not query.exists():
+        mac_address = 'not found!'
+    return render_template('config.j2', mac_address = mac_address)
 
 @app.route('/favicon.ico')
 def favicon():

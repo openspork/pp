@@ -1,5 +1,5 @@
 #from re import sub
-from ppapp.app import app, db
+from ppapp.app import app
 from ppapp.models import *
 
 # db.connect()

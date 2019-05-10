@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 class PhoneForm(FlaskForm):
@@ -9,3 +9,7 @@ class PhoneForm(FlaskForm):
 
 class EditPhoneForm(PhoneForm):
 	delete = BooleanField('Delete')
+
+class ParamForm(FlaskForm):
+	params = SelectMultipleField('Parameters')
+	submit = SubmitField('Submit')

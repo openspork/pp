@@ -1,0 +1,18 @@
+{% extends "base.j2" %}
+{% block title %}
+Parameters
+{% endblock %}
+{% block content %}
+
+    <form action="" method="post" rows='100' novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.params.label }}
+        </p>
+        <p>
+            {{ form.params(size="32") }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+{% endblock %}
