@@ -11,5 +11,6 @@ class EditPhoneForm(PhoneForm):
 	delete = BooleanField('Delete')
 
 class ParamForm(FlaskForm):
-	params = SelectMultipleField('Parameters')
+	param = SelectField('Parameter', validators=[DataRequired()])
+	value = StringField('Value', validators=[DataRequired()])
 	submit = SubmitField('Submit')

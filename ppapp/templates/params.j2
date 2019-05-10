@@ -7,10 +7,14 @@ Parameters
     <form action="" method="post" rows='100' novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.params.label }}
+            {{ form.param.label }}
+            <br />
+            {{ form.param(size="32") }}
         </p>
         <p>
-            {{ form.params(size="32") }}
+        	{{ form.value.label }}
+        	<br />
+        	{{ form.value }}
         </p>
         <p>{{ form.submit() }}</p>
     </form>

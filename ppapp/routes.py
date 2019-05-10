@@ -6,28 +6,40 @@ from ppapp import app
 
 from ppapp.models import *
 
-# Create tupled array of DB tables:
-
+# Create tupled array of DB tables for dropdowns:
 params = database.get_tables()
 pair_params = []
 for param in params:
     pair_params.append((param, param))
-
-
 
 @app.route('/')
 def index():
     phones = Phone.select()
     return render_template('index.j2', phones = phones)
 
-@app.route('/params')
+@app.route('/params', methods=['GET', 'POST'])
 def params():
-    
-
     form = ParamForm()
-    form.params.choices = pair_params
+    form.param.choices = pair_params
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            flash('Parameter added:: {}, Value: {}'.format(
+                form.param.data, form.param.data))
+
+            # Need to dynamically select class
+            # How?
+
+            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
+
+        else:
+            flash('Invalid Input!')
+    return render_template('new_phone.j2', form = form)
+
 
     return render_template('params.j2', form = form)
+
+
+
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
@@ -41,7 +53,8 @@ def new_phone():
         else:
             flash('Invalid Input!')
             return render_template('new_phone.j2', form = form)
-    return render_template('new_phone.j2', form = form)
+    elif request.method == 'GET':
+        return render_template('new_phone.j2', form = form)
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
