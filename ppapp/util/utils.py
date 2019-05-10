@@ -20,10 +20,11 @@ def create_intermediate_node(parent, key):
         if ( not query.exists() ):
             #print('%s is unique!' % parent)
             param_level = ParamLevel.create(name = parent)
-            return param_level
+            
         else:
             #print('%s is duplicate!' % parent)
-            pass
+            param_level = query.get()
+        return param_level
 
     except Exception as e:
         print(e)
