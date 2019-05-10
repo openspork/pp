@@ -30,7 +30,7 @@ def new_phone():
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
-    form = PhoneForm()
+    form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
         flash('Invalid ID!')

@@ -6,3 +6,6 @@ class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     mac_address = StringField('MAC Address', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class EditPhoneForm(PhoneForm):
+	delete = BooleanField('Delete')
