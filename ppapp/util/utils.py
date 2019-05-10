@@ -18,10 +18,12 @@ def create_intermediate_node(parent, key):
         query = ParamLevel.select().where(ParamLevel.name == parent)
 
         if ( not query.exists() ):
-            print('%s is unique!' % parent)
-            ParamLevel.create(name = parent)
+            #print('%s is unique!' % parent)
+            param_level = ParamLevel.create(name = parent)
+            return param_level
         else:
-            print('%s is duplicate!' % parent)
+            #print('%s is duplicate!' % parent)
+            pass
 
     except Exception as e:
         print(e)
@@ -29,8 +31,8 @@ def create_intermediate_node(parent, key):
 def create_leaf_node(parent, key, value):
     try:
         print('found leaf -- parent: %s key: %s value: %s' % (parent, key, value))
-        #param_level = ParamLevel.select().where(ParamLevel.name == parent).get()
-        #Param.create(param_level = param_level, name = key, default_value = value, note = None)
+        param_level = create_intermediate_node(parent, key)
+        Param.create(param_level = param_level, name = key, default_value = value, note = None)
     except Exception as e:
         print(e)
 
