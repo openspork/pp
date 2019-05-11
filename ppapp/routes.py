@@ -11,25 +11,26 @@ def index():
     phones = Phone.select()
     return render_template('index.j2', phones = phones)
 
+
+
+
+
 @app.route('/params', methods=['GET', 'POST'])
 def params():
     form = ParamForm()
-    form.param_level.choices = ParamLevel.select()
+    #form.param_level.choices = form_choices
     if request.method == 'POST':
         if form.validate_on_submit():
-            flash('Parameter added:: {}, Value: {}'.format(
-                form.param.data, form.value.data))
 
-            model = eval("form.param.data")
-            print(model)
-            print(type(model))
+            base_param = BaseParam.get(BaseParam.id == form.param.data)
+
+            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
+
+            ActiveParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
+
         else:
             flash('Invalid Input!')
     return render_template('params.j2', form = form)
-
-
-
-
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
@@ -56,9 +57,14 @@ def edit_phone(id):
     else:
         phone = query.get()
     if request.method == 'GET':
+
+
+
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
-        return render_template('edit_phone.j2', form = form)
+        active_params = ActiveParam.select().where(ActiveParam.phone_params == phone )
+
+        return render_template('edit_phone.j2', form = form, active_params = active_params)
 
     elif request.method == 'POST':
         if form.validate_on_submit():

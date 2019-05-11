@@ -22,8 +22,18 @@ class Extension(BaseModel):
 class ParamLevel(BaseModel):
     name = CharField(unique = True, null = True)
 
-class Param(BaseModel):
-    param_level = ForeignKeyField(ParamLevel, backref = 'params')
+class BaseParam(BaseModel):
+    param_level = ForeignKeyField(ParamLevel, backref = 'baseparams')
     name = CharField()
     default_value = CharField()
     note = CharField(null = True)
+
+class ActiveParam(BaseModel):
+    phone_params = ForeignKeyField(Phone, backref = 'active_params')
+    client_params = ForeignKeyField(Client, backref = 'active_params')
+    site_params = ForeignKeyField(Site, backref = 'active_params')
+    extension_params = ForeignKeyField(Extension, backref = 'active_params')
+    base_param = ForeignKeyField(BaseParam, backref = 'active_params')
+    value = CharField()
+    note = CharField(null = True)
+

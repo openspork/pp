@@ -1,7 +1,7 @@
 #from re import sub
 from ppapp.app import app
 from ppapp.models import *
-from ppapp.util.utils import init_db, build_params
+from ppapp.util.init import init_db
 
 init_db()
 
