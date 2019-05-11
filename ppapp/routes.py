@@ -47,42 +47,52 @@ def new_phone():
     elif request.method == 'GET':
         return render_template('new_phone.j2', form = form)
 
+
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
-    form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
-    if not query.exists():
-        flash('Invalid ID!')
-        return redirect('/')
-    else:
-        phone = query.get()
-    if request.method == 'GET':
+    phone = query.get()
+
+    form2 = EditPhoneForm2()
+    return render_template('edit_phone.j2', form = form2)
 
 
 
-        form.mac_address.data = phone.mac_address
-        form.name.data = phone.name
-        active_params = ActiveParam.select().where(ActiveParam.phone_params == phone )
 
-        return render_template('edit_phone.j2', form = form, active_params = active_params)
+# @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
+# def edit_phone(id):
+#     form = EditPhoneForm()
+#     query = Phone.select().where(Phone.id == id)
+#     if not query.exists():
+#         flash('Invalid ID!')
+#         return redirect('/')
+#     else:
+#         phone = query.get()
+#     if request.method == 'GET':
 
-    elif request.method == 'POST':
-        if form.validate_on_submit():
-            if ( form.delete.data ):
-                flash('Deleted phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                phone.delete_instance()
-            else:
-                flash('Updated phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                phone.name = form.name.data
-                phone.mac_address = form.mac_address.data
+#         form.mac_address.data = phone.mac_address
+#         form.name.data = phone.name
+#         #active_params = ActiveParam.select().where(ActiveParam.phone_params == phone )
 
-            phone.save()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-        return render_template('edit_phone.j2', form = form)
+#         return render_template('edit_phone.j2', form = form)
+
+#     elif request.method == 'POST':
+#         if form.validate_on_submit():
+#             if ( form.delete.data ):
+#                 flash('Deleted phone: {}, MAC Address: {}'.format(
+#                     form.name.data, form.mac_address.data))
+#                 phone.delete_instance()
+#             else:
+#                 flash('Updated phone: {}, MAC Address: {}'.format(
+#                     form.name.data, form.mac_address.data))
+#                 phone.name = form.name.data
+#                 phone.mac_address = form.mac_address.data
+
+#             phone.save()
+#             return redirect('/')
+#         else:
+#             flash('Invalid Input!')
+#         return render_template('edit_phone.j2', form = form)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):

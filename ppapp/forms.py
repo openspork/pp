@@ -9,7 +9,15 @@ class PhoneForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class EditPhoneForm(PhoneForm):
-	delete = BooleanField('Delete')
+    delete = BooleanField('Delete')
+
+
+class EditPhoneForm2(FlaskForm):
+    delete = BooleanField('Delete')
+    delete2 = BooleanField('Delete2')
+    name = StringField('Name', validators=[DataRequired()])
+    mac_address = StringField('MAC Address', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
 param_form_choices = []
 for choice in BaseParam.select().order_by(BaseParam.name):
@@ -17,7 +25,7 @@ for choice in BaseParam.select().order_by(BaseParam.name):
     param_form_choices.append((choice.id, choice_string))
 
 class ParamForm(FlaskForm):
-	param = SelectField('Parameter', choices = param_form_choices, validators=[DataRequired()], coerce = int)
-	value = StringField('Value', validators=[DataRequired()])
-	note = StringField('Note')
-	submit = SubmitField('Submit')
+    param = SelectField('Parameter', choices = param_form_choices, validators=[DataRequired()], coerce = int)
+    value = StringField('Value', validators=[DataRequired()])
+    note = StringField('Note')
+    submit = SubmitField('Submit')
