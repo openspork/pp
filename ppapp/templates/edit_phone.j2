@@ -8,20 +8,25 @@ Edit Phone
         {{ form.hidden_tag() }}
 
         <p>
-            {{ form.name.label }}<br>
+            {{ form.name.label }}
+            <br />
             {{ form.name(size=32) }}
         </p>
         <p>
-            {{ form.mac_address.label }}<br>
+            {{ form.mac_address.label }}
+            <br />
             {{ form.mac_address(size=32) }}
         </p>
-        
-            {% for active_param in active_params %}
-                {{ active_param }}
-            {% endfor %}
-
-
-
+        <p>
+            {{ form.avail_params.label }}
+            <br />
+            {{ form.avail_params }}
+        </p>
+        <p>
+            {{ form.active_params.label }}
+            <br />
+            {{ form.active_params }}
+        </p>
 
 
 

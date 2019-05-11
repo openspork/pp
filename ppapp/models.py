@@ -28,12 +28,12 @@ class BaseParam(BaseModel):
     default_value = CharField()
     note = CharField(null = True)
 
-class ActiveParam(BaseModel):
-    phone_params = ForeignKeyField(Phone, backref = 'active_params', null = True)
-    client_params = ForeignKeyField(Client, backref = 'active_params', null = True)
-    site_params = ForeignKeyField(Site, backref = 'active_params', null = True)
-    extension_params = ForeignKeyField(Extension, backref = 'active_params', null = True)
-    base_param = ForeignKeyField(BaseParam, backref = 'active_params', null = True)
+class AvailParam(BaseModel):
+    phone_params = ForeignKeyField(Phone, backref = 'avail_params', null = True)
+    client_params = ForeignKeyField(Client, backref = 'avail_params', null = True)
+    site_params = ForeignKeyField(Site, backref = 'avail_params', null = True)
+    extension_params = ForeignKeyField(Extension, backref = 'avail_params', null = True)
+    base_param = ForeignKeyField(BaseParam, backref = 'avail_params', null = True)
     value = CharField()
     note = CharField(null = True)
 

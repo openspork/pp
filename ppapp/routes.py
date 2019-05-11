@@ -19,7 +19,7 @@ def params():
         if form.validate_on_submit():
             base_param = BaseParam.get(BaseParam.id == form.param.data)
             flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
-            ActiveParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
+            AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
         else:
             flash('Invalid Input!')
     return render_template('params.j2', form = form)
@@ -52,9 +52,13 @@ def edit_phone(id):
 
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
-        active_params = ActiveParam.select().where(ActiveParam.phone_params == phone )
 
-        return render_template('edit_phone.j2', form = form, active_params = active_params)
+        #avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+        active_params = AvailParam.select().where(AvailParam.phone_params == phone).select().order_by(AvailParam.base_param.name)
+
+        form.active_params.choices = get_avail_param_form_choices(active_params)
+
+        return render_template('edit_phone.j2', form = form)
 
     elif request.method == 'POST':
         if form.validate_on_submit():
