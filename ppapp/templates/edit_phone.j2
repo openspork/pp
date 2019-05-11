@@ -8,16 +8,32 @@ Edit Phone
         {{ form.hidden_tag() }}
 
         <p>
-            {{ form.name.label }}<br>
+            {{ form.name.label }}
+            <br />
             {{ form.name(size=32) }}
         </p>
         <p>
-            {{ form.mac_address.label }}<br>
+            {{ form.mac_address.label }}
+            <br />
             {{ form.mac_address(size=32) }}
         </p>
         <p>
+            {{ form.avail_params.label }}
+            <br />
+            {{ form.avail_params(size="16") }}
+        </p>
+        <p>
+            {{ form.active_params.label }}
+            <br />
+            {{ form.active_params(size="16") }}
+        </p>
+
+
+
+        <p>
             {{ form.delete.label }}
-        	{{ form.delete }}
+            {{ form.delete }}
+
         </p>
         <p>{{ form.submit() }}</p>
     </form>

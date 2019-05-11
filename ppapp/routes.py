@@ -6,12 +6,6 @@ from ppapp import app
 
 from ppapp.models import *
 
-# Create tupled array of DB tables for dropdowns:
-params = database.get_tables()
-pair_params = []
-for param in params:
-    pair_params.append((param, param))
-
 @app.route('/')
 def index():
     phones = Phone.select()
@@ -20,25 +14,15 @@ def index():
 @app.route('/params', methods=['GET', 'POST'])
 def params():
     form = ParamForm()
-    form.param.choices = pair_params
+    #form.param_level.choices = form_choices
     if request.method == 'POST':
         if form.validate_on_submit():
-            flash('Parameter added:: {}, Value: {}'.format(
-                form.param.data, form.value.data))
-
-            # Need to dynamically select class
-            # How?
-
-            model = eval("form.param.data")
-            print(model)
-            print(type(model))
+            base_param = BaseParam.get(BaseParam.id == form.param.data)
+            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
+            AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
         else:
             flash('Invalid Input!')
     return render_template('params.j2', form = form)
-
-
-
-
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
@@ -57,14 +41,21 @@ def new_phone():
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
-    form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
         flash('Invalid ID!')
         return redirect('/')
     else:
         phone = query.get()
+
+    form = EditPhoneForm()
+    avail_params = AvailParam.select().where(AvailParam.phone_params == None).order_by(AvailParam.base_param.name)
+    active_params = AvailParam.select().where(AvailParam.phone_params == phone).order_by(AvailParam.base_param.name)
+    form.avail_params.choices = get_avail_param_form_choices(avail_params)
+    form.active_params.choices = get_avail_param_form_choices(active_params)
+
     if request.method == 'GET':
+
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
         return render_template('edit_phone.j2', form = form)
@@ -72,14 +63,31 @@ def edit_phone(id):
     elif request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
-                flash('Deleted Phone: {}, MAC Address: {}'.format(
+                flash('Deleted phone: {}, MAC Address: {}'.format(
                     form.name.data, form.mac_address.data))
                 phone.delete_instance()
             else:
-                flash('Updated Phone: {}, MAC Address: {}'.format(
+                flash('Updated phone: {}, MAC Address: {}'.format(
                     form.name.data, form.mac_address.data))
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data
+
+                # Handle params
+                new_param_ids = form.avail_params.data
+                prev_param_ids = form.active_params.data
+
+                # Add new params
+                for new_param_id in new_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
+                    print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    avail_param.phone_params = phone
+                    avail_param.save()
+                # Remove old params
+                for prev_param_id in prev_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
+                    print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    avail_param.phone_params = None
+                    avail_param.save()
 
             phone.save()
             return redirect('/')

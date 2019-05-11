@@ -12,6 +12,7 @@
     <body>
         <div id='header'>
             <a href = '{{ url_for('index') | safe }}'> Index</a>
+            <a href = '{{ url_for('params') | safe }}'> Params</a>
         </div>
         <div id='content'>
             {% with messages = get_flashed_messages() %}
