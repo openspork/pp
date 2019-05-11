@@ -41,23 +41,23 @@ def new_phone():
 
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
-    form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
         flash('Invalid ID!')
         return redirect('/')
     else:
         phone = query.get()
+
+    form = EditPhoneForm()
+    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+    active_params = AvailParam.select().where(AvailParam.phone_params == phone).order_by(AvailParam.base_param.name)
+    form.avail_params.choices = get_avail_param_form_choices(avail_params)
+    form.active_params.choices = get_avail_param_form_choices(active_params)
+
     if request.method == 'GET':
 
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
-
-        #avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
-        active_params = AvailParam.select().where(AvailParam.phone_params == phone).select().order_by(AvailParam.base_param.name)
-
-        form.active_params.choices = get_avail_param_form_choices(active_params)
-
         return render_template('edit_phone.j2', form = form)
 
     elif request.method == 'POST':
@@ -72,6 +72,16 @@ def edit_phone(id):
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data
 
+                # Handle params
+                new_param_ids = form.avail_params.data
+                prev_param_ids = form.active_params.data
+
+                # Add new params
+                for new_param_id in new_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
+                    print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    avail_param.phone_params = phone
+                    avail_param.save()
             phone.save()
             return redirect('/')
         else:

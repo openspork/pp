@@ -10,7 +10,6 @@ class PhoneForm(FlaskForm):
     submit = SubmitField('Submit')
 
 def get_avail_param_form_choices(params):
-    print(params)
     param_form_choices = []
     for choice in params:
         choice_string = '%s - Value: %s' % (choice.base_param.name[1:], choice.value)
@@ -26,12 +25,11 @@ def get_generic_param_form_choices(Param):
     elif ( Param is AvailParam ):
         params = AvailParam.select().order_by(AvailParam.base_param.name)
         param_form_choices = get_generic_param_form_choices(params)
-            
     return param_form_choices
 
 class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
-    avail_params = SelectMultipleField('Available Parameters - Select to Apply', choices = get_generic_param_form_choices(AvailParam), coerce = int)
+    avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Applied Paramters - Select to Remove', coerce = int)
 
 class ParamForm(FlaskForm):
