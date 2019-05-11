@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField
+from wtforms import StringField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired
-from ppapp.models import *
+# Careful, models will clobber wtforms' BooleanField!
+from ppapp.models import BaseParam, ActiveParam
 
 class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
@@ -10,14 +11,6 @@ class PhoneForm(FlaskForm):
 
 class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
-
-
-class EditPhoneForm2(FlaskForm):
-    delete = BooleanField('Delete')
-    delete2 = BooleanField('Delete2')
-    name = StringField('Name', validators=[DataRequired()])
-    mac_address = StringField('MAC Address', validators=[DataRequired()])
-    submit = SubmitField('Submit')
 
 param_form_choices = []
 for choice in BaseParam.select().order_by(BaseParam.name):
