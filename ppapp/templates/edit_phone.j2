@@ -15,6 +15,16 @@ Edit Phone
             {{ form.mac_address.label }}<br>
             {{ form.mac_address(size=32) }}
         </p>
+        
+            {% for active_param in active_params %}
+                {{ active_param }}
+            {% endfor %}
+
+
+
+
+
+
         <p>
             {{ form.delete.label }}
             {{ form.delete }}

@@ -29,11 +29,11 @@ class BaseParam(BaseModel):
     note = CharField(null = True)
 
 class ActiveParam(BaseModel):
-    phone_params = ForeignKeyField(Phone, backref = 'active_params')
-    client_params = ForeignKeyField(Client, backref = 'active_params')
-    site_params = ForeignKeyField(Site, backref = 'active_params')
-    extension_params = ForeignKeyField(Extension, backref = 'active_params')
-    base_param = ForeignKeyField(BaseParam, backref = 'active_params')
+    phone_params = ForeignKeyField(Phone, backref = 'active_params', null = True)
+    client_params = ForeignKeyField(Client, backref = 'active_params', null = True)
+    site_params = ForeignKeyField(Site, backref = 'active_params', null = True)
+    extension_params = ForeignKeyField(Extension, backref = 'active_params', null = True)
+    base_param = ForeignKeyField(BaseParam, backref = 'active_params', null = True)
     value = CharField()
     note = CharField(null = True)
 
