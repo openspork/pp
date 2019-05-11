@@ -82,6 +82,13 @@ def edit_phone(id):
                     print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
                     avail_param.phone_params = phone
                     avail_param.save()
+                # Remove old params
+                for prev_param_id in prev_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
+                    print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    avail_param.phone_params = None
+                    avail_param.save()
+
             phone.save()
             return redirect('/')
         else:
