@@ -49,7 +49,7 @@ def edit_phone(id):
         phone = query.get()
 
     form = EditPhoneForm()
-    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+    avail_params = AvailParam.select().where(AvailParam.phone_params == None).order_by(AvailParam.base_param.name)
     active_params = AvailParam.select().where(AvailParam.phone_params == phone).order_by(AvailParam.base_param.name)
     form.avail_params.choices = get_avail_param_form_choices(avail_params)
     form.active_params.choices = get_avail_param_form_choices(active_params)

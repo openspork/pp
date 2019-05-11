@@ -22,8 +22,9 @@ def get_generic_param_form_choices(Param):
         for choice in BaseParam.select().order_by(BaseParam.name):
             choice_string = '%s - Default: %s' % (choice.name[1:], choice.default_value[:32])
             param_form_choices.append((choice.id, choice_string))
+    # This is broken because no one-to-many
     elif ( Param is AvailParam ):
-        params = AvailParam.select().order_by(AvailParam.base_param.name)
+        params = AvailParam.select().where(phone_params == None).order_by(AvailParam.base_param.name)
         param_form_choices = get_generic_param_form_choices(params)
     return param_form_choices
 
