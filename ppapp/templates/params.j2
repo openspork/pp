@@ -4,12 +4,12 @@ Parameters
 {% endblock %}
 {% block content %}
 
-    <form action="" method="post" rows='100' novalidate>
+    <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.param.label }}
             <br />
-            {{ form.param(size="32") }}
+            {{ form.param(size="16") }}
         </p>
         <p>
         	{{ form.value.label }}
