@@ -16,13 +16,19 @@ def edit_phone(id):
         phone = query.get()
 
     form = EditPhoneForm()
-    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
-
+    
     active_params = (AvailParam
             .select()
             .join(AvailParamPhones)
-            .join(Phone)
             .where(AvailParamPhones.phone == phone)
+            .order_by(AvailParam.base_param.name)
+            )
+
+    avail_params = (AvailParam
+            .select()
+            .join(AvailParamPhones, JOIN.LEFT_OUTER)
+            .join(Phone, JOIN.LEFT_OUTER)
+            #.where(Phone << phone)
             .order_by(AvailParam.base_param.name)
             )
     

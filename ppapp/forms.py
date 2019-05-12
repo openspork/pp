@@ -31,7 +31,7 @@ def get_generic_param_form_choices(Param):
 class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
-    active_params = SelectMultipleField('Applied Paramters - Select to Remove', coerce = int)
+    active_params = SelectMultipleField('Active Paramters - Select to Remove', coerce = int)
 
 class ParamForm(FlaskForm):
     param = SelectField('Parameter', choices = get_generic_param_form_choices(BaseParam), validators=[DataRequired()], coerce = int)
