@@ -29,11 +29,22 @@ class BaseParam(BaseModel):
     note = CharField(null = True)
 
 class AvailParam(BaseModel):
-    phone_params = ForeignKeyField(Phone, backref = 'avail_params', null = True)
-    client_params = ForeignKeyField(Client, backref = 'avail_params', null = True)
-    site_params = ForeignKeyField(Site, backref = 'avail_params', null = True)
-    extension_params = ForeignKeyField(Extension, backref = 'avail_params', null = True)
     base_param = ForeignKeyField(BaseParam, backref = 'avail_params', null = True)
     value = CharField()
     note = CharField(null = True)
 
+class AvailParamPhones(BaseModel):
+    avail_param = ForeignKeyField(AvailParam)
+    phone = ForeignKeyField(Phone)
+
+class AvailParamClients(BaseModel):
+    avail_param = ForeignKeyField(AvailParam)
+    client = ForeignKeyField(Client)
+
+class AvailParamSites(BaseModel):
+    avail_param = ForeignKeyField(AvailParam)
+    site = ForeignKeyField(Site)
+
+class AvailParamExtensions(BaseModel):
+    avail_param = ForeignKeyField(AvailParam)
+    extension = ForeignKeyField(Extension)
