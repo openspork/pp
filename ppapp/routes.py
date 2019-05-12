@@ -25,7 +25,7 @@ def edit_phone(id):
             .where(AvailParamPhones.phone == phone)
             .order_by(AvailParam.base_param.name)
             )
-
+    
     form.avail_params.choices = get_avail_param_form_choices(avail_params)
     form.active_params.choices = get_avail_param_form_choices(active_params)
 
@@ -38,6 +38,7 @@ def edit_phone(id):
             else:
                 flash('Updated phone: {}, MAC Address: {}'.format(
                     form.name.data, form.mac_address.data))
+                # Handle base data
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data
 
@@ -48,15 +49,13 @@ def edit_phone(id):
                 # Add new params
                 for new_param_id in new_param_ids:
                     avail_param = AvailParam.get(AvailParam.id == new_param_id)
-                    print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    #print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
                     AvailParamPhones.create(avail_param = avail_param, phone = phone)
-
-
                     avail_param.save()
                 # Remove old params
                 for prev_param_id in prev_param_ids:
                     avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                    print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    #print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
 
                     delete_query = (AvailParamPhones
                             .delete()
@@ -69,7 +68,6 @@ def edit_phone(id):
         return render_template('edit_phone.j2', form = form)
 
     elif request.method == 'GET':
-
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
         return render_template('edit_phone.j2', form = form)    
