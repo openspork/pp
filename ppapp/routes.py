@@ -85,7 +85,6 @@ def index():
 @app.route('/new_param', methods=['GET', 'POST'])
 def new_param():
     form = ParamForm()
-    #form.param_level.choices = form_choices
     if request.method == 'POST':
         if form.validate_on_submit():
             base_param = BaseParam.get(BaseParam.id == form.param.data)
