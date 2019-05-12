@@ -6,7 +6,6 @@ Edit Phone
 
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-
         <p>
             {{ form.name.label }}
             <br />
@@ -27,9 +26,6 @@ Edit Phone
             <br />
             {{ form.active_params(size="16") }}
         </p>
-
-
-
         <p>
             {{ form.delete.label }}
             {{ form.delete }}

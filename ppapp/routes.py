@@ -26,9 +26,27 @@ def new_param():
             flash('Invalid Input!')
     return render_template('new_param.j2', form = form)
 
-@app.route('/edit_param', methods=['GET', 'POST'])
-def edit_param():
-    pass
+@app.route('/edit_param/<id>', methods=['GET', 'POST'])
+def edit_param(id):
+    query = AvailParam.select().where(AvailParam.id == id)
+    if not query.exists():
+        flash('Invalid ID!')
+        return redirect('/')
+    else:
+        avail_param = query.get()
+
+    form = EditParamForm
+
+    avail_params = (AvailParam
+                    .select()
+                    .order_by(AvailParam.base_param.name)
+                    )
+
+    if request.method == 'POST':
+        return 'this is a POST request'
+    elif request.method == 'GET':
+        return 'this is a GET request'
+
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
@@ -92,14 +110,11 @@ def edit_phone(id):
                 # Add new params
                 for new_param_id in new_param_ids:
                     avail_param = AvailParam.get(AvailParam.id == new_param_id)
-                    #print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
                     AvailParamPhones.create(avail_param = avail_param, phone = phone)
                     avail_param.save()
                 # Remove old params
                 for prev_param_id in prev_param_ids:
                     avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                    #print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
-
                     delete_query = (AvailParamPhones
                             .delete()
                             .where((AvailParamPhones.phone == phone) & (AvailParamPhones.avail_param == avail_param))
