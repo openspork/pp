@@ -24,7 +24,7 @@ def edit_phone(id):
             .join(Phone)
             .where(AvailParamPhones.phone == phone)
             .order_by(AvailParam.base_param.name)
-        )
+            )
 
     form.avail_params.choices = get_avail_param_form_choices(avail_params)
     form.active_params.choices = get_avail_param_form_choices(active_params)
@@ -54,13 +54,15 @@ def edit_phone(id):
 
                     avail_param.save()
                 # Remove old params
-                # for prev_param_id in prev_param_ids:
-                #     avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                #     print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
-                #     avail_param.phone_params = None
-                #     avail_param.save()
+                for prev_param_id in prev_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
+                    print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
 
-            phone.save()
+                    delete_query = (AvailParamPhones
+                            .delete()
+                            .where((AvailParamPhones.phone == phone) & (AvailParamPhones.avail_param == avail_param))
+                            )
+                    delete_query.execute()
             return redirect('/')
         else:
             flash('Invalid Input!')
