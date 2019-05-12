@@ -6,6 +6,72 @@ from ppapp import app
 
 from ppapp.models import *
 
+@app.route('/edit_phone/<id>', methods=['GET', 'POST'])
+def edit_phone(id):
+    query = Phone.select().where(Phone.id == id)
+    if not query.exists():
+        flash('Invalid ID!')
+        return redirect('/')
+    else:
+        phone = query.get()
+
+    form = EditPhoneForm()
+    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+
+    active_params = (AvailParam
+            .select()
+            .join(AvailParamPhones)
+            .join(Phone)
+            .where(AvailParamPhones.phone == phone)
+            .order_by(AvailParam.base_param.name)
+        )
+
+    form.avail_params.choices = get_avail_param_form_choices(avail_params)
+    form.active_params.choices = get_avail_param_form_choices(active_params)
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if ( form.delete.data ):
+                flash('Deleted phone: {}, MAC Address: {}'.format(
+                    form.name.data, form.mac_address.data))
+                phone.delete_instance()
+            else:
+                flash('Updated phone: {}, MAC Address: {}'.format(
+                    form.name.data, form.mac_address.data))
+                phone.name = form.name.data
+                phone.mac_address = form.mac_address.data
+
+                # Handle params
+                new_param_ids = form.avail_params.data
+                prev_param_ids = form.active_params.data
+
+                # Add new params
+                for new_param_id in new_param_ids:
+                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
+                    print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                    AvailParamPhones.create(avail_param = avail_param, phone = phone)
+
+
+                    avail_param.save()
+                # Remove old params
+                # for prev_param_id in prev_param_ids:
+                #     avail_param = AvailParam.get(AvailParam.id == prev_param_id)
+                #     print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
+                #     avail_param.phone_params = None
+                #     avail_param.save()
+
+            phone.save()
+            return redirect('/')
+        else:
+            flash('Invalid Input!')
+        return render_template('edit_phone.j2', form = form)
+
+    elif request.method == 'GET':
+
+        form.mac_address.data = phone.mac_address
+        form.name.data = phone.name
+        return render_template('edit_phone.j2', form = form)    
+
 @app.route('/')
 def index():
     phones = Phone.select()
@@ -38,62 +104,6 @@ def new_phone():
             return render_template('new_phone.j2', form = form)
     elif request.method == 'GET':
         return render_template('new_phone.j2', form = form)
-
-@app.route('/edit_phone/<id>', methods=['GET', 'POST'])
-def edit_phone(id):
-    query = Phone.select().where(Phone.id == id)
-    if not query.exists():
-        flash('Invalid ID!')
-        return redirect('/')
-    else:
-        phone = query.get()
-
-    form = EditPhoneForm()
-    avail_params = AvailParam.select().where(AvailParam.phone_params == None).order_by(AvailParam.base_param.name)
-    active_params = AvailParam.select().where(AvailParam.phone_params == phone).order_by(AvailParam.base_param.name)
-    form.avail_params.choices = get_avail_param_form_choices(avail_params)
-    form.active_params.choices = get_avail_param_form_choices(active_params)
-
-    if request.method == 'GET':
-
-        form.mac_address.data = phone.mac_address
-        form.name.data = phone.name
-        return render_template('edit_phone.j2', form = form)
-
-    elif request.method == 'POST':
-        if form.validate_on_submit():
-            if ( form.delete.data ):
-                flash('Deleted phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                phone.delete_instance()
-            else:
-                flash('Updated phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                phone.name = form.name.data
-                phone.mac_address = form.mac_address.data
-
-                # Handle params
-                new_param_ids = form.avail_params.data
-                prev_param_ids = form.active_params.data
-
-                # Add new params
-                for new_param_id in new_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
-                    print('setting avail param %s for %s' % (avail_param.base_param.name, phone.name))
-                    avail_param.phone_params = phone
-                    avail_param.save()
-                # Remove old params
-                for prev_param_id in prev_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                    print('removing avail param %s for %s' % (avail_param.base_param.name, phone.name))
-                    avail_param.phone_params = None
-                    avail_param.save()
-
-            phone.save()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-        return render_template('edit_phone.j2', form = form)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):
