@@ -6,8 +6,6 @@ from ppapp import app
 
 from ppapp.models import *
 
- 
-
 @app.route('/')
 def index():
     phones = Phone.select()
@@ -84,6 +82,8 @@ def edit_phone(id):
     # Need to exclude active params from available
     avail_params = (AvailParam
             .select()
+            .join(AvailParamPhones, JOIN.LEFT_OUTER)
+            .where(AvailParam.id.not_in(active_params))
             .order_by(AvailParam.base_param.name)
             )
     
