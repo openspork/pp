@@ -24,11 +24,9 @@ def edit_phone(id):
             .order_by(AvailParam.base_param.name)
             )
 
+    # Need to exclude active params from available
     avail_params = (AvailParam
             .select()
-            .join(AvailParamPhones, JOIN.LEFT_OUTER)
-            .join(Phone, JOIN.LEFT_OUTER)
-            #.where(Phone << phone)
             .order_by(AvailParam.base_param.name)
             )
     
