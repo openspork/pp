@@ -81,8 +81,8 @@ def index():
     phones = Phone.select()
     return render_template('index.j2', phones = phones)
 
-@app.route('/params', methods=['GET', 'POST'])
-def params():
+@app.route('/new_param', methods=['GET', 'POST'])
+def new_param():
     form = ParamForm()
     #form.param_level.choices = form_choices
     if request.method == 'POST':
@@ -92,7 +92,7 @@ def params():
             AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
         else:
             flash('Invalid Input!')
-    return render_template('params.j2', form = form)
+    return render_template('new_param.j2', form = form)
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():

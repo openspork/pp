@@ -33,3 +33,7 @@ class ParamForm(FlaskForm):
     value = StringField('Value', validators=[DataRequired()])
     note = StringField('Note')
     submit = SubmitField('Submit')
+
+# Unimplemented
+class EditParamForm(ParamForm):
+	delete = BooleanField('Delete')
