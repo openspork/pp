@@ -6,6 +6,45 @@ from ppapp import app
 
 from ppapp.models import *
 
+ 
+
+@app.route('/')
+def index():
+    phones = Phone.select()
+    avail_params = AvailParam.select()
+    return render_template('index.j2', phones = phones, avail_params = avail_params)
+
+@app.route('/new_param', methods=['GET', 'POST'])
+def new_param():
+    form = ParamForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            base_param = BaseParam.get(BaseParam.id == form.param.data)
+            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
+            AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
+        else:
+            flash('Invalid Input!')
+    return render_template('new_param.j2', form = form)
+
+@app.route('/edit_param', methods=['GET', 'POST'])
+def edit_param():
+    pass
+
+@app.route('/new_phone', methods=['GET', 'POST'])
+def new_phone():
+    form = PhoneForm()
+    if request.method == 'POST':   
+        if form.validate_on_submit():
+            flash('New phone: {}, MAC Address: {}'.format(
+                form.name.data, form.mac_address.data))
+            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
+            return redirect('/')
+        else:
+            flash('Invalid Input!')
+            return render_template('new_phone.j2', form = form)
+    elif request.method == 'GET':
+        return render_template('new_phone.j2', form = form)
+
 @app.route('/edit_phone/<id>', methods=['GET', 'POST'])
 def edit_phone(id):
     query = Phone.select().where(Phone.id == id)
@@ -74,44 +113,7 @@ def edit_phone(id):
     elif request.method == 'GET':
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
-        return render_template('edit_phone.j2', form = form)    
-
-@app.route('/')
-def index():
-    phones = Phone.select()
-    avail_params = AvailParam.select()
-    return render_template('index.j2', phones = phones, avail_params = avail_params)
-
-@app.route('/new_param', methods=['GET', 'POST'])
-def new_param():
-    form = ParamForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            base_param = BaseParam.get(BaseParam.id == form.param.data)
-            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
-            AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
-        else:
-            flash('Invalid Input!')
-    return render_template('new_param.j2', form = form)
-
-@app.route('/edit_param', methods=['GET', 'POST'])
-def edit_param():
-    pass
-
-@app.route('/new_phone', methods=['GET', 'POST'])
-def new_phone():
-    form = PhoneForm()
-    if request.method == 'POST':   
-        if form.validate_on_submit():
-            flash('New phone: {}, MAC Address: {}'.format(
-                form.name.data, form.mac_address.data))
-            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-            return render_template('new_phone.j2', form = form)
-    elif request.method == 'GET':
-        return render_template('new_phone.j2', form = form)
+        return render_template('edit_phone.j2', form = form)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):
