@@ -79,7 +79,8 @@ def edit_phone(id):
 @app.route('/')
 def index():
     phones = Phone.select()
-    return render_template('index.j2', phones = phones)
+    avail_params = AvailParam.select()
+    return render_template('index.j2', phones = phones, avail_params = avail_params)
 
 @app.route('/new_param', methods=['GET', 'POST'])
 def new_param():
@@ -93,6 +94,10 @@ def new_param():
         else:
             flash('Invalid Input!')
     return render_template('new_param.j2', form = form)
+
+@app.route('/edit_param', methods=['GET', 'POST'])
+def edit_param():
+    pass
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():

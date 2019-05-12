@@ -5,8 +5,6 @@ Index
 {% block content %}
 
 <h2>Hey it's me ur pp</h2>
-<br />
-<br />
 <div>
 	<h3> Phones </h3>
 	<table>
@@ -35,15 +33,16 @@ Index
 			<th>Name</th>
 			<th>Value</th>
 			<th>Note</th>
-			<td><a href="{{ url_for('new_phone') | safe }}">New</a>
+			<td><a href="{{ url_for('new_param') | safe }}">New</a>
 
 		</tr>
-			{% for phone in phones %}
+			{% for avail_param in avail_params %}
 			<tr>
-				<td>{{ phone.id }}</td>
-				<td>{{ phone.name }}</td>
-				<td>{{ phone.mac_address }}</td>
-				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
+				<td>{{ avail_param.id }}</td>
+				<td>{{ avail_param.base_param.name[1:] }}</td>
+				<td>{{ avail_param.value }}</td>
+				<td>{{ avail_param.note }}</td>
+				<td><a href="{{ url_for('edit_param', id=avail_param.id ) | safe }}">Edit</a></td>
 			</tr>
 			{% endfor %}
 	</table>
