@@ -24,19 +24,22 @@ class PhoneForm(FlaskForm):
     note = StringField('Note')
     submit = SubmitField('Submit')
 
-# class EditParamForm()
+class NewPhoneForm(PhoneForm):
+    pass
 
-#class NewPhoneForm(PhoneForm):
-    # Placeholder
-
-class EditPhoneForm(PhoneForm):
+class DeleteForm(FlaskForm):
     delete = BooleanField('Delete')
+
+class AddRemoveParamForm(DeleteForm):
     # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Active Parameters - Select to Remove', coerce = int)
     # Groups
     avail_groups = SelectMultipleField('Available groups - Select to Apply', coerce = int)
     active_groups = SelectMultipleField('Active groups - Select to Remove', coerce = int)
+
+class EditPhoneForm(PhoneForm, AddRemoveParamForm):
+    pass
 
 class ParamForm(FlaskForm):
     value = StringField('Value', validators=[DataRequired()])
@@ -46,8 +49,8 @@ class ParamForm(FlaskForm):
 class NewParamForm(ParamForm):
     param = SelectField('Parameter', choices = get_form_choices(BaseParam.select().order_by(BaseParam.name), BaseParam), validators=[DataRequired()], coerce = int)
 
-class EditParamForm(ParamForm):
-	delete = BooleanField('Delete')
+class EditParamForm(ParamForm, DeleteForm):
+    pass
 
 class GroupForm(FlaskForm):
     type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType), coerce = int)
@@ -55,7 +58,8 @@ class GroupForm(FlaskForm):
     note = StringField('Note')
     submit = SubmitField('Submit')
 
-#class NewGroupForm(GroupForm):
-    # Placeholder
+class NewGroupForm(GroupForm):
+    pass
 
-# class EditGroupForm(GroupForm):
+# class EditGroupForm(GroupForm, DeleteForm, EditForm):
+#     pass

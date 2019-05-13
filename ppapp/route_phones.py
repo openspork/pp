@@ -5,7 +5,7 @@ from ppapp.models import *
 
 @app.route('/new_phone', methods = ['GET', 'POST'])
 def new_phone():
-    form = PhoneForm()
+    form = NewPhoneForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
