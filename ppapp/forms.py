@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired
 # Careful, ppapp.models will clobber wtforms' BooleanField!
-from ppapp.models import BaseParam, AvailParam, Group
+from ppapp.models import BaseParam, AvailParam, Group, GroupType
 
 def get_form_choices(query, Model):
     form_choices = []
@@ -13,6 +13,8 @@ def get_form_choices(query, Model):
             choice_string = '%s - Default: %s' % (choice.name[1:], choice.default_value[:32])
         if Model == AvailParam:
             choice_string = '%s - Value: %s' % (choice.base_param.name[1:], choice.value)
+        if Model == GroupType:
+            choice_string = choice.name
         form_choices.append((choice.id, choice_string))
     return form_choices
 
@@ -20,6 +22,10 @@ class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     mac_address = StringField('MAC Address', validators=[DataRequired()])
     submit = SubmitField('Submit')
+    # Add note
+
+#class NewPhoneForm(PhoneForm):
+    # Placeholder
 
 class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
@@ -40,3 +46,8 @@ class NewParamForm(ParamForm):
 
 class EditParamForm(ParamForm):
 	delete = BooleanField('Delete')
+
+class NewGroupForm(FlaskForm):
+    type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType))
+    name = StringField('Name')
+    note = StringField('Note')
