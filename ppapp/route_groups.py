@@ -8,9 +8,9 @@ def new_group():
     form = GroupForm()
     if request.method == 'POST':   
         if form.validate_on_submit():
-            flash('New Group - Name: {}, Type: {}'.format(
-                form.name.data, form.mac_address.data))
-            group.create(name = form.name.data, mac_address = form.mac_address.data).save()
+            grouptype = GroupType.get(GroupType.id == form.type.data)
+            group = Group.create(name = form.name.data, type = grouptype).save()
+            #flash('New Group - Name: {}, Type: {}'.format(form.name.data, group.type.name))
             return redirect('/')
         else:
             flash('Invalid Input!')

@@ -48,7 +48,7 @@ class EditParamForm(ParamForm):
 	delete = BooleanField('Delete')
 
 class GroupForm(FlaskForm):
-    type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType))
+    type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType), coerce = int)
     name = StringField('Name')
     note = StringField('Note')
     submit = SubmitField('Submit')
