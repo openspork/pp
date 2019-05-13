@@ -13,11 +13,23 @@ class Phone(BaseModel):
 class Client(BaseModel):
     name = CharField()
 
+class PhoneClients(BaseModel):
+    phone = ForeignKeyField(Phone)
+    client = ForeignKeyField(Client)
+
 class Site(BaseModel):
     name = CharField()
 
+class PhoneSites(BaseModel):
+    phone = ForeignKeyField(Phone)
+    site = ForeignKeyField(Site)
+
 class Extension(BaseModel):
     name = CharField()
+
+class PhoneExtensions(BaseModel):
+    phone = ForeignKeyField(Phone)
+    extension = ForeignKeyField(Extension)
 
 class ParamLevel(BaseModel):
     name = CharField(unique = True, null = True)
