@@ -3,7 +3,7 @@ from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
 
-@app.route('/new_group', methods=['GET', 'POST'])
+@app.route('/new_group', methods = ['GET', 'POST'])
 def new_group():
     form = GroupForm()
     if request.method == 'POST':   
@@ -17,3 +17,7 @@ def new_group():
             return render_template('new_group.j2', form = form)
     elif request.method == 'GET':
         return render_template('new_group.j2', form = form)
+
+@app.route('/edit_group/<id>', methods = ['GET', 'POST'])
+def edit_group(id):
+    pass

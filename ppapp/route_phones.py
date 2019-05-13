@@ -3,10 +3,10 @@ from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
 
-@app.route('/new_phone', methods=['GET', 'POST'])
+@app.route('/new_phone', methods = ['GET', 'POST'])
 def new_phone():
     form = PhoneForm()
-    if request.method == 'POST':   
+    if request.method == 'POST':
         if form.validate_on_submit():
             flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
@@ -18,7 +18,7 @@ def new_phone():
     elif request.method == 'GET':
         return render_template('new_phone.j2', form = form)
 
-@app.route('/edit_phone/<id>', methods=['GET', 'POST'])
+@app.route('/edit_phone/<id>', methods = ['GET', 'POST'])
 def edit_phone(id):
     query = Phone.select().where(Phone.id == id)
     if not query.exists():

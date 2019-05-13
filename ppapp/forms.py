@@ -24,6 +24,8 @@ class PhoneForm(FlaskForm):
     note = StringField('Note')
     submit = SubmitField('Submit')
 
+# class EditParamForm()
+
 #class NewPhoneForm(PhoneForm):
     # Placeholder
 
@@ -55,3 +57,5 @@ class GroupForm(FlaskForm):
 
 #class NewGroupForm(GroupForm):
     # Placeholder
+
+# class EditGroupForm(GroupForm):
