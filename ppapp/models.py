@@ -9,33 +9,26 @@ class BaseModel(Model):
 class Phone(BaseModel):
     name = CharField()
     mac_address = CharField()
+    note = CharField()
 
-class Client(BaseModel):
+class GroupType(BaseModel):
     name = CharField()
+    note = CharField()
 
-class PhoneClients(BaseModel):
-    phone = ForeignKeyField(Phone)
-    client = ForeignKeyField(Client)
-
-class Site(BaseModel):
+class Group(BaseModel):
+    type = ForeignKeyField(GroupType, backref = 'groups')
     name = CharField()
+    note = CharField()
 
-class PhoneSites(BaseModel):
+class PhoneGroups(BaseModel):
     phone = ForeignKeyField(Phone)
-    site = ForeignKeyField(Site)
-
-class Extension(BaseModel):
-    name = CharField()
-
-class PhoneExtensions(BaseModel):
-    phone = ForeignKeyField(Phone)
-    extension = ForeignKeyField(Extension)
+    group = ForeignKeyField(Group)
 
 class ParamLevel(BaseModel):
     name = CharField(unique = True, null = True)
 
 class BaseParam(BaseModel):
-    param_level = ForeignKeyField(ParamLevel, backref = 'baseparams')
+    param_level = ForeignKeyField(ParamLevel, backref = 'base_params')
     name = CharField()
     default_value = CharField()
     note = CharField(null = True)
@@ -49,14 +42,7 @@ class AvailParamPhones(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
     phone = ForeignKeyField(Phone)
 
-class AvailParamClients(BaseModel):
+class AvailParamGroups(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
-    client = ForeignKeyField(Client)
+    group = ForeignKeyField(Group)
 
-class AvailParamSites(BaseModel):
-    avail_param = ForeignKeyField(AvailParam)
-    site = ForeignKeyField(Site)
-
-class AvailParamExtensions(BaseModel):
-    avail_param = ForeignKeyField(AvailParam)
-    extension = ForeignKeyField(Extension)

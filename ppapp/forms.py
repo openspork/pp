@@ -34,15 +34,9 @@ class EditPhoneForm(PhoneForm):
     # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Active Paramters - Select to Remove', coerce = int)
-    # Clients
-    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
-    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
-    # Sites
-    avail_sites = SelectMultipleField('Available Sites - Select to Apply', coerce = int)
-    active_sites = SelectMultipleField('Active Sites - Select to Remove', coerce = int)
-    # Exts
-    avail_extensions = SelectMultipleField('Available Extensions - Select to Apply', coerce = int)
-    active_extensions = SelectMultipleField('Active Extensions - Select to Remove', coerce = int)
+    # Groups
+    avail_groups = SelectMultipleField('Available groups - Select to Apply', coerce = int)
+    active_groups = SelectMultipleField('Active groups - Select to Remove', coerce = int)
 
 class ParamForm(FlaskForm):
     value = StringField('Value', validators=[DataRequired()])

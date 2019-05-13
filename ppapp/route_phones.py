@@ -44,25 +44,24 @@ def edit_phone(id):
             .order_by(AvailParam.base_param.name)
             )
     
-    active_clients = (Client
+    active_groups = (Group
             .select()
-            .join(PhoneClients, JOIN.LEFT_OUTER)
-            .where(PhoneClients.phone == phone)
-            .order_by(Client.name)
+            .join(PhoneGroups, JOIN.LEFT_OUTER)
+            .where(PhoneGroups.phone == phone)
+            .order_by(Group.name)
             )
 
-    avail_clients = (Client
+    avail_groups = (Group
             .select()
-            .join(PhoneClients, JOIN.LEFT_OUTER)
-            .where(Client.id.not_in(active_clients))
-            .order_by(Client.name)
+            .join(PhoneGroups, JOIN.LEFT_OUTER)
+            .where(Group.id.not_in(active_groups))
+            .order_by(Group.name)
             )
-
 
     form.avail_params.choices = get_avail_param_form_choices(avail_params)
     form.active_params.choices = get_avail_param_form_choices(active_params)
-    form.avail_clients.choices = get_form_choices(avail_clients)
-    form.active_clients.choices = get_form_choices(active_clients)
+    form.avail_groups.choices = get_form_choices(avail_groups)
+    form.active_groups.choices = get_form_choices(active_groups)
 
 
     if request.method == 'POST':
