@@ -29,7 +29,7 @@ def edit_phone(id):
 
     form = EditPhoneForm()
     
-    # Populate our form's dynamic data
+    # Populate our forms' dynamic data
     active_params = (AvailParam
             .select()
             .join(AvailParamPhones)
