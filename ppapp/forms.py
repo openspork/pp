@@ -25,8 +25,20 @@ class PhoneForm(FlaskForm):
 
 class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
+    # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Active Paramters - Select to Remove', coerce = int)
+    # Clients
+    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
+    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
+    # Sites
+    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
+    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
+    # Exts
+    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
+    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
+
+
 
 class ParamForm(FlaskForm):
     value = StringField('Value', validators=[DataRequired()])
