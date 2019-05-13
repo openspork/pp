@@ -5,6 +5,7 @@ from ppapp.forms import *
 from ppapp.models import *
 from ppapp.route_phones import *
 from ppapp.route_params import *
+from ppapp.route_groups import *
 
 @app.route('/')
 def index():

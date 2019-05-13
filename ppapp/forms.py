@@ -38,6 +38,5 @@ class ParamForm(FlaskForm):
 class NewParamForm(ParamForm):
     param = SelectField('Parameter', choices = get_form_choices(BaseParam.select().order_by(BaseParam.name), BaseParam), validators=[DataRequired()], coerce = int)
 
-# Unimplemented
 class EditParamForm(ParamForm):
 	delete = BooleanField('Delete')
