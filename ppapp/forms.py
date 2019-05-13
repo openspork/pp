@@ -1,8 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired
-# Careful, models will clobber wtforms' BooleanField!
+# Careful, ppapp.models will clobber wtforms' BooleanField!
 from ppapp.models import BaseParam, AvailParam
+
+def get_form_choices(query):
+    form_choices = []
+    for choice in query:
+        param_form_choices.append((choice.id, choice.name))
+    return form_choices
 
 def get_avail_param_form_choices(params):
     param_form_choices = []
@@ -32,13 +38,11 @@ class EditPhoneForm(PhoneForm):
     avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
     active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
     # Sites
-    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
-    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
+    avail_sites = SelectMultipleField('Available Sites - Select to Apply', coerce = int)
+    active_sites = SelectMultipleField('Active Sites - Select to Remove', coerce = int)
     # Exts
-    avail_clients = SelectMultipleField('Available Clients - Select to Apply', coerce = int)
-    active_clients = SelectMultipleField('Active Clients - Select to Remove', coerce = int)
-
-
+    avail_extensions = SelectMultipleField('Available Extensions - Select to Apply', coerce = int)
+    active_extensions = SelectMultipleField('Active Extensions - Select to Remove', coerce = int)
 
 class ParamForm(FlaskForm):
     value = StringField('Value', validators=[DataRequired()])

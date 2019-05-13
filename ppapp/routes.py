@@ -1,147 +1,16 @@
 import os
 from flask import flash, send_from_directory, render_template, request, redirect, url_for
-from ppapp.forms import *
-
 from ppapp import app
-
+from ppapp.forms import *
 from ppapp.models import *
+from ppapp.route_phones import *
+from ppapp.route_params import *
 
 @app.route('/')
 def index():
     phones = Phone.select()
     avail_params = AvailParam.select()
     return render_template('index.j2', phones = phones, avail_params = avail_params)
-
-@app.route('/new_param', methods=['GET', 'POST'])
-def new_param():
-    form = NewParamForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            base_param = BaseParam.get(BaseParam.id == form.param.data)
-            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
-            AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
-        else:
-            flash('Invalid Input!')
-    return render_template('new_param.j2', form = form)
-
-@app.route('/edit_param/<id>', methods=['GET', 'POST'])
-def edit_param(id):
-    query = AvailParam.select().where(AvailParam.id == id)
-    if not query.exists():
-        flash('Invalid ID!')
-        return redirect('/')
-    else:
-        avail_param = query.get()
-
-    form = EditParamForm()
-
-    avail_params = (AvailParam
-                    .select()
-                    .order_by(AvailParam.base_param.name)
-                    )
-
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            if ( form.delete.data ):
-                flash('Deleted param: {}'.format(avail_param.base_param.name))
-                avail_param.delete_instance()
-            else:
-                flash('Updated param: {}'.format(avail_param.base_param.name))
-                # Handle base data
-                avail_param.value = form.value.data
-                avail_param.note = form.note.data
-                avail_param.save()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-        return render_template('edit_param.j2', form = form, avail_param = avail_param)
-    elif request.method == 'GET':
-        form.value.data = avail_param.value
-        form.note.data = avail_param.note
-        return render_template('edit_param.j2', form = form, avail_param = avail_param)
-
-@app.route('/new_phone', methods=['GET', 'POST'])
-def new_phone():
-    form = PhoneForm()
-    if request.method == 'POST':   
-        if form.validate_on_submit():
-            flash('New phone: {}, MAC Address: {}'.format(
-                form.name.data, form.mac_address.data))
-            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-            return render_template('new_phone.j2', form = form)
-    elif request.method == 'GET':
-        return render_template('new_phone.j2', form = form)
-
-@app.route('/edit_phone/<id>', methods=['GET', 'POST'])
-def edit_phone(id):
-    query = Phone.select().where(Phone.id == id)
-    if not query.exists():
-        flash('Invalid ID!')
-        return redirect('/')
-    else:
-        phone = query.get()
-
-    form = EditPhoneForm()
-    
-    active_params = (AvailParam
-            .select()
-            .join(AvailParamPhones)
-            .where(AvailParamPhones.phone == phone)
-            .order_by(AvailParam.base_param.name)
-            )
-
-    avail_params = (AvailParam
-            .select()
-            .join(AvailParamPhones, JOIN.LEFT_OUTER)
-            .where(AvailParam.id.not_in(active_params))
-            .order_by(AvailParam.base_param.name)
-            )
-    
-    form.avail_params.choices = get_avail_param_form_choices(avail_params)
-    form.active_params.choices = get_avail_param_form_choices(active_params)
-
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            if ( form.delete.data ):
-                flash('Deleted phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                phone.delete_instance()
-            else:
-                flash('Updated phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
-                # Handle base data
-                phone.name = form.name.data
-                phone.mac_address = form.mac_address.data
-
-                # Handle params
-                new_param_ids = form.avail_params.data
-                prev_param_ids = form.active_params.data
-
-                # Add new params
-                for new_param_id in new_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
-                    AvailParamPhones.create(avail_param = avail_param, phone = phone)
-                    avail_param.save()
-                # Remove old params
-                for prev_param_id in prev_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                    delete_query = (AvailParamPhones
-                            .delete()
-                            .where((AvailParamPhones.phone == phone) & (AvailParamPhones.avail_param == avail_param))
-                            )
-                    delete_query.execute()
-            return redirect('/')
-        else:
-            flash('Invalid Input!')
-        return render_template('edit_phone.j2', form = form)
-
-    elif request.method == 'GET':
-        form.mac_address.data = phone.mac_address
-        form.name.data = phone.name
-        return render_template('edit_phone.j2', form = form)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):
