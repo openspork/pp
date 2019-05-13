@@ -18,7 +18,6 @@ def get_base_param_form_choices():
         param_form_choices.append((choice.id, choice_string))
     return param_form_choices
 
-# TODO: Rename to "NewPhoneForm"
 class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     mac_address = StringField('MAC Address', validators=[DataRequired()])
