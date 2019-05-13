@@ -6,19 +6,14 @@ def init_db():
     db.connect()
 
     db.create_tables([Phone,
-    				Client,
-    				Site,
-    				Extension,
-                    PhoneClients,
-                    PhoneSites,
-                    PhoneExtensions,
+    				Group,
+                    GroupType,
+                    PhoneGroups,
     				ParamLevel,
     				BaseParam,
     				AvailParam,
     				AvailParamPhones,
-    				AvailParamClients,
-    				AvailParamSites,
-    				AvailParamExtensions],
+    				AvailParamGroups],
     				safe = True)
     if ( len(ParamLevel.select()) == 0 ):
         print('populating paramlevels')

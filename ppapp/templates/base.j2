@@ -14,17 +14,19 @@
             <a href = '{{ url_for('index') | safe }}'> Index</a>
         </div>
         <div id='content'>
+            <h1>Hey it's me ur pp</h1>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
-            <ul class='alert'>
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            <div>
+                <b> Update commited:</b>
+                <ul class='alert'>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
             {% endif %}
             {% endwith %}
-
-            <h1>PP</h1>
             {% block content %} {% endblock %}
         </div>
         <div id='footer'>
