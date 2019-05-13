@@ -19,12 +19,21 @@ Edit Phone
         <p>
             {{ form.avail_params.label }}
             <br />
-            {{ form.avail_params(size="16") }}
+            {{ form.avail_params(size="8") }}
         </p>
         <p>
             {{ form.active_params.label }}
             <br />
-            {{ form.active_params(size="16") }}
+            {{ form.active_params(size="8") }}
+        </p>
+
+        <p>
+            {{ form.active_clients.label }}
+            <br />
+            {{ form.active_clients(size="4") }}
+
+
+
         </p>
         <p>
             {{ form.delete.label }}
