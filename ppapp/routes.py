@@ -14,7 +14,7 @@ def index():
 
 @app.route('/new_param', methods=['GET', 'POST'])
 def new_param():
-    form = ParamForm()
+    form = NewParamForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             base_param = BaseParam.get(BaseParam.id == form.param.data)
@@ -33,7 +33,7 @@ def edit_param(id):
     else:
         avail_param = query.get()
 
-    form = EditParamForm
+    form = EditParamForm()
 
     avail_params = (AvailParam
                     .select()
@@ -41,10 +41,24 @@ def edit_param(id):
                     )
 
     if request.method == 'POST':
-        return 'this is a POST request'
+        if form.validate_on_submit():
+            if ( form.delete.data ):
+                flash('Deleted param: {}'.format(avail_param.base_param.name))
+                avail_param.delete_instance()
+            else:
+                flash('Updated param: {}'.format(avail_param.base_param.name))
+                # Handle base data
+                avail_param.value = form.value.data
+                avail_param.note = form.note.data
+                avail_param.save()
+            return redirect('/')
+        else:
+            flash('Invalid Input!')
+        return render_template('edit_param.j2', form = form, avail_param = avail_param)
     elif request.method == 'GET':
-        return 'this is a GET request'
-
+        form.value.data = avail_param.value
+        form.note.data = avail_param.note
+        return render_template('edit_param.j2', form = form, avail_param = avail_param)
 
 @app.route('/new_phone', methods=['GET', 'POST'])
 def new_phone():
@@ -79,7 +93,6 @@ def edit_phone(id):
             .order_by(AvailParam.base_param.name)
             )
 
-    # Need to exclude active params from available
     avail_params = (AvailParam
             .select()
             .join(AvailParamPhones, JOIN.LEFT_OUTER)

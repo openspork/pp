@@ -18,6 +18,7 @@ def get_base_param_form_choices():
         param_form_choices.append((choice.id, choice_string))
     return param_form_choices
 
+# TODO: Rename to "NewPhoneForm"
 class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     mac_address = StringField('MAC Address', validators=[DataRequired()])
@@ -29,10 +30,12 @@ class EditPhoneForm(PhoneForm):
     active_params = SelectMultipleField('Active Paramters - Select to Remove', coerce = int)
 
 class ParamForm(FlaskForm):
-    param = SelectField('Parameter', choices = get_base_param_form_choices(), validators=[DataRequired()], coerce = int)
     value = StringField('Value', validators=[DataRequired()])
     note = StringField('Note')
     submit = SubmitField('Submit')
+
+class NewParamForm(ParamForm):
+    param = SelectField('Parameter', choices = get_base_param_form_choices(), validators=[DataRequired()], coerce = int)
 
 # Unimplemented
 class EditParamForm(ParamForm):
