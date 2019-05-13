@@ -63,7 +63,6 @@ def edit_phone(id):
     form.avail_groups.choices = get_form_choices(avail_groups, Group)
     form.active_groups.choices = get_form_choices(active_groups, Group)
 
-
     if request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
@@ -94,6 +93,26 @@ def edit_phone(id):
                             .where((AvailParamPhones.phone == phone) & (AvailParamPhones.avail_param == avail_param))
                             )
                     delete_query.execute()
+
+                # Handle groups
+                new_group_ids = form.avail_groups.data
+                prev_group_ids = form.active_groups.data
+
+                # Add new groups
+                for new_group_id in new_group_ids:
+                    group = Group.get(Group.id == new_group_id)
+                    PhoneGroups.create(group = group, phone = phone)
+                    group.save()
+                # Remove old params
+                for prev_group_id in prev_group_ids:
+                    group = Group.get(Group.id == prev_group_id)
+                    delete_query = (PhoneGroups
+                            .delete()
+                            .where((PhoneGroups.phone == phone) & (PhoneGroups.group == group))
+                            )
+                    delete_query.execute()
+
+
             return redirect('/')
         else:
             flash('Invalid Input!')

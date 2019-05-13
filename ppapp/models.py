@@ -38,11 +38,11 @@ class AvailParam(BaseModel):
     value = CharField()
     note = CharField(null = True)
 
-class AvailParamPhones(BaseModel):
+class AvailParamPhones(BaseModel): # Change to PhoneAvailParams
     avail_param = ForeignKeyField(AvailParam)
     phone = ForeignKeyField(Phone)
 
-class AvailParamGroups(BaseModel):
+class AvailParamGroups(BaseModel): # Change to GroupAvailParams
     avail_param = ForeignKeyField(AvailParam)
     group = ForeignKeyField(Group)
 
