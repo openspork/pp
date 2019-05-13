@@ -28,12 +28,14 @@ Edit Phone
         </p>
 
         <p>
+            {{ form.avail_groups.label }}
+            <br />
+            {{ form.avail_groups(size="4") }}
+        </p>
+        <p>
             {{ form.active_groups.label }}
             <br />
             {{ form.active_groups(size="4") }}
-
-
-
         </p>
         <p>
             {{ form.delete.label }}

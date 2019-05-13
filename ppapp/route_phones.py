@@ -58,10 +58,10 @@ def edit_phone(id):
             .order_by(Group.name)
             )
 
-    form.avail_params.choices = get_avail_param_form_choices(avail_params)
-    form.active_params.choices = get_avail_param_form_choices(active_params)
-    form.avail_groups.choices = get_form_choices(avail_groups)
-    form.active_groups.choices = get_form_choices(active_groups)
+    form.avail_params.choices = get_form_choices(avail_params, AvailParam)
+    form.active_params.choices = get_form_choices(active_params, AvailParam)
+    form.avail_groups.choices = get_form_choices(avail_groups, Group)
+    form.active_groups.choices = get_form_choices(active_groups, Group)
 
 
     if request.method == 'POST':
