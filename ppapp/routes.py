@@ -11,7 +11,8 @@ from ppapp.route_groups import *
 def index():
     phones = Phone.select()
     avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
-    groups = Group.select().order_by(Group.type.name).order_by(Group.name)
+    # TODO: It would be nice to order by type, then name"
+    groups = Group.select().order_by(Group.name)
     return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups)
 
 @app.route('/config/<mac_address>')
