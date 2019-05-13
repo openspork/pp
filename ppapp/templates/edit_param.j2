@@ -1,0 +1,29 @@
+{% extends "base.j2" %}
+{% block title %}
+Edit Parameter
+{% endblock %}
+{% block content %}
+
+    {{ avail_param.base_param.name }}
+
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.value.label }}
+            <br />
+            {{ form.value(size=32) }}
+        </p>
+        <p>
+            {{ form.note.label }}
+            <br />
+            {{ form.note(size=32) }}
+        </p>
+        <p>
+            {{ form.delete.label }}
+            {{ form.delete }}
+
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+{% endblock %}
