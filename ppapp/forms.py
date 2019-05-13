@@ -21,8 +21,8 @@ def get_form_choices(query, Model):
 class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     mac_address = StringField('MAC Address', validators=[DataRequired()])
+    note = StringField('Note')
     submit = SubmitField('Submit')
-    # Add note
 
 #class NewPhoneForm(PhoneForm):
     # Placeholder
@@ -47,7 +47,10 @@ class NewParamForm(ParamForm):
 class EditParamForm(ParamForm):
 	delete = BooleanField('Delete')
 
-class NewGroupForm(FlaskForm):
+class GroupForm(FlaskForm):
     type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType))
     name = StringField('Name')
     note = StringField('Note')
+
+#class NewGroupForm(GroupForm):
+    # Placeholder

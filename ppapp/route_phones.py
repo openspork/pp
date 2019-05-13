@@ -8,9 +8,9 @@ def new_phone():
     form = PhoneForm()
     if request.method == 'POST':   
         if form.validate_on_submit():
-            flash('New phone: {}, MAC Address: {}'.format(
-                form.name.data, form.mac_address.data))
-            Phone.create(name = form.name.data, mac_address = form.mac_address.data).save()
+            flash('New phone: {}, MAC Address: {}, Note: {}'.format(
+                    form.name.data, form.mac_address.data, form.note.data))
+            Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
             return redirect('/')
         else:
             flash('Invalid Input!')
@@ -66,15 +66,17 @@ def edit_phone(id):
     if request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
-                flash('Deleted phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
+                flash('Deleted phone: {}, MAC Address: {}, Note: {}'.format(
+                    form.name.data, form.mac_address.data, form.note.data))
                 phone.delete_instance()
             else:
-                flash('Updated phone: {}, MAC Address: {}'.format(
-                    form.name.data, form.mac_address.data))
+                flash('Updated phone: {}, MAC Address: {}, Note: {}'.format(
+                    form.name.data, form.mac_address.data, form.note.data))
                 # Handle base data
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data
+                phone.note = form.note.data
+                phone.save()
 
                 # Handle params
                 new_param_ids = form.avail_params.data

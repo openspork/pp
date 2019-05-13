@@ -17,6 +17,11 @@ Edit Phone
             {{ form.mac_address(size=32) }}
         </p>
         <p>
+            {{ form.note.label }}
+            <br />
+            {{ form.note(size=32) }}
+        </p>
+        <p>
             {{ form.avail_params.label }}
             <br />
             {{ form.avail_params(size="6") }}
