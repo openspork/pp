@@ -51,6 +51,7 @@ class GroupForm(FlaskForm):
     type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType))
     name = StringField('Name')
     note = StringField('Note')
+    submit = SubmitField('Submit')
 
 #class NewGroupForm(GroupForm):
     # Placeholder
