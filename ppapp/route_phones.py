@@ -112,7 +112,6 @@ def edit_phone(id):
                             )
                     delete_query.execute()
 
-
             return redirect('/')
         else:
             flash('Invalid Input!')

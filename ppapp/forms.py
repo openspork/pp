@@ -25,7 +25,7 @@ class EditPhoneForm(PhoneForm):
     delete = BooleanField('Delete')
     # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
-    active_params = SelectMultipleField('Active Paramters - Select to Remove', coerce = int)
+    active_params = SelectMultipleField('Active Parameters - Select to Remove', coerce = int)
     # Groups
     avail_groups = SelectMultipleField('Available groups - Select to Apply', coerce = int)
     active_groups = SelectMultipleField('Active groups - Select to Remove', coerce = int)

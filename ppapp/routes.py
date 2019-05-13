@@ -9,8 +9,9 @@ from ppapp.route_params import *
 @app.route('/')
 def index():
     phones = Phone.select()
-    avail_params = AvailParam.select()
-    return render_template('index.j2', phones = phones, avail_params = avail_params)
+    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+    groups = Group.select().order_by(Group.type.name).order_by(Group.name)
+    return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):
