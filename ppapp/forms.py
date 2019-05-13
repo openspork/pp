@@ -30,7 +30,7 @@ class NewPhoneForm(PhoneForm):
 class DeleteForm(FlaskForm):
     delete = BooleanField('Delete')
 
-class AddRemoveParamForm(DeleteForm):
+class AddRemoveParamForm(FlaskForm):
     # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Active Parameters - Select to Remove', coerce = int)
@@ -38,7 +38,7 @@ class AddRemoveParamForm(DeleteForm):
     avail_groups = SelectMultipleField('Available groups - Select to Apply', coerce = int)
     active_groups = SelectMultipleField('Active groups - Select to Remove', coerce = int)
 
-class EditPhoneForm(PhoneForm, AddRemoveParamForm):
+class EditPhoneForm(PhoneForm, AddRemoveParamForm, DeleteForm):
     pass
 
 class ParamForm(FlaskForm):
@@ -61,5 +61,5 @@ class GroupForm(FlaskForm):
 class NewGroupForm(GroupForm):
     pass
 
-# class EditGroupForm(GroupForm, DeleteForm, EditForm):
-#     pass
+class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm):
+    pass
