@@ -9,7 +9,7 @@ def new_param():
     if request.method == 'POST':
         if form.validate_on_submit():
             base_param = BaseParam.get(BaseParam.id == form.param.data)
-            flash('Parameter added: {}, Value: {}'.format(base_param.name, form.value.data))
+            flash('New - Parameter: {}, Value: {}'.format(base_param.name, form.value.data))
             AvailParam.create(base_param = base_param, value = form.value.data, note = form.note.data)
         else:
             flash('Invalid Input!')
@@ -34,10 +34,10 @@ def edit_param(id):
     if request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
-                flash('Deleted param: {}'.format(avail_param.base_param.name))
+                flash('Deleted - Parameter: {}'.format(avail_param.base_param.name))
                 avail_param.delete_instance()
             else:
-                flash('Updated param: {}'.format(avail_param.base_param.name))
+                flash('Updated - Parameter: {}'.format(avail_param.base_param.name))
                 # Handle base data
                 avail_param.value = form.value.data
                 avail_param.note = form.note.data

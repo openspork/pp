@@ -8,7 +8,7 @@ def new_group():
     form = GroupForm()
     if request.method == 'POST':   
         if form.validate_on_submit():
-            flash('New group: {}, MAC Address: {}'.format(
+            flash('New Group - Name: {}, Type: {}'.format(
                 form.name.data, form.mac_address.data))
             group.create(name = form.name.data, mac_address = form.mac_address.data).save()
             return redirect('/')

@@ -11,8 +11,8 @@ New Group
             {{ form.name(size=32) }}
         </p>
         <p>
-            {{ form.mac_address.label }}<br>
-            {{ form.mac_address(size=32) }}
+            {{ form.note.label }}<br>
+            {{ form.note(size=32) }}
         </p>
         <p>{{ form.submit() }}</p>
     </form>

@@ -8,7 +8,7 @@ def new_phone():
     form = PhoneForm()
     if request.method == 'POST':   
         if form.validate_on_submit():
-            flash('New phone: {}, MAC Address: {}, Note: {}'.format(
+            flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
             Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
             return redirect('/')
@@ -66,11 +66,11 @@ def edit_phone(id):
     if request.method == 'POST':
         if form.validate_on_submit():
             if ( form.delete.data ):
-                flash('Deleted phone: {}, MAC Address: {}, Note: {}'.format(
+                flash('Deleted - Phone: {}, MAC address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
                 phone.delete_instance()
             else:
-                flash('Updated phone: {}, MAC Address: {}, Note: {}'.format(
+                flash('Updated - Phone: {}, MAC address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
                 # Handle base data
                 phone.name = form.name.data
