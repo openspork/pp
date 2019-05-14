@@ -34,11 +34,13 @@ class AddRemoveParamForm(FlaskForm):
     # Params
     avail_params = SelectMultipleField('Available Parameters - Select to Apply', coerce = int)
     active_params = SelectMultipleField('Active Parameters - Select to Remove', coerce = int)
+
+class AddRemoveGroupForm(FlaskForm):
     # Groups
     avail_groups = SelectMultipleField('Available groups - Select to Apply', coerce = int)
     active_groups = SelectMultipleField('Active groups - Select to Remove', coerce = int)
 
-class EditPhoneForm(PhoneForm, AddRemoveParamForm, DeleteForm):
+class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteForm):
     pass
 
 class ParamForm(FlaskForm):
