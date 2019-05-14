@@ -33,6 +33,7 @@ def edit_group(id):
     params = get_group_params(group)
 
     form.name.data = group.name
+    form.type.data = group.type.id
     form.note.data = group.note
 
     form.avail_params.choices = get_form_choices(params[0], AvailParam)
@@ -43,6 +44,7 @@ def edit_group(id):
             return redirect('/')
         else:
             flash('Invalid Input!')
+            flash(form.errors, form.type2.choices)
         return render_template('edit_group.j2', form = form)
     elif request.method == 'GET':
         return render_template('edit_group.j2', form = form)

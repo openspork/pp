@@ -3,13 +3,17 @@
 Edit Group
 {% endblock %}
 {% block content %}
-
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.name.label }}
             <br />
             {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.type.label }}
+            <br />
+            {{ form.type(size="4") }}
         </p>
         <p>
             {{ form.note.label }}
@@ -22,12 +26,14 @@ Edit Group
             {{ form.avail_params(size="6") }}
         </p>
         <p>
+            {{ form.active_params.label }}
+            <br />
+            {{ form.active_params(size="6") }}
+        </p>
+        <p>
             {{ form.delete.label }}
             {{ form.delete }}
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-
-
-
 {% endblock %}
