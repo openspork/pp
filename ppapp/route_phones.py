@@ -2,6 +2,7 @@ from flask import flash, send_from_directory, render_template, request, redirect
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
+from ppapp.util.model_ops import *
 
 @app.route('/new_phone', methods = ['GET', 'POST'])
 def new_phone():
@@ -65,10 +66,18 @@ def edit_phone(id):
 
     if request.method == 'POST':
         if form.validate_on_submit():
+
+            # Get data
+            new_param_ids = form.avail_params.data
+            prev_param_ids = form.active_params.data
+            new_group_ids = form.avail_groups.data
+            prev_group_ids = form.active_groups.data
+
             if ( form.delete.data ):
                 flash('Deleted - Phone: {}, MAC address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
-                phone.delete_instance()
+                # Recursive to delete foreign keys
+                phone.delete_instance(recursive = True)
             else:
                 flash('Updated - Phone: {}, MAC address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
@@ -78,42 +87,12 @@ def edit_phone(id):
                 phone.note = form.note.data
                 phone.save()
 
-                # Handle params
-                new_param_ids = form.avail_params.data
-                prev_param_ids = form.active_params.data
-
-                # Add new params
-                for new_param_id in new_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == new_param_id)
-                    AvailParamPhones.create(avail_param = avail_param, phone = phone)
-                    avail_param.save()
-                # Remove old params
-                for prev_param_id in prev_param_ids:
-                    avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-                    delete_query = (AvailParamPhones
-                            .delete()
-                            .where((AvailParamPhones.phone == phone) & (AvailParamPhones.avail_param == avail_param))
-                            )
-                    delete_query.execute()
-
-                # Handle groups
-                new_group_ids = form.avail_groups.data
-                prev_group_ids = form.active_groups.data
-
-                # Add new groups
-                for new_group_id in new_group_ids:
-                    group = Group.get(Group.id == new_group_id)
-                    PhoneGroups.create(group = group, phone = phone)
-                    group.save()
-                # Remove old params
-                for prev_group_id in prev_group_ids:
-                    group = Group.get(Group.id == prev_group_id)
-                    delete_query = (PhoneGroups
-                            .delete()
-                            .where((PhoneGroups.phone == phone) & (PhoneGroups.group == group))
-                            )
-                    delete_query.execute()
-
+                # Process phone's children
+                add_params_to_phone(new_param_ids, phone)
+                add_groups_to_phone(new_group_ids, phone)
+                remove_params_from_phone(prev_param_ids, phone)
+                remove_groups_from_phone(prev_group_ids, phone)
+                
             return redirect('/')
         else:
             flash('Invalid Input!')
@@ -122,4 +101,5 @@ def edit_phone(id):
     elif request.method == 'GET':
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
+        form.note.data = phone.note
         return render_template('edit_phone.j2', form = form)
