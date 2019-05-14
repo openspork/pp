@@ -3,27 +3,31 @@
 Edit Parameter
 {% endblock %}
 {% block content %}
-
-    {{ avail_param.base_param.name }}
-
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.value.label }}
+<div>
+        <h3>Edit Parameter:</h3>
+        {{ avail_param.base_param.name }}
+        <br />
+        <br />
+        <form action="" method="post" class="pure-form">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.value.label }}
+                <br />
+                {{ form.value(size=32) }}
+            </div>
             <br />
-            {{ form.value(size=32) }}
-        </p>
-        <p>
-            {{ form.note.label }}
+            <div>
+                {{ form.note.label }}
+                <br />
+                {{ form.note(size=32) }}
+            </div>
             <br />
-            {{ form.note(size=32) }}
-        </p>
-        <p>
-            {{ form.delete.label }}
-            {{ form.delete }}
-
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-
+            <div>
+                {{ form.delete.label }}
+                {{ form.delete }}
+            </div>
+            <br />
+            <div>{{ form.submit() }}</div>
+        </form>
+</div>
 {% endblock %}
