@@ -21,14 +21,13 @@ def new_phone():
 
 @app.route('/edit_phone/<id>', methods = ['GET', 'POST'])
 def edit_phone(id):
+    form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
         flash('Invalid ID!')
         return redirect('/')
     else:
         phone = query.get()
-
-    form = EditPhoneForm()
     
     params = get_phone_params(phone)
     groups = get_phone_groups(phone)
@@ -55,6 +54,7 @@ def edit_phone(id):
             else:
                 flash('Updated - Phone: {}, MAC address: {}, Note: {}'.format(
                     form.name.data, form.mac_address.data, form.note.data))
+
                 # Handle base data
                 phone.name = form.name.data
                 phone.mac_address = form.mac_address.data

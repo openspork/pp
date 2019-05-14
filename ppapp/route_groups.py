@@ -31,20 +31,44 @@ def edit_group(id):
         group = query.get()
 
     params = get_group_params(group)
-
-    form.name.data = group.name
-    form.type.data = group.type.id
-    form.note.data = group.note
-
+    print('paramcount %s' % len(params))
+    
     form.avail_params.choices = get_form_choices(params[0], AvailParam)
     form.active_params.choices = get_form_choices(params[1], AvailParam)
 
     if request.method == 'POST':
         if form.validate_on_submit():
+
+            # Get data
+            new_param_ids = form.avail_params.data
+            prev_param_ids = form.active_params.data
+
+            if ( form.delete.data ):
+                flash('Deleted - Group: {}, Type: {}, Note: {}'.format(
+                    form.name.data, GroupType.get(GroupType.id == form.type.data).name, form.note.data))
+                # Recursive to delete foreign keys
+                group.delete_instance(recursive = True)
+            else:
+                flash('Updated - Group: {}, Type: {}, Note: {}'.format(
+                    form.name.data, GroupType.get(GroupType.id == form.type.data).name, form.note.data))
+
+                # Handle base data
+                group.name = form.name.data
+                group.type = GroupType.get(GroupType.id == form.type.data)
+                group.note = form.note.data
+                group.save()
+
+                # Proces group's children
+                add_params_to_group(new_param_ids, group)
+                remove_params_from_group(prev_param_ids, group)
+
             return redirect('/')
         else:
             flash('Invalid Input!')
-            flash(form.errors, form.type2.choices)
         return render_template('edit_group.j2', form = form)
+
     elif request.method == 'GET':
+        form.name.data = group.name
+        form.type.data = group.type.id
+        form.note.data = group.note
         return render_template('edit_group.j2', form = form)
