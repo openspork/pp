@@ -12,7 +12,7 @@ def get_group_params(group):
     avail_params = (AvailParam
             .select()
             .join(AvailParamGroups, JOIN.LEFT_OUTER)
-            .where(AvailParamGroups.id.not_in(active_params))
+            .where(AvailParam.id.not_in(active_params))
             .order_by(AvailParam.base_param.name)
             )
     return (avail_params, active_params)
