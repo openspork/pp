@@ -5,7 +5,7 @@ Edit Phone
 {% block content %}
 <div>
     <h3>Edit Phone:</h3>
-    <form action="" method="post" class="pure-form">
+    <form action="" method="post">
         {{ form.hidden_tag() }}
         <div class="pure-g">
             <div class="pure-u-1-4">
@@ -27,12 +27,12 @@ Edit Phone
             <div class="pure-u-1-4">
                 {{ form.avail_params.label }}
                 <br />
-                {{ form.avail_params(size="6") }}
+                {{ form.avail_params(size=6) }}
             </div>
             <div class="pure-u-1-4">
                 {{ form.active_params.label }}
                 <br />
-                {{ form.active_params(size="6") }}
+                {{ form.active_params(size=6) }}
             </div>
         </div>
         <br />

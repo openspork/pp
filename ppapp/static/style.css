@@ -6,3 +6,7 @@ table, th, td {
 .alert {
     color: red;
 }
+
+.size6 {
+	size: 6;
+}

@@ -4,12 +4,12 @@ Parameters
 {% endblock %}
 {% block content %}
 
-    <form action="" method="post" class="pure-form">
+    <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.param.label }}
             <br />
-            {{ form.param(size="16") }}
+            {{ form.param(size=24) }}
         </p>
         <p>
         	{{ form.value.label }}
