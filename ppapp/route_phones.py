@@ -31,38 +31,46 @@ def edit_phone(id):
     form = EditPhoneForm()
     
     # Populate our forms' dynamic data
-    active_params = (AvailParam
-            .select()
-            .join(AvailParamPhones)
-            .where(AvailParamPhones.phone == phone)
-            .order_by(AvailParam.base_param.name)
-            )
+    # active_params = (AvailParam
+    #         .select()
+    #         .join(AvailParamPhones)
+    #         .where(AvailParamPhones.phone == phone)
+    #         .order_by(AvailParam.base_param.name)
+    #         )
 
-    avail_params = (AvailParam
-            .select()
-            .join(AvailParamPhones, JOIN.LEFT_OUTER)
-            .where(AvailParam.id.not_in(active_params))
-            .order_by(AvailParam.base_param.name)
-            )
+    # avail_params = (AvailParam
+    #         .select()
+    #         .join(AvailParamPhones, JOIN.LEFT_OUTER)
+    #         .where(AvailParam.id.not_in(active_params))
+    #         .order_by(AvailParam.base_param.name)
+    #         )
     
-    active_groups = (Group
-            .select()
-            .join(PhoneGroups, JOIN.LEFT_OUTER)
-            .where(PhoneGroups.phone == phone)
-            .order_by(Group.name)
-            )
+    # active_groups = (Group
+    #         .select()
+    #         .join(PhoneGroups, JOIN.LEFT_OUTER)
+    #         .where(PhoneGroups.phone == phone)
+    #         .order_by(Group.name)
+    #         )
 
-    avail_groups = (Group
-            .select()
-            .join(PhoneGroups, JOIN.LEFT_OUTER)
-            .where(Group.id.not_in(active_groups))
-            .order_by(Group.name)
-            )
+    # avail_groups = (Group
+    #         .select()
+    #         .join(PhoneGroups, JOIN.LEFT_OUTER)
+    #         .where(Group.id.not_in(active_groups))
+    #         .order_by(Group.name)
+    #         )
 
-    form.avail_params.choices = get_form_choices(avail_params, AvailParam)
-    form.active_params.choices = get_form_choices(active_params, AvailParam)
-    form.avail_groups.choices = get_form_choices(avail_groups, Group)
-    form.active_groups.choices = get_form_choices(active_groups, Group)
+    params = get_phone_params(phone)
+    groups = get_phone_groups(phone)
+
+    form.avail_params.choices = get_form_choices(params[0], AvailParam)
+    form.active_params.choices = get_form_choices(params[1], AvailParam)
+    form.avail_groups.choices = get_form_choices(groups[0], Group)
+    form.active_groups.choices = get_form_choices(groups[1], Group)
+
+    # form.avail_params.choices = get_form_choices(avail_params, AvailParam)
+    # form.active_params.choices = get_form_choices(active_params, AvailParam)
+    # form.avail_groups.choices = get_form_choices(avail_groups, Group)
+    # form.active_groups.choices = get_form_choices(active_groups, Group)
 
     if request.method == 'POST':
         if form.validate_on_submit():

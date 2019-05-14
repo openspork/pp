@@ -1,37 +1,35 @@
 from ppapp.models import *
 
-# Not used
-# def get_phone_params(phone):
-#     active_params = (AvailParam
-#         .select()
-#         .join(AvailParamPhones)
-#         .where(AvailParamPhones.group == phone)
-#         .order_by(AvailParam.base_param.name)
-#         )
-#     avail_params = (AvailParam
-#             .select()
-#             .join(AvailParamPhones, JOIN.LEFT_OUTER)
-#             .where(AvailParam.id.not_in(active_params))
-#             .order_by(AvailParam.base_param.name)
-#             )
-#     return (avail_param, active_params)
+def get_phone_params(phone):
+    active_params = (AvailParam
+        .select()
+        .join(AvailParamPhones)
+        .where(AvailParamPhones.phone == phone)
+        .order_by(AvailParam.base_param.name)
+        )
+    avail_params = (AvailParam
+            .select()
+            .join(AvailParamPhones, JOIN.LEFT_OUTER)
+            .where(AvailParam.id.not_in(active_params))
+            .order_by(AvailParam.base_param.name)
+            )
+    return (avail_params, active_params)
 
-# Not used
-# def get_phone_groups(phone):
-#     active_groups = (Group
-#             .select()
-#             .join(PhoneGroups, JOIN.LEFT_OUTER)
-#             .where(PhoneGroups.phone == phone)
-#             .order_by(Group.name)
-#             )
+def get_phone_groups(phone):
+    active_groups = (Group
+            .select()
+            .join(PhoneGroups, JOIN.LEFT_OUTER)
+            .where(PhoneGroups.phone == phone)
+            .order_by(Group.name)
+            )
 
-#     avail_groups = (Group
-#             .select()
-#             .join(PhoneGroups, JOIN.LEFT_OUTER)
-#             .where(Group.id.not_in(active_groups))
-#             .order_by(Group.name)
-#             )    
-#     return(avail_groups, active_groups)
+    avail_groups = (Group
+            .select()
+            .join(PhoneGroups, JOIN.LEFT_OUTER)
+            .where(Group.id.not_in(active_groups))
+            .order_by(Group.name)
+            )    
+    return(avail_groups, active_groups)
 
 def get_group_params(group):
     active_params = (AvailParam
@@ -47,8 +45,6 @@ def get_group_params(group):
             .order_by(AvailParam.base_param.name)
             )
     return (avail_params, active_params)
-
-
 
 def add_params_to_phone(new_param_ids, phone):
     for new_param_id in new_param_ids:
