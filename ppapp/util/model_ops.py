@@ -72,7 +72,7 @@ def add_params_to_group(new_param_ids, group):
 def remove_params_from_group(prev_param_ids, group):
     for prev_param_id in prev_param_ids:
         avail_param = AvailParam.get(AvailParam.id == prev_param_id)
-        delete_query = (AvailParam
+        delete_query = (AvailParamGroups
                 .delete()
                 .where((AvailParamGroups.group == group) & (AvailParamGroups.avail_param == avail_param))
                 )
