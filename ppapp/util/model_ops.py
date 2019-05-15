@@ -69,7 +69,8 @@ def get_group_groups(group, relationship):
     avail_groups = (Group
             .select()
             .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
-            .where(Group.id.not_in(active_groups))
+            # Omit children & ourselves
+            .where(Group.id.not_in(active_groups) & (Group.id != group.id))
             .order_by(Group.name)
             )    
     return(avail_groups, active_groups)
