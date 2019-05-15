@@ -30,10 +30,6 @@ def edit_group(id):
     else:
         group = query.get()
 
-    # To remove
-    query = AvailParam.select()
-    print([avail_param.base_param.name for avail_param in query])
-
     params = get_group_params(group)
 
     form.avail_params.choices = get_form_choices(params[0], AvailParam)

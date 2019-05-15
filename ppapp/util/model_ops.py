@@ -7,8 +7,6 @@ def get_group_params(group):
             .where(AvailParamGroups.group == group)
             .order_by(AvailParam.base_param.name)
             )
-    for active_param in active_params:
-        print('active params %s', active_params)
     avail_params = (AvailParam
             .select()
             .join(AvailParamGroups, JOIN.LEFT_OUTER)

@@ -1,6 +1,6 @@
-table, th, td {
+/*table, th, td {
     border: 1px solid black !important;
-    border-spacing: 5px;
+    border-spacing:*/ 5px;
 }
 
 .alert {

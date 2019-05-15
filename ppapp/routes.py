@@ -13,7 +13,8 @@ def index():
     avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
     # TODO: It would be nice to order by type, then name"
     groups = Group.select().order_by(Group.name)
-    return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups)
+    group_types = GroupType.select().order_by(GroupType.precedence)
+    return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups, group_types = group_types)
 
 @app.route('/config/<mac_address>')
 def config(mac_address):

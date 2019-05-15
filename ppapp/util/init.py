@@ -20,22 +20,22 @@ def init_db():
     query = GroupType.select().where(GroupType.name == 'Client')
 
     if not query.exists():
-    	GroupType.create(name = 'Client', note = 'Group for client level config')
+    	GroupType.create(name = 'Client', precedence = 0, note = 'Group for client level config')
 
     query = GroupType.select().where(GroupType.name == 'Site')
 
     if not query.exists():
-    	GroupType.create(name = 'Site', note = 'Group for site level config')
+    	GroupType.create(name = 'Site', precedence = 5, note = 'Group for site level config')
 
     query = GroupType.select().where(GroupType.name == 'Model')
 
     if not query.exists():
-    	GroupType.create(name = 'Model', note = 'Group for phone model level config')
+    	GroupType.create(name = 'Model', precedence = 10, note = 'Group for phone model level config')
 
     query = GroupType.select().where(GroupType.name == 'Addon')
 
     if not query.exists():
-    	GroupType.create(name = 'Addon', note = 'Group for addon unit level config')
+    	GroupType.create(name = 'Addon', precedence = 15, note = 'Group for addon unit level config')
 
     if ( len(ParamLevel.select()) == 0 ):
         print('populating paramlevels')

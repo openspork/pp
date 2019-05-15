@@ -8,11 +8,12 @@ class BaseModel(Model):
 
 class Phone(BaseModel):
     name = CharField()
-    mac_address = CharField()
+    mac_address = CharField(unique = True)
     note = CharField()
 
 class GroupType(BaseModel):
     name = CharField()
+    precedence = IntegerField(unique = True)
     note = CharField()
 
 class Group(BaseModel):

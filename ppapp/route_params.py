@@ -35,7 +35,7 @@ def edit_param(id):
         if form.validate_on_submit():
             if ( form.delete.data ):
                 flash('Deleted - Parameter: {}'.format(avail_param.base_param.name))
-                avail_param.delete_instance()
+                avail_param.delete_instance(recursive = True)
             else:
                 flash('Updated - Parameter: {}'.format(avail_param.base_param.name))
                 # Handle base data
