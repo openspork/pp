@@ -2,7 +2,8 @@ from flask import flash, send_from_directory, render_template, request, redirect
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
-from ppapp.util.model_ops import *
+from ppapp.util.param_ops import *
+from ppapp.util.group_ops import *
 
 @app.route('/new_group', methods = ['GET', 'POST'])
 def new_group():
@@ -47,8 +48,18 @@ def edit_group(id):
         if form.validate_on_submit():
 
             # Get data
+            # Get Params
             new_param_ids = form.avail_params.data
             prev_param_ids = form.active_params.data
+
+            # Get parents
+            new_parent_ids = form.avail_parents.data
+            prev_parent_ids = form.active_parents.data
+
+            # Get children
+            new_child_ids = form.avail_children.data
+            prev_child_ids = form.active_children.data
+
 
             if ( form.delete.data ):
                 flash('Deleted - Group: {}, Type: {}, Note: {}'.format(
@@ -65,9 +76,11 @@ def edit_group(id):
                 group.note = form.note.data
                 group.save()
 
-                # Proces group's children
+                # Process group's children
                 add_params_to_group(new_param_ids, group)
                 remove_params_from_group(prev_param_ids, group)
+                add_groups_to_group(new_child_ids, group, 'children')
+                add_groups_to_group(new_parent_ids, group, 'parents')
 
             return redirect('/')
         else:
