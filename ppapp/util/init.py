@@ -12,8 +12,8 @@ def init_db():
     				ParamLevel,
     				BaseParam,
     				AvailParam,
-    				AvailParamPhones,
-    				AvailParamGroups],
+    				PhoneAvailParams,
+    				GroupAvailParams],
     				safe = True)
 
     # Create our group types
