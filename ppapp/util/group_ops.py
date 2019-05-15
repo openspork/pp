@@ -64,14 +64,32 @@ def remove_groups_from_phone(prev_group_ids, phone):
                 )
         delete_query.execute()
 
-def add_groups_to_group(group_ids, group, relationship):
+def add_groups_to_group(new_group_ids, group, relationship):
 	if relationship == 'children':
-		for child_group_id in group_ids:
-			child_group = Group.get(Group.id == child_group_id)
-			GroupGroups.create(parent = group, child = child_group)
+		for new_child_group_id in new_group_ids:
+			new_child_group = Group.get(Group.id == new_child_group_id)
+			GroupGroups.create(parent = group, child = new_child_group)
 			group.save()
 	elif relationship =='parents':
-		for parent_group_id in group_ids:
-			parent_group = Group.get(Group.id == parent_group_id)
-			GroupGroups.create(parent = parent_group, child = group)
+		for new_parent_group_id in new_group_ids:
+			new_parent_group = Group.get(Group.id == new_parent_group_id)
+			GroupGroups.create(parent = new_parent_group, child = group)
 			group.save()
+
+def remove_groups_from_group(prev_group_ids, group, relationship):
+	if relationship == 'children':
+		for child_group_id in prev_group_ids:
+			child_group = Group.get(Group.id == child_group_id)
+			delete_query =(GroupGroups
+					.delete()
+					.where((GroupGroups.parent == group) & (GroupGroups.child == child_group))
+					)
+			delete_query.execute()
+	elif relationship == 'parents':
+		for parent_group_id in prev_group_ids:
+			parent_group = Group.get(Group.id == parent_group_id)
+			delete_query =(GroupGroups
+					.delete()
+					.where((GroupGroups.child == group) & (GroupGroups.parent == parent_group))
+					)
+			delete_query.execute()

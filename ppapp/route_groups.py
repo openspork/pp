@@ -79,8 +79,12 @@ def edit_group(id):
                 # Process group's children
                 add_params_to_group(new_param_ids, group)
                 remove_params_from_group(prev_param_ids, group)
+
                 add_groups_to_group(new_child_ids, group, 'children')
                 add_groups_to_group(new_parent_ids, group, 'parents')
+
+                remove_groups_from_group(prev_child_ids, group, 'children')
+                remove_groups_from_group(prev_parent_ids, group, 'parents')
 
             return redirect('/')
         else:
