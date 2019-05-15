@@ -8,6 +8,7 @@ def init_db():
     db.create_tables([Phone,
     				Group,
                     GroupType,
+                    GroupGroups,
                     PhoneGroups,
     				ParamLevel,
     				BaseParam,

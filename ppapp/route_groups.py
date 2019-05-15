@@ -31,9 +31,13 @@ def edit_group(id):
         group = query.get()
 
     params = get_group_params(group)
+    children = get_group_groups(group, 'children')
 
     form.avail_params.choices = get_form_choices(params[0], AvailParam)
     form.active_params.choices = get_form_choices(params[1], AvailParam)
+
+    form.avail_children.choices = get_form_choices(children[0], Group)
+    form.active_children.choices = get_form_choices(children[1], Group)
 
     if request.method == 'POST':
         if form.validate_on_submit():

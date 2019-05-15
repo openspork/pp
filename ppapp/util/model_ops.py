@@ -46,6 +46,34 @@ def get_phone_groups(phone):
             )    
     return(avail_groups, active_groups)
 
+def get_group_groups(group, relationship):
+    if relationship == 'parents':
+        active_groups = (Group
+                .select()
+            # If we are looking for parents, we are matching on child
+            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
+            .where(GroupGroups.child == group)
+            .order_by(Group.name)
+                )
+    elif relationship == 'children':
+        active_groups = (Group
+            .select()
+            # If we are looking for children
+            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.child == Group.id))
+            # We are matching on parent
+            .where(GroupGroups.parent == group)
+            .order_by(Group.name)
+            )
+    # Avail is the inverse of whatever is the above
+    # Need to check for circular dependency here or elsewhere
+    avail_groups = (Group
+            .select()
+            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
+            .where(Group.id.not_in(active_groups))
+            .order_by(Group.name)
+            )    
+    return(avail_groups, active_groups)
+
 def add_params_to_phone(new_param_ids, phone):
     for new_param_id in new_param_ids:
         avail_param = AvailParam.get(AvailParam.id == new_param_id)

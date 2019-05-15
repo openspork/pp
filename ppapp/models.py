@@ -21,6 +21,10 @@ class Group(BaseModel):
     name = CharField()
     note = CharField()
 
+class GroupGroups(BaseModel):
+    parent = ForeignKeyField(Group, null = True)
+    child = ForeignKeyField(Group, null = True)
+
 class PhoneGroups(BaseModel):
     phone = ForeignKeyField(Phone)
     group = ForeignKeyField(Group)
@@ -46,4 +50,3 @@ class PhoneAvailParams(BaseModel):
 class GroupAvailParams(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
     group = ForeignKeyField(Group)
-

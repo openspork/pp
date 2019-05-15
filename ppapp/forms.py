@@ -64,4 +64,5 @@ class NewGroupForm(GroupForm):
     pass
 
 class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm):
-    pass
+    avail_children = SelectMultipleField('Children', coerce = int)
+    active_children = SelectMultipleField('Children', coerce = int)
