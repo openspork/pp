@@ -5,7 +5,7 @@ Config file for:
 
 {% for key, value in rsop.items() %}
 
-{{ key }} = {{ value[0] }} from group <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>group</a> at depth {{ value[2] }}
+{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>group</a> at depth {{ value[2] }}
 
 <br />
 
