@@ -6,6 +6,7 @@ from ppapp.models import *
 from ppapp.route_phones import *
 from ppapp.route_params import *
 from ppapp.route_groups import *
+from ppapp.util.rsop import *
 
 @app.route('/')
 def index():
@@ -21,7 +22,11 @@ def config(mac_address):
     query = Phone.select().where(Phone.mac_address == mac_address)
     if not query.exists():
         mac_address = 'not found!'
-    return render_template('config.j2', mac_address = mac_address)
+    else:
+        phone = query.get()
+        rsop = gen_rsop(phone)
+
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop)
 
 @app.route('/favicon.ico')
 def favicon():
