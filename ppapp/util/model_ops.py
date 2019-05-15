@@ -66,15 +66,33 @@ def get_group_groups(group, relationship):
             )
     # Avail is the inverse of whatever is the above
     # Need to check for circular dependency here or elsewhere
+
+    # Get our parents - where target's child is us
+    # Need to select on GROUP, not GROUPGROUPS!
+    parents = GroupGroups.select().where(GroupGroups.child == group.id)
+    # Get our siblings - where target's is in our parents
+    siblings = (GroupGroups.select()
+            .where(GroupGroups.parent.in_(parents)))
+
+    for parent in parents:
+        print('parent %s' % parent)
+
+    for sibling in siblings:
+        print('sibling %s' % sibling)
+
     avail_groups = (Group
             .select()
             .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
             # Omit siblings, children & ourselves
             .where((Group.id != group.id) & # Omit ourselves
-                    Group.id.not_in(active_groups) & # Omit children
-                    Group.id.not_in( # Omit parents
-                        GroupGroups.select().where(GroupGroups.child == group.id)) # (Where we are not a child)
-                )
+                    (Group.id.not_in(active_groups)) & # Omit children
+                    (Group.id.not_in(parents)) & # Omit parents (where child is us)
+                    (Group.id.not_in(siblings))
+                   ) 
+
+
+                        
+                
             .order_by(Group.name)
             )    
     return(avail_groups, active_groups)
