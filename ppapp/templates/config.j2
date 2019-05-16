@@ -3,13 +3,33 @@ Config file for:
 <br />
 <br />
 
+
+{# key = param, value = (value, depth, overrides) #}
 {% for key, value in rsop.items() %}
-
-{% if value[2] == 0 %}
-	{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>phone</a> at depth {{ value[2] }}
-{% else %}
-	{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>group</a> at depth {{ value[2] }}
-{% endif %}
-<br />
-
+	{# if at depth 0, this is a phone #}
+	{% if value[2] == 0 %} 
+		{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>phone</a> at depth {{ value[2] }}
+		{% if value[3] | length > 0 %}
+			<br />
+			Overrode:
+			<br />
+				{% for overridden_value, overridden_group, overriden_depth in value[3] %}
+					{{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>group</a> at depth {{ overriden_depth }}
+					<br />
+				{% endfor %}
+		{% endif %}
+	{% else %} {# if > depth 0, this is a group #}
+		{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>group</a> at depth {{ value[2] }}
+		{% if value[3] | length > 0 %}
+			<br />
+			Overrode:
+			<br />
+				{% for overridden_value, overridden_group, overriden_depth in value[3] %}
+					{{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>group</a> at depth {{ overriden_depth }}
+					<br />
+				{% endfor %}
+		{% endif %}
+	{% endif %}
+	<br />
+	<br />
 {% endfor %}
