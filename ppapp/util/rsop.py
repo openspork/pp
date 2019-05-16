@@ -13,7 +13,6 @@ def drill(group, rsop, depth):
             # Add to our dict
             rsop[param.base_param.name] = (param.value, group, depth, [])
         else:
-            # TODO: add logic to prefer based on type
             # Compare depth of saved param to current
             if depth > rsop[param.base_param.name][2] :
                 # If deeper, add as an override
@@ -26,6 +25,7 @@ def drill(group, rsop, depth):
                 if group.type.precedence > existing_group.type.precedence:
                     print('Higher priority dupe!')
                     overridden_param_overrides = rsop[param.base_param.name][3] # Save existing overrides
+                    # Format param to override for storage
                     overridden_param = (rsop[param.base_param.name][0], rsop[param.base_param.name][1].id, rsop[param.base_param.name][2])
                     overridden_param_overrides.append(overridden_param) # Concatenate previously overridden params with current
                     rsop[param.base_param.name] = (param.value, group, depth, overridden_param_overrides) # Update param

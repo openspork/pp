@@ -26,7 +26,7 @@ def config(mac_address):
         phone = query.get()
         rsop = gen_rsop(phone)
 
-    return render_template('config.j2', mac_address = mac_address, rsop = rsop)
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group)
 
 @app.route('/favicon.ico')
 def favicon():
