@@ -24,7 +24,6 @@ def rsop(mac_address):
         mac_address = 'not found!'
     else:
         phone = query.get()
-        # TODO: Introduce try statement
         try:
             rsop = gen_rsop(phone)
         except Exception as e:

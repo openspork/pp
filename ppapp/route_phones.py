@@ -5,6 +5,7 @@ from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
+from ppapp.util.rsop import *
 
 @app.route('/new_phone', methods = ['GET', 'POST'])
 def new_phone():
@@ -72,7 +73,12 @@ def edit_phone(id):
                 add_groups_to_phone(new_group_ids, phone)
                 remove_params_from_phone(prev_param_ids, phone)
                 remove_groups_from_phone(prev_group_ids, phone)
-                
+
+                # Validate RSoP
+                try:
+                    rsop = gen_rsop(phone)
+                except Exception as e:
+                    flash(str(e))
             return redirect('/')
         else:
             flash_errors(form)
