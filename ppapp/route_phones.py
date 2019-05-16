@@ -11,9 +11,13 @@ def new_phone():
     form = NewPhoneForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
-                    form.name.data, form.mac_address.data, form.note.data))
-            Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
+            query = Phone.select().where(Phone.mac_address == form.mac_address.data)
+            if query.exists():
+                flash('Duplicate MAC Address!')
+            else:
+                flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
+                        form.name.data, form.mac_address.data, form.note.data))
+                Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
             return redirect('/')
         else:
             flash_errors(form)
