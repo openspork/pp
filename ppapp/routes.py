@@ -17,8 +17,8 @@ def index():
     group_types = GroupType.select().order_by(GroupType.precedence)
     return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups, group_types = group_types)
 
-@app.route('/config/<mac_address>')
-def config(mac_address):
+@app.route('/rsop/<mac_address>')
+def rsop(mac_address):
     query = Phone.select().where(Phone.mac_address == mac_address)
     if not query.exists():
         mac_address = 'not found!'
