@@ -8,12 +8,13 @@ def init_db():
     db.create_tables([Phone,
     				Group,
                     GroupType,
+                    GroupGroups,
                     PhoneGroups,
     				ParamLevel,
     				BaseParam,
     				AvailParam,
-    				AvailParamPhones,
-    				AvailParamGroups],
+    				PhoneAvailParams,
+    				GroupAvailParams],
     				safe = True)
 
     # Create our group types

@@ -6,6 +6,7 @@ from ppapp.models import *
 from ppapp.route_phones import *
 from ppapp.route_params import *
 from ppapp.route_groups import *
+from ppapp.util.rsop import *
 
 @app.route('/')
 def index():
@@ -16,12 +17,20 @@ def index():
     group_types = GroupType.select().order_by(GroupType.precedence)
     return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups, group_types = group_types)
 
-@app.route('/config/<mac_address>')
-def config(mac_address):
+@app.route('/rsop/<mac_address>')
+def rsop(mac_address):
     query = Phone.select().where(Phone.mac_address == mac_address)
     if not query.exists():
         mac_address = 'not found!'
-    return render_template('config.j2', mac_address = mac_address)
+    else:
+        phone = query.get()
+        # TODO: Introduce try statement
+        try:
+            rsop = gen_rsop(phone)
+        except Exception as e:
+            flash(str(e))
+            return redirect('/')
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group, Phone = Phone)
 
 @app.route('/favicon.ico')
 def favicon():
