@@ -11,8 +11,7 @@
 </head>
     <body>
         <div class="pure-g">
-            <div id='header' class="pure-u-1-1" >
-                <div class="pure-menu pure-menu-horizontal">
+            <div id='header' class="pure-u-1-1 pure-menu pure-menu-horizontal" >
                     <!-- <a href="#" class="pure-menu-heading pure-menu-link">PP</a> -->
                     <ul class="pure-menu-list">
                         <li class="pure-menu-item"><a href = '{{ url_for('index') | safe }}'> Index</a></li>
@@ -20,33 +19,31 @@
                         <li class="pure-menu-item"><a href = '{{ url_for('new_group') | safe }}'> New Group</a></li>
                         <li class="pure-menu-item"><a href = '{{ url_for('new_param') | safe }}'> New Param</a></li>
                     </ul>
-                </div>
             </div>
         </div>
+        <br/>
         <div class="pure-g">
-            <div id='body'>
-                <div id='left_content' class="pure-u-1-1">
+            <div id='body' class="pure-u-1-1">
                     <h1>Hey it's me ur pp</h1>
                     {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    <div>
-                        <b> Update commited:</b>
-                        <ul class='alert'>
-                            {% for message in messages %}
-                            <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
+                        {% if messages %}
+                        <div class="pure-u-1-1">
+                            <b> Update commited:</b>
+                            <ul class='alert'>
+                                {% for message in messages %}
+                                <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
                     {% endwith %}
                     {% block content %}
                     {% endblock %}
-                </div>
             </div>
         </div>
+        <br/>
         <div class="pure-g">
             <div id='footer' class="pure-u-1-1">
-                <br>
                 &copy; 2019
             </div>
         </div>
