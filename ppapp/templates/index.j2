@@ -13,6 +13,7 @@ Index
 			<th>MAC Address</th>
 			<th>Note</th>
 			<th><a href="{{ url_for('new_phone') | safe }}">New</a></th>
+			<th>Config</th>
 
 		</tr>
 			{% for phone in phones %}
@@ -22,6 +23,7 @@ Index
 				<td>{{ phone.mac_address }}</td>
 				<td>{{ phone.note }}</td>
 				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
+				<td><a href="{{ url_for('config', mac_address=phone.mac_address ) | safe }}">View</a></td>
 			</tr>
 			{% endfor %}
 	</table>
