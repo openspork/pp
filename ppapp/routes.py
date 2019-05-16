@@ -24,6 +24,7 @@ def config(mac_address):
         mac_address = 'not found!'
     else:
         phone = query.get()
+        # TODO: Introduce try statement
         rsop = gen_rsop(phone)
 
     return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group)
