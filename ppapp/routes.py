@@ -30,7 +30,7 @@ def config(mac_address):
         except Exception as e:
             flash(str(e))
             return redirect('/')
-    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group)
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group, Phone = Phone)
 
 @app.route('/favicon.ico')
 def favicon():
