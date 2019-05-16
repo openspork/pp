@@ -16,7 +16,7 @@ def new_group():
             flash('New Group - Name: {}, Type: {}'.format(form.name.data, grouptype.name))
             return redirect('/')
         else:
-            flash('Invalid Input!')
+            flash_errors(form)
             return render_template('new_group.j2', form = form)
     elif request.method == 'GET':
         return render_template('new_group.j2', form = form)
@@ -88,7 +88,7 @@ def edit_group(id):
 
             return redirect('/')
         else:
-            flash('Invalid Input!')
+            flash_errors(form)
         return render_template('edit_group.j2', form = form)
 
     elif request.method == 'GET':

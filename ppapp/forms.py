@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, SelectField, SelectMultipleField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, MacAddress
 # Careful, ppapp.models will clobber wtforms' BooleanField!
 from ppapp.models import BaseParam, AvailParam, Group, GroupType
 
@@ -20,7 +20,7 @@ def get_form_choices(query, Model):
 
 class PhoneForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    mac_address = StringField('MAC Address', validators=[DataRequired()])
+    mac_address = StringField('MAC Address', validators=[DataRequired(), MacAddress()])
     note = StringField('Note')
     submit = SubmitField('Submit')
 
@@ -56,7 +56,7 @@ class EditParamForm(ParamForm, DeleteForm):
 
 class GroupForm(FlaskForm):
     type = SelectField('Type', choices = get_form_choices(GroupType.select().order_by(GroupType.name), GroupType), coerce = int)
-    name = StringField('Name')
+    name = StringField('Name', validators=[DataRequired()])
     note = StringField('Note')
     submit = SubmitField('Submit')
 

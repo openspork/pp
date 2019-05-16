@@ -4,6 +4,7 @@ from ppapp.forms import *
 from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
+from ppapp.util.view_ops import *
 
 @app.route('/new_phone', methods = ['GET', 'POST'])
 def new_phone():
@@ -15,7 +16,7 @@ def new_phone():
             Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
             return redirect('/')
         else:
-            flash('Invalid Input!')
+            flash_errors(form)
             return render_template('new_phone.j2', form = form)
     elif request.method == 'GET':
         return render_template('new_phone.j2', form = form)
@@ -70,7 +71,7 @@ def edit_phone(id):
                 
             return redirect('/')
         else:
-            flash('Invalid Input!')
+            flash_errors(form)
         return render_template('edit_phone.j2', form = form)
 
     elif request.method == 'GET':
