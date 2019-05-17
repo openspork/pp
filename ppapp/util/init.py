@@ -3,7 +3,10 @@ from ppapp.models import *
 
 def init_db():
     print('db init')
-    db.connect()
+    try:
+        db.connect()
+    except Exception as e:
+        print(str(e))
 
     db.create_tables([Phone,
     				Group,
@@ -39,7 +42,9 @@ def init_db():
     if not query.exists():
     	GroupType.create(name = 'Addon', precedence = 15, note = 'Group for addon unit level config')
 
-    if ( len(ParamLevel.select()) == 0 ):
-        print('populating paramlevels')
-        build_params()
+    # if ( len(ParamLevel.select()) == 0 ):
+    #     print('populating paramlevels')
+    #     build_params()
+    
+    build_params()
     db.close()

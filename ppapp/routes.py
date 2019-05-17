@@ -8,6 +8,7 @@ from ppapp.route_params import *
 from ppapp.route_groups import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
+from ppapp.util.init import init_db
 
 
 @app.route('/')
@@ -19,9 +20,9 @@ def index():
     group_types = GroupType.select().order_by(GroupType.precedence)
     return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups, group_types = group_types)
 
-@app.route('/test')
-def test():
-    get_dict()
+@app.route('/init')
+def init():
+    init_db()
 
     return 'string'
 

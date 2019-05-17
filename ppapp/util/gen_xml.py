@@ -9,3 +9,4 @@ dummy_dict['param2'] = 2
 dummy_dict['param3'] = 3
 
 def get_dict():
+	pass
