@@ -9,10 +9,11 @@ def find_node(parent, d):
             new_param_level = ParamLevel.create( name = key )
             print(new_param_level.name)
         elif parent != None:
-            new_param_level = ParamLevel.create( name = parent.name )
+            print(parent.name)
+            new_param_level = ParamLevel.create( name = key )
             ParamLevelParamLevels.create(parent = parent, child = new_param_level)
 
-        print('Evaluating %s : %s' % (key, value))
+        print('Evaluating %s : %s' % (key, str(value)[:32]))
 
         if ( isinstance(value, dict) ):
             print('Value is a dictionary!')
@@ -28,4 +29,9 @@ def build_params():
     with open('./configs/site.cfg') as fd:
         content = fd.read()
         doc = xmltodict.parse(content)
+        #try:
+        print('\n\n')
         find_node(None, doc)
+        print('\n\ndone')
+        #except Exception as e:
+        #    print(e)
