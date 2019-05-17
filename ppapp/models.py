@@ -30,7 +30,7 @@ class PhoneGroups(BaseModel):
     group = ForeignKeyField(Group)
 
 class ParamLevel(BaseModel):
-    name = CharField(unique = True, null = True)
+    name = CharField(null = True)#, unique = True,)
 
 class BaseParam(BaseModel):
     param_level = ForeignKeyField(ParamLevel, backref = 'base_params')
