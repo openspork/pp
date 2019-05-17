@@ -32,13 +32,13 @@ def rsop(mac_address):
         mac_address = 'not found!'
     else:
         phone = query.get()
-        try:
-            rsop = gen_rsop(phone)
-            xml = gen_xml(rsop)
-        except Exception as e:
-            flash(str(e))
-            return redirect('/')
-    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group, Phone = Phone, xml = xml)
+        #try:
+        rsop = gen_rsop(phone)
+        xml = gen_xml(rsop)
+        #except Exception as e:
+        #flash(str(e))
+        #return redirect('/')
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop, BaseParam = BaseParam, Group = Group, Phone = Phone, xml = xml)
 
 @app.route('/favicon.ico')
 def favicon():

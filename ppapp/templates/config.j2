@@ -7,22 +7,22 @@ Resultant Set of Policy for:
 	{% for key, value in rsop.items() %}
 		{# if at depth 0, this is a phone #}
 		{% if value[2] == 0 %} 
-			<li>{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>{{ Phone.get(Phone.id == value[1] ).name }}</a> at depth {{ value[2] }}
+			<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>{{ Phone.get(Phone.id == value[1] ).name }}</a> at depth {{ value[2] }}
 			{% if value[3] | length > 0 %} </li>
 				Overrode:
 				<ul>
 					{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-						<li>{{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }}</li>
+						<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }}</li>
 					{% endfor %}
 				</ul>
 			{% endif %}
 		{% else %} {# if > depth 0, this is a group #}
-			<li>{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>{{ Group.get(Group.id == value[1] ).name }}</a> at depth {{ value[2] }}
+			<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>{{ Group.get(Group.id == value[1] ).name }}</a> at depth {{ value[2] }}
 			{% if value[3] | length > 0 %}</li>
 				Overrode:
 				<ul>
 					{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-						<li> {{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }} </li>
+						<li> {{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }} </li>
 					{% endfor %}
 				</ul>
 			{% endif %}
