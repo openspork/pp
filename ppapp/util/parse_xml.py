@@ -4,13 +4,12 @@ from ppapp.models import *
 
 def find_node(parent, d):
     for key, value in d.items():
+        new_param_level = ParamLevel.create( name = key )
         if parent == None: # This is the root node
             print('Root node: %s' % key)
-            new_param_level = ParamLevel.create( name = key )
-            print(new_param_level.name)
+
         elif parent != None:
-            print(parent.name)
-            new_param_level = ParamLevel.create( name = key )
+            print('Creating parent / child mapping! %s -> %s' % (parent.name, new_param_level.name))
             ParamLevelParamLevels.create(parent = parent, child = new_param_level)
 
         print('Evaluating %s : %s' % (key, str(value)[:32]))
@@ -23,15 +22,14 @@ def find_node(parent, d):
             print('Value is not a dictionary!  Create a leaf: %s = %s ' % (key, value))
             BaseParam.create(param_level = new_param_level, name = key, default_value = value, note = None)
 
-
 def build_params():
     print('building params')
     with open('./configs/site.cfg') as fd:
         content = fd.read()
         doc = xmltodict.parse(content)
         #try:
-        print('\n\n')
+        print('\n')
         find_node(None, doc)
-        print('\n\ndone')
+        print('\ndone')
         #except Exception as e:
         #    print(e)

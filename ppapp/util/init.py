@@ -42,9 +42,9 @@ def init_db():
     if not query.exists():
     	GroupType.create(name = 'Addon', precedence = 15, note = 'Group for addon unit level config')
 
-    # if ( len(ParamLevel.select()) == 0 ):
-    #     print('populating paramlevels')
-    #     build_params()
+    if ( len(ParamLevel.select()) == 0 ):
+        print('populating paramlevels')
+        build_params()
     
     build_params()
     db.close()
