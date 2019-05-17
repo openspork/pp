@@ -10,7 +10,6 @@ from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
 from ppapp.util.init import init_db
 
-
 @app.route('/')
 def index():
     phones = Phone.select()
@@ -23,8 +22,8 @@ def index():
 @app.route('/init')
 def init():
     init_db()
-
-    return 'string'
+    flash('DB Init Performed')
+    return redirect('/')
 
 @app.route('/rsop/<mac_address>')
 def rsop(mac_address):
@@ -35,10 +34,11 @@ def rsop(mac_address):
         phone = query.get()
         try:
             rsop = gen_rsop(phone)
+            xml = gen_xml(rsop)
         except Exception as e:
             flash(str(e))
             return redirect('/')
-    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group, Phone = Phone)
+    return render_template('config.j2', mac_address = mac_address, rsop = rsop, Group = Group, Phone = Phone, xml = xml)
 
 @app.route('/favicon.ico')
 def favicon():
