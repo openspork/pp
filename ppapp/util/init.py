@@ -11,6 +11,7 @@ def init_db():
                     GroupGroups,
                     PhoneGroups,
     				ParamLevel,
+                    ParamLevelParamLevels,
     				BaseParam,
     				AvailParam,
     				PhoneAvailParams,
