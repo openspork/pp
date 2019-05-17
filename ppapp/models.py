@@ -38,6 +38,10 @@ class BaseParam(BaseModel):
     default_value = CharField()
     note = CharField(null = True)
 
+class ParamLevelParamLevels(BaseModel):
+    parent = ForeignKeyField(ParamLevel)
+    child = ForeignKeyField(ParamLevel)
+
 class AvailParam(BaseModel):
     base_param = ForeignKeyField(BaseParam, backref = 'avail_params', null = True)
     value = CharField()

@@ -7,6 +7,8 @@ from ppapp.route_phones import *
 from ppapp.route_params import *
 from ppapp.route_groups import *
 from ppapp.util.rsop import *
+from ppapp.util.gen_xml import *
+
 
 @app.route('/')
 def index():
@@ -16,6 +18,12 @@ def index():
     groups = Group.select().order_by(Group.name)
     group_types = GroupType.select().order_by(GroupType.precedence)
     return render_template('index.j2', phones = phones, avail_params = avail_params, groups = groups, group_types = group_types)
+
+@app.route('/test')
+def test():
+    get_dict()
+
+    return 'string'
 
 @app.route('/rsop/<mac_address>')
 def rsop(mac_address):
