@@ -25,6 +25,12 @@ def get_branch_dict(params):
 
     return param_levels
 
+    # TODO: convert Models into strings
+def sanitize(param_branch):
+    pass
+
+
+
 def build_dict(current, param_branch):
     print(f'Found root node {current.name}')
     temp_dict = {}
@@ -40,7 +46,7 @@ def build_dict(current, param_branch):
         result = query.get()
         temp_dict = {result.name: temp_dict}
         if i == 1:
-            temp_dict[current] = param_branch
+            temp_dict[current] = sanitize(param_branch)
         print(temp_dict)
         query = (ParamLevel
             .select()
