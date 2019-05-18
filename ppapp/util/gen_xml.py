@@ -25,9 +25,8 @@ def get_branch_dict(params):
 	return param_levels
 
 def build_dict(current):
-    #print(f'Found root node {current.name}')
+    print(f'Found root node {current.name}')
     temp_dict = {}
-    temp_pointer = temp_dict
     query = (ParamLevel
             .select()
             # If we are looking for parents, we are matching on child
@@ -36,15 +35,15 @@ def build_dict(current):
             )
     while query.exists():
         result = query.get()
-        temp_pointer[result.name] = {}
-        temp_pointer = temp_pointer[result.name]
+        temp_dict = {result.name: temp_dict}
+        print(temp_dict)
         query = (ParamLevel
             .select()
             # If we are looking for parents, we are matching on child
             .join(ParamLevelParamLevels, JOIN.LEFT_OUTER, on = (ParamLevelParamLevels.parent == ParamLevel.id))
             .where(ParamLevelParamLevels.child == result)
             )
-    print(temp_dict)
+    return temp_dict
 
 def gen_xml(rsop):
 	# Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
@@ -63,7 +62,6 @@ def gen_xml(rsop):
 		# for each param level, replace it with full surrounding dict
 		for param_branch_key in param_branches.keys():
 			branch_dict = build_dict(param_branch_key)
-			print(branch_dict)
-			xmls.append(branch_dict)
-
+			xml = dicttoxml(branch_dict['polycomConfig'], custom_root='polycomConfig', attr_type=False).decode('utf-8')
+			xmls.append(xml)
 	return(xmls)
