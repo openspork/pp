@@ -1,30 +1,31 @@
 from peewee import *
 from dicttoxml import dicttoxml
 from ppapp.models import *
+import xml.dom.minidom
 
 def get_branch_dict(params):
-	# Create a dict of dicts with each ParamLevel as key
-	param_levels = {}
-	for param in params:
-		param_level = param[0]
-		base_param = param[1]
-		avail_param_value = param[2]
-		#print('\nProcessing param_level: "%s" base_param: "%s" avail_value: "%s"' % (param_level.name, base_param.name, avail_param_value))
-		
-		param_levels[param_level] = {} # Initiate empty dict
-		#print('Array created for param level: "%s"' % param_level.name )
-		# Populate the arrays
-		for param2 in params:
-			# if param level is the key, append it to the array
-			param_level2 = param2[0]
-			if param_level == param_level2:
-				base_param = param2[1]
-				param_value = param2[2]
-				param_levels[param_level][base_param] = param_value # Add our value with base as key
+    # Create a dict of dicts with each ParamLevel as key
+    param_levels = {}
+    for param in params:
+        param_level = param[0]
+        base_param = param[1]
+        avail_param_value = param[2]
+        #print('\nProcessing param_level: "%s" base_param: "%s" avail_value: "%s"' % (param_level.name, base_param.name, avail_param_value))
+        
+        param_levels[param_level] = {} # Initiate empty dict
+        #print('Array created for param level: "%s"' % param_level.name )
+        # Populate the arrays
+        for param2 in params:
+            # if param level is the key, append it to the array
+            param_level2 = param2[0]
+            if param_level == param_level2:
+                base_param = param2[1]
+                param_value = param2[2]
+                param_levels[param_level][base_param] = param_value # Add our value with base as key
 
-	return param_levels
+    return param_levels
 
-def build_dict(current):
+def build_dict(current, param_branch):
     print(f'Found root node {current.name}')
     temp_dict = {}
     query = (ParamLevel
@@ -33,9 +34,13 @@ def build_dict(current):
             .join(ParamLevelParamLevels, JOIN.LEFT_OUTER, on = (ParamLevelParamLevels.parent == ParamLevel.id))
             .where(ParamLevelParamLevels.child == current)
             )
+    i = 0
     while query.exists():
+        i += 1
         result = query.get()
         temp_dict = {result.name: temp_dict}
+        if i == 1:
+            temp_dict[current] = param_branch
         print(temp_dict)
         query = (ParamLevel
             .select()
@@ -46,22 +51,24 @@ def build_dict(current):
     return temp_dict
 
 def gen_xml(rsop):
-	# Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
-	params = []
-	#print(rsop)
-	for base_param_id, param_value in rsop.items():
-		base_param = BaseParam.get(BaseParam.id == base_param_id)
-		param_level = base_param.param_level
-		avail_param_value = param_value[0]
-		tup = (param_level, base_param, avail_param_value)
-		params.append(tup)
+    # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
+    params = []
+    #print(rsop)
+    for base_param_id, param_value in rsop.items():
+        base_param = BaseParam.get(BaseParam.id == base_param_id)
+        param_level = base_param.param_level
+        avail_param_value = param_value[0]
+        tup = (param_level, base_param, avail_param_value)
+        params.append(tup)
 
-		param_branches = get_branch_dict(params)
+        param_branches = get_branch_dict(params)
 
-		xmls = []
-		# for each param level, replace it with full surrounding dict
-		for param_branch_key in param_branches.keys():
-			branch_dict = build_dict(param_branch_key)
-			xml = dicttoxml(branch_dict['polycomConfig'], custom_root='polycomConfig', attr_type=False).decode('utf-8')
-			xmls.append(xml)
-	return(xmls)
+        xmls = []
+        # for each param level, replace it with full surrounding dict
+        for param_branch_key, param_branch in param_branches.items():
+            branch_dict = build_dict(param_branch_key, param_branch)
+
+            xml_string = dicttoxml(branch_dict['polycomConfig'], custom_root='polycomConfig', attr_type=False).decode('utf-8')
+            dom = xml.dom.minidom.parseString(xml_string)
+            xmls.append(dom.toprettyxml())
+    return(xmls)
