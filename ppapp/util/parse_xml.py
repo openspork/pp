@@ -34,8 +34,8 @@ def build_params():
         content = fd.read()
         doc = xmltodict.parse(content)
         #try:
-        print('\n')
+        #print('\n')
         find_node(None, doc)
-        print('\ndone')
+        #print('\ndone')
         #except Exception as e:
         #    print(e)

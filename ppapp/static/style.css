@@ -6,6 +6,11 @@
 	size: 6;
 }
 
+textarea {
+	height: 40em;
+	width: 40em;
+}
+
 /*div {
   outline: 2px dashed blue !important;
 }*/
