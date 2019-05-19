@@ -66,7 +66,7 @@ def build_dict(current, raw_param_branch):
     while query.exists():
         i += 1
         result = query.get()
-        temp_dict = {result.name: raw_param_branch}
+        temp_dict = {result.name: temp_dict }
         query = (ParamLevel
             .select()
             # If we are looking for parents, we are matching on child
