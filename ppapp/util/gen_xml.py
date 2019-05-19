@@ -78,9 +78,25 @@ def assemble_full_tree(parent_tree, raw_param_branch):
 
     return root
 
+def merge_dict(a, b, path=None):
+    "merges b into a"
+    if path is None: path = []
+    for key in b:
+        if key in a:
+            if isinstance(a[key], dict) and isinstance(b[key], dict):
+                merge_dict(a[key], b[key], path + [str(key)])
+            elif a[key] == b[key]:
+                pass # same leaf value
+            else:
+                raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
+        else:
+            a[key] = b[key]
+    return a
+
 def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
     params = []
+    dicts = []
     xmls = []
     for base_param_id, param_value in rsop.items():
         base_param = BaseParam.get(BaseParam.id == base_param_id)
@@ -92,6 +108,8 @@ def gen_xml(rsop):
     param_branches = get_branch_dict_by_model(params)
     param_branches_by_name = get_branch_dict_by_name(params)
     
+
+    current_dict = {}
     for param_branch_key, param_branch in param_branches.items():
         #print('Processing branch: %s' % param_branch_key.name)
         # Get our raw branch (no Models)
@@ -104,7 +122,14 @@ def gen_xml(rsop):
         #print('Parent tree: %s' % parent_tree)
         full_tree = assemble_full_tree(parent_tree, raw_param_branch)
         #print('Complete dict: %s' % full_tree)
-        xml_string = xmltodict.unparse(full_tree, pretty = True)
-        #xml_string = ''
-        xmls.append(xml_string)
+
+        # xml_string = xmltodict.unparse(full_tree, pretty = True)
+        # #xml_string = ''
+        # xmls.append(xml_string)
+
+        merge_dict(current_dict, full_tree)
+
+    xml_string = xmltodict.unparse(current_dict, pretty = True)
+    xmls.append(xml_string)
+
     return(xmls)
