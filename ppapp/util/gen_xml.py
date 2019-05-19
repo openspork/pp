@@ -48,12 +48,8 @@ def get_branch_dict_by_name(params):
 
     return param_levels
 
-    # TODO: convert Models into strings
-def sanitize_dict(param_branch):
-    pass
-
 # "current" - is a ParamLevel
-def build_dict(current, raw_param_branch):
+def build_parent_tree(current):
     #print(f'Found root node {current.name}')
     temp_dict = {}
     query = (ParamLevel
@@ -62,9 +58,7 @@ def build_dict(current, raw_param_branch):
             .join(ParamLevelParamLevels, JOIN.LEFT_OUTER, on = (ParamLevelParamLevels.parent == ParamLevel.id))
             .where(ParamLevelParamLevels.child == current)
             )
-    i = 0
     while query.exists():
-        i += 1
         result = query.get()
         temp_dict = {result.name: temp_dict }
         query = (ParamLevel
@@ -73,8 +67,16 @@ def build_dict(current, raw_param_branch):
             .join(ParamLevelParamLevels, JOIN.LEFT_OUTER, on = (ParamLevelParamLevels.parent == ParamLevel.id))
             .where(ParamLevelParamLevels.child == result)
             )
-    print('our parent tree: %s' % temp_dict)
     return temp_dict
+
+def assemble_full_tree(parent_tree, raw_param_branch):
+    position = parent_tree
+    root = position
+    while position:
+        position = next(iter(position.values()))
+    position.update(raw_param_branch)
+
+    return root
 
 def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
@@ -93,19 +95,16 @@ def gen_xml(rsop):
         
         # for each param level, build a pure dict
         for param_branch_key, param_branch in param_branches.items():
-            print('processing branch: %s' % param_branch_key.name)
-            
-            # get our raw branch (no Models)
+            print('Processing branch: %s' % param_branch_key.name)
+            # Get our raw branch (no Models)
             raw_param_branch = param_branches_by_name[param_branch_key.name]
-            
-            print('our raw param branch: %s' % raw_param_branch)
-
-            # Create the surrounding dict with our raw branch appended
-            full_branch_dict = build_dict(param_branch_key, raw_param_branch) 
-
-            print('our complete dict: %s' % full_branch_dict)
-
-            #xml_string = xmltodict.unparse(branch_dict, pretty = True)
-            xml_string = ''
+            # rint('Raw param branch: %s' % raw_param_branch)
+            # Create the surrounding dict
+            parent_tree = build_parent_tree(param_branch_key) 
+            #print('Parent tree: %s' % parent_tree)
+            full_tree = assemble_full_tree(parent_tree, raw_param_branch)
+            #print('Complete dict: %s' % full_tree)
+            xml_string = xmltodict.unparse(full_tree, pretty = True)
+            #xml_string = ''
             xmls.append(xml_string)
     return(xmls)
