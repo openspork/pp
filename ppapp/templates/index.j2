@@ -11,7 +11,7 @@ Index
 			<th>ID</th>
 			<th>Name</th>
 			<th>MAC Address</th>
-			<th>Groups</th>
+			<th>Member of</th>
 			<th>Note</th>
 			<th><a href="{{ url_for('new_phone') | safe }}">New</a></th>
 			<th>Config</th>
@@ -24,10 +24,7 @@ Index
 				<td>{{ phone.mac_address }}</td>
 				<td> 
 					{% for group in get_phone_groups(phone)[1] %}
-						{{ group.name }}
-						{% if not loop.last %}
-						,
-						{% endif %}
+						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</td>
 				<td>{{ phone.note }}</td>
@@ -44,7 +41,8 @@ Index
 			<th>ID</th>
 			<th>Type</th>
 			<th>Name</th>
-			<th>Groups</th>
+			<th>Member of</th>
+			<th>Members</th>
 			<th>Note</th>
 			<td><a href="{{ url_for('new_group') | safe }}">New</a>
 
@@ -55,11 +53,13 @@ Index
 				<td>{{ group.type.name }}</td>
 				<td>{{ group.name }}</td>
 				<td> 
+					{% for group in get_group_groups(group,'children')[1] %}
+						{{ group.name }}{% if not loop.last %},{% endif %}
+					{% endfor %}
+				</td>
+				<td> 
 					{% for group in get_group_groups(group,'parents')[1] %}
-						{{ group.name }}
-						{% if not loop.last %}
-						,
-						{% endif %}
+						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</td>
 				<td>{{ group.note }}</td>
