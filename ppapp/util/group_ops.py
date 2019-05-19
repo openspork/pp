@@ -19,16 +19,16 @@ def get_phone_groups(phone):
 def get_group_groups(group, relationship):
     if relationship == 'parents':
         active_groups = (Group
-                .select()
+            .select()
             # If we are looking for parents, we are matching on child
-            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
+            .join(GroupGroups, JOIN.LEFT_OUTER, on = (GroupGroups.parent == Group.id))
             .where(GroupGroups.child == group)
             .order_by(Group.name)
                 )
     elif relationship == 'children':
         active_groups = (Group.select()
             # If we are looking for children, we are joining children
-            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.child == Group.id))
+            .join(GroupGroups, JOIN.LEFT_OUTER, on = (GroupGroups.child == Group.id))
             # We are matching on parent
             .where(GroupGroups.parent == group)
             .order_by(Group.name)
@@ -38,7 +38,7 @@ def get_group_groups(group, relationship):
 
     avail_groups = (Group
             .select()
-            .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
+            .join(GroupGroups, JOIN.LEFT_OUTER, on = (GroupGroups.parent == Group.id))
             # Omit siblings, children & ourselves
             .where((Group.id != group.id) & # Omit ourselves
                     Group.id.not_in(active_groups) & # Omit children

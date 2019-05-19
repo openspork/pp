@@ -30,13 +30,17 @@ class PhoneGroups(BaseModel):
     group = ForeignKeyField(Group)
 
 class ParamLevel(BaseModel):
-    name = CharField(unique = True, null = True)
+    name = CharField(null = True)
 
 class BaseParam(BaseModel):
     param_level = ForeignKeyField(ParamLevel, backref = 'base_params')
     name = CharField()
     default_value = CharField()
     note = CharField(null = True)
+
+class ParamLevelParamLevels(BaseModel):
+    parent = ForeignKeyField(ParamLevel)
+    child = ForeignKeyField(ParamLevel)
 
 class AvailParam(BaseModel):
     base_param = ForeignKeyField(BaseParam, backref = 'avail_params', null = True)

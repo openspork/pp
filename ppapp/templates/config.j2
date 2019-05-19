@@ -1,31 +1,39 @@
-Resultant Set of Policy for:
-{{ mac_address }}
-<br />
+{% extends "base.j2" %}
+{% block title %}
+Content Template
+{% endblock %}
+{% block content %}
+	<h3>Resultant Set of Policy for: {{ mac_address }} </h3>
+	<ul>
+		{# key = param, value = (value, depth, overrides) #}
+		{% for key, value in rsop.items() %}
+			{# if at depth 0, this is a phone #}
+			{% if value[2] == 0 %} 
+				<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>{{ Phone.get(Phone.id == value[1] ).name }}</a> at depth {{ value[2] }}
+				{% if value[3] | length > 0 %} </li>
+					Overrode:
+					<ul>
+						{% for overridden_value, overridden_group, overridden_depth in value[3] %}
+							<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% else %} {# if > depth 0, this is a group #}
+				<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>{{ Group.get(Group.id == value[1] ).name }}</a> at depth {{ value[2] }}
+				{% if value[3] | length > 0 %}</li>
+					Overrode:
+					<ul>
+						{% for overridden_value, overridden_group, overridden_depth in value[3] %}
+							<li> {{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }} </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</ul>
 
-<ul>
-	{# key = param, value = (value, depth, overrides) #}
-	{% for key, value in rsop.items() %}
-		{# if at depth 0, this is a phone #}
-		{% if value[2] == 0 %} 
-			<li>{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>{{ Phone.get(Phone.id == value[1] ).name }}</a> at depth {{ value[2] }}
-			{% if value[3] | length > 0 %} </li>
-				Overrode:
-				<ul>
-					{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-						<li>{{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		{% else %} {# if > depth 0, this is a group #}
-			<li>{{ key }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>{{ Group.get(Group.id == value[1] ).name }}</a> at depth {{ value[2] }}
-			{% if value[3] | length > 0 %}</li>
-				Overrode:
-				<ul>
-					{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-						<li> {{ key }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }} </li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		{% endif %}
-	{% endfor %}
-</ul>
+	{% for xml in xmls %}
+		<textarea>{{ xml }}</textarea>
+		<br />
+	{% endfor%}
+{% endblock %}
