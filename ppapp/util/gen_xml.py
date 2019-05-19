@@ -1,5 +1,5 @@
 from peewee import *
-from dicttoxml import dicttoxml
+from ppapp.util import dicttoxml
 from ppapp.models import *
 import xml.dom.minidom
 
