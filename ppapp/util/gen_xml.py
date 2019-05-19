@@ -94,7 +94,7 @@ def merge_dict(a, b, path=None):
     return a
 
 def gen_xml(rsop):
-    # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
+    # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples from RSoP
     params = []
     dicts = []
     xmls = []
@@ -115,17 +115,14 @@ def gen_xml(rsop):
         # Get our raw branch (no Models)
         raw_param_branch = param_branches_by_name[param_branch_key.name]
         # rint('Raw param branch: %s' % raw_param_branch)
-        # Create the surrounding dict
 
+        # Create the surrounding dict
         # All this needs is the starting node -- should be able to replace with query based on name...
-        parent_tree = build_parent_tree(param_branch_key) 
+        
+        parent_tree = build_parent_tree(param_branch_key)
         #print('Parent tree: %s' % parent_tree)
         full_tree = assemble_full_tree(parent_tree, raw_param_branch)
         #print('Complete dict: %s' % full_tree)
-
-        # xml_string = xmltodict.unparse(full_tree, pretty = True)
-        # #xml_string = ''
-        # xmls.append(xml_string)
 
         merge_dict(current_dict, full_tree)
 
