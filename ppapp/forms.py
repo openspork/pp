@@ -10,7 +10,7 @@ def get_form_choices(query, Model):
         if Model == Group:
             choice_string = '%s: %s' % (choice.type.name, choice.name)
         if Model == BaseParam:
-            choice_string = '%s - Default: %s' % (choice.name, choice.default_value[:32])
+            choice_string = '%s - Default: %s' % (choice.name, choice.default_value[:24])
         if Model == AvailParam:
             choice_string = '%s - Value: %s' % (choice.base_param.name[1:], choice.value)
         if Model == GroupType:
