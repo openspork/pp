@@ -82,7 +82,6 @@ def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
     params = []
     xmls = []
-    #print(rsop)
     for base_param_id, param_value in rsop.items():
         base_param = BaseParam.get(BaseParam.id == base_param_id)
         param_level = base_param.param_level
@@ -90,21 +89,21 @@ def gen_xml(rsop):
         tup = (param_level, base_param, avail_param_value)
         params.append(tup)
 
-        param_branches = get_branch_dict_by_model(params)
-        param_branches_by_name = get_branch_dict_by_name(params)
-        
-        # for each param level, build a pure dict
-        for param_branch_key, param_branch in param_branches.items():
-            print('Processing branch: %s' % param_branch_key.name)
-            # Get our raw branch (no Models)
-            raw_param_branch = param_branches_by_name[param_branch_key.name]
-            # rint('Raw param branch: %s' % raw_param_branch)
-            # Create the surrounding dict
-            parent_tree = build_parent_tree(param_branch_key) 
-            #print('Parent tree: %s' % parent_tree)
-            full_tree = assemble_full_tree(parent_tree, raw_param_branch)
-            #print('Complete dict: %s' % full_tree)
-            xml_string = xmltodict.unparse(full_tree, pretty = True)
-            #xml_string = ''
-            xmls.append(xml_string)
+    param_branches = get_branch_dict_by_model(params)
+    param_branches_by_name = get_branch_dict_by_name(params)
+    
+    # for each param level, build a pure dict
+    for param_branch_key, param_branch in param_branches.items():
+        #print('Processing branch: %s' % param_branch_key.name)
+        # Get our raw branch (no Models)
+        raw_param_branch = param_branches_by_name[param_branch_key.name]
+        # rint('Raw param branch: %s' % raw_param_branch)
+        # Create the surrounding dict
+        parent_tree = build_parent_tree(param_branch_key) 
+        #print('Parent tree: %s' % parent_tree)
+        full_tree = assemble_full_tree(parent_tree, raw_param_branch)
+        #print('Complete dict: %s' % full_tree)
+        xml_string = xmltodict.unparse(full_tree, pretty = True)
+        #xml_string = ''
+        xmls.append(xml_string)
     return(xmls)
