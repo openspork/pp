@@ -1,4 +1,11 @@
-from flask import flash, send_from_directory, render_template, request, redirect, url_for
+from flask import (
+    flash,
+    send_from_directory,
+    render_template,
+    request,
+    redirect,
+    url_for,
+)
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
@@ -7,35 +14,44 @@ from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.util.rsop import *
 
-@app.route('/new_phone', methods = ['GET', 'POST'])
+
+@app.route("/new_phone", methods=["GET", "POST"])
 def new_phone():
     form = NewPhoneForm()
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.validate_on_submit():
             query = Phone.select().where(Phone.mac_address == form.mac_address.data)
             if query.exists():
-                flash('Duplicate MAC Address!')
+                flash("Duplicate MAC Address!")
             else:
-                flash('New - Phone: {}, MAC Address: {}, Note: {}'.format(
-                        form.name.data, form.mac_address.data, form.note.data))
-                Phone.create(name = form.name.data, mac_address = form.mac_address.data, note = form.note.data).save()
-            return redirect('/')
+                flash(
+                    "New - Phone: {}, MAC Address: {}, Note: {}".format(
+                        form.name.data, form.mac_address.data, form.note.data
+                    )
+                )
+                Phone.create(
+                    name=form.name.data,
+                    mac_address=form.mac_address.data,
+                    note=form.note.data,
+                ).save()
+            return redirect("/")
         else:
             flash_errors(form)
-            return render_template('new_phone.j2', form = form)
-    elif request.method == 'GET':
-        return render_template('new_phone.j2', form = form)
+            return render_template("new_phone.j2", form=form)
+    elif request.method == "GET":
+        return render_template("new_phone.j2", form=form)
 
-@app.route('/edit_phone/<id>', methods = ['GET', 'POST'])
+
+@app.route("/edit_phone/<id>", methods=["GET", "POST"])
 def edit_phone(id):
     form = EditPhoneForm()
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
-        flash('Invalid ID!')
-        return redirect('/')
+        flash("Invalid ID!")
+        return redirect("/")
     else:
         phone = query.get()
-    
+
     params = get_phone_params(phone)
     groups = get_phone_groups(phone)
 
@@ -44,7 +60,7 @@ def edit_phone(id):
     form.avail_groups.choices = get_form_choices(groups[0], Group)
     form.active_groups.choices = get_form_choices(groups[1], Group)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.validate_on_submit():
 
             # Get data
@@ -53,14 +69,20 @@ def edit_phone(id):
             new_group_ids = form.avail_groups.data
             prev_group_ids = form.active_groups.data
 
-            if ( form.delete.data ):
-                flash('Deleted - Phone: {}, MAC address: {}, Note: {}'.format(
-                    form.name.data, form.mac_address.data, form.note.data))
+            if form.delete.data:
+                flash(
+                    "Deleted - Phone: {}, MAC address: {}, Note: {}".format(
+                        form.name.data, form.mac_address.data, form.note.data
+                    )
+                )
                 # Recursive to delete foreign keys
-                phone.delete_instance(recursive = True)
+                phone.delete_instance(recursive=True)
             else:
-                flash('Updated - Phone: {}, MAC address: {}, Note: {}'.format(
-                    form.name.data, form.mac_address.data, form.note.data))
+                flash(
+                    "Updated - Phone: {}, MAC address: {}, Note: {}".format(
+                        form.name.data, form.mac_address.data, form.note.data
+                    )
+                )
 
                 # Handle base data
                 phone.name = form.name.data
@@ -79,13 +101,13 @@ def edit_phone(id):
                     rsop = gen_rsop(phone)
                 except Exception as e:
                     flash(str(e))
-            return redirect('/')
+            return redirect("/")
         else:
             flash_errors(form)
-        return render_template('edit_phone.j2', form = form)
+        return render_template("edit_phone.j2", form=form)
 
-    elif request.method == 'GET':
+    elif request.method == "GET":
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
         form.note.data = phone.note
-        return render_template('edit_phone.j2', form = form)
+        return render_template("edit_phone.j2", form=form)

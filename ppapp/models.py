@@ -1,55 +1,70 @@
 from peewee import *
 
-db = MySQLDatabase('pp', **{'charset': 'utf8', 'use_unicode': True, 'user': 'pp', 'password': 'password'})
+db = MySQLDatabase(
+    "pp",
+    **{"charset": "utf8", "use_unicode": True, "user": "pp", "password": "password"}
+)
+
 
 class BaseModel(Model):
     class Meta:
         database = db
 
+
 class Phone(BaseModel):
     name = CharField()
-    mac_address = CharField(unique = True)
+    mac_address = CharField(unique=True)
     note = CharField()
+
 
 class GroupType(BaseModel):
     name = CharField()
-    precedence = IntegerField(unique = True)
+    precedence = IntegerField(unique=True)
     note = CharField()
 
+
 class Group(BaseModel):
-    type = ForeignKeyField(GroupType, backref = 'groups')
+    type = ForeignKeyField(GroupType, backref="groups")
     name = CharField()
     note = CharField()
 
+
 class GroupGroups(BaseModel):
-    parent = ForeignKeyField(Group, null = True)
-    child = ForeignKeyField(Group, null = True)
+    parent = ForeignKeyField(Group, null=True)
+    child = ForeignKeyField(Group, null=True)
+
 
 class PhoneGroups(BaseModel):
     phone = ForeignKeyField(Phone)
     group = ForeignKeyField(Group)
 
+
 class ParamLevel(BaseModel):
-    name = CharField(null = True)
+    name = CharField(null=True)
+
 
 class BaseParam(BaseModel):
-    param_level = ForeignKeyField(ParamLevel, backref = 'base_params')
+    param_level = ForeignKeyField(ParamLevel, backref="base_params")
     name = CharField()
     default_value = CharField()
-    note = CharField(null = True)
+    note = CharField(null=True)
+
 
 class ParamLevelParamLevels(BaseModel):
     parent = ForeignKeyField(ParamLevel)
     child = ForeignKeyField(ParamLevel)
 
+
 class AvailParam(BaseModel):
-    base_param = ForeignKeyField(BaseParam, backref = 'avail_params', null = True)
+    base_param = ForeignKeyField(BaseParam, backref="avail_params", null=True)
     value = CharField()
-    note = CharField(null = True)
+    note = CharField(null=True)
+
 
 class PhoneAvailParams(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
     phone = ForeignKeyField(Phone)
+
 
 class GroupAvailParams(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
