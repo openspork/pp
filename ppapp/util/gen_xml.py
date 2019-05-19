@@ -4,28 +4,6 @@ from ppapp.models import *
 #import xml.dom.minidom
 import xmltodict
 
-def get_branch_dict_by_model(params):
-    # Create a dict of dicts with each ParamLevel as key
-    param_levels = {}
-    for param in params:
-        param_level = param[0]
-        base_param = param[1]
-        avail_param_value = param[2]
-        #print('\nProcessing param_level: "%s" base_param: "%s" avail_value: "%s"' % (param_level.name, base_param.name, avail_param_value))
-        
-        param_levels[param_level] = {} # Initiate empty dict
-        #print('Array created for param level: "%s"' % param_level.name )
-        # Populate the arrays
-        for param2 in params:
-            # if param level is the key, append it to the array
-            param_level2 = param2[0]
-            if param_level == param_level2:
-                base_param = param2[1]
-                param_value = param2[2]
-                param_levels[param_level][base_param] = param_value # Add our value with base as key
-
-    return param_levels
-
 def get_branch_dict_by_name(params):
     # Create a dict of dicts with each ParamLevel name as key
     param_levels = {}
@@ -105,24 +83,14 @@ def gen_xml(rsop):
         tup = (param_level, base_param, avail_param_value)
         params.append(tup)
 
-    param_branches = get_branch_dict_by_model(params)
     param_branches_by_name = get_branch_dict_by_name(params)
     
 
     current_dict = {}
-    for param_branch_key, param_branch in param_branches.items():
-        #print('Processing branch: %s' % param_branch_key.name)
-        # Get our raw branch (no Models)
-        raw_param_branch = param_branches_by_name[param_branch_key.name]
-        # rint('Raw param branch: %s' % raw_param_branch)
 
-        # Create the surrounding dict
-        # All this needs is the starting node -- should be able to replace with query based on name...
-        
-        parent_tree = build_parent_tree(param_branch_key)
-        #print('Parent tree: %s' % parent_tree)
-        full_tree = assemble_full_tree(parent_tree, raw_param_branch)
-        #print('Complete dict: %s' % full_tree)
+    for param_branch_name, param_branch in param_branches_by_name.items():
+        parent_tree = build_parent_tree(ParamLevel.get(ParamLevel.name == param_branch_name))
+        full_tree = assemble_full_tree(parent_tree, param_branch)
 
         merge_dict(current_dict, full_tree)
 
