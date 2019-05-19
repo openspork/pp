@@ -32,7 +32,7 @@ def build_params():
     print('building params')
     with open('./configs/site.cfg') as fd:
         content = fd.read()
-        doc = xmltodict.parse(content)
+        doc = xmltodict.parse(content, attr_prefix='')
         #try:
         #print('\n')
         find_node(None, doc)
