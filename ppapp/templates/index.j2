@@ -11,6 +11,7 @@ Index
 			<th>ID</th>
 			<th>Name</th>
 			<th>MAC Address</th>
+			<th>Groups</th>
 			<th>Note</th>
 			<th><a href="{{ url_for('new_phone') | safe }}">New</a></th>
 			<th>Config</th>
@@ -21,6 +22,13 @@ Index
 				<td>{{ phone.id }}</td>
 				<td>{{ phone.name }}</td>
 				<td>{{ phone.mac_address }}</td>
+				<td> 
+					{% for group in get_phone_groups(phone)[1] %}
+					{{ group.name }},
+					{% if loop.last %}
+						{{group.name }}
+					{% endif %}
+					{% endfor %}
 				<td>{{ phone.note }}</td>
 				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
 				<td><a href="{{ url_for('rsop', mac_address=phone.mac_address ) | safe }}">View RSoP</a></td>
