@@ -28,13 +28,15 @@ def get_branch_dict(params):
 
     # TODO: convert Models into strings
 def sanitize_dict(param_branch):
-    clean_dict = {}
-    for key, value in param_branch:
-        clean_dict[key] = value
+    print(param_branch.name)
+    # Fetch our edge param level
+    #param_level = ParamLevel.get(ParamLevel == param_branch)
+    # Print our avail params
+    #print(param_level.name)
 
 
 
-
+# "current" - is a ParamLevel
 def build_dict(current, param_branch):
     #print(f'Found root node {current.name}')
     temp_dict = {}
@@ -50,7 +52,7 @@ def build_dict(current, param_branch):
         result = query.get()
         temp_dict = {result.name: temp_dict}
         if i == 1:
-            temp_dict[current] = sanitize_dict(param_branch)
+            temp_dict[current] = sanitize_dict(current)
         query = (ParamLevel
             .select()
             # If we are looking for parents, we are matching on child
