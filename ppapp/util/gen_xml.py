@@ -1,7 +1,8 @@
 from peewee import *
-from ppapp.util import dicttoxml
+#from ppapp.util import dicttoxml
 from ppapp.models import *
-import xml.dom.minidom
+#import xml.dom.minidom
+import xmltodict
 
 def get_branch_dict(params):
     # Create a dict of dicts with each ParamLevel as key
@@ -26,13 +27,16 @@ def get_branch_dict(params):
     return param_levels
 
     # TODO: convert Models into strings
-def sanitize(param_branch):
-    pass
+def sanitize_dict(param_branch):
+    clean_dict = {}
+    for key, value in param_branch:
+        clean_dict[key] = value
+
 
 
 
 def build_dict(current, param_branch):
-    print(f'Found root node {current.name}')
+    #print(f'Found root node {current.name}')
     temp_dict = {}
     query = (ParamLevel
             .select()
@@ -46,8 +50,7 @@ def build_dict(current, param_branch):
         result = query.get()
         temp_dict = {result.name: temp_dict}
         if i == 1:
-            temp_dict[current] = param_branch
-        print(temp_dict)
+            temp_dict[current] = sanitize_dict(param_branch)
         query = (ParamLevel
             .select()
             # If we are looking for parents, we are matching on child
@@ -62,6 +65,7 @@ def build_dict(current, param_branch):
 def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
     params = []
+    xmls = []
     #print(rsop)
     for base_param_id, param_value in rsop.items():
         base_param = BaseParam.get(BaseParam.id == base_param_id)
@@ -72,13 +76,15 @@ def gen_xml(rsop):
 
         param_branches = get_branch_dict(params)
 
-        xmls = []
+        
         # for each param level, build a pure dict
         for param_branch_key, param_branch in param_branches.items():
             # Create the surrounding dict with our branch appended
             branch_dict = build_dict(param_branch_key, param_branch) 
 
-            xml_string = dicttoxml(branch_dict['polycomConfig'], root=False, attr_type=False).decode('utf-8')
-            dom = xml.dom.minidom.parseString(xml_string)
-            xmls.append(dom.toprettyxml())
+            #xml_string = dicttoxml(branch_dict['polycomConfig'], root=False, attr_type=False).decode('utf-8')
+            #dom = xml.dom.minidom.parseString(xml_string).toprettyxml()
+            #xml_string = xmltodict.unparse(branch_dict, pretty = True)
+            xml_string = ''
+            xmls.append(xml_string)
     return(xmls)

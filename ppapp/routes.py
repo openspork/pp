@@ -43,5 +43,4 @@ def rsop(mac_address):
 @app.route('/favicon.ico')
 def favicon():
     dir = os.path.join(app.root_path, 'static')
-    print(dir)
     return send_from_directory(dir ,'favicon.ico', mimetype = 'image/vnd.microsoft.icon')

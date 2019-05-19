@@ -5,9 +5,6 @@ db = MySQLDatabase('pp', **{'charset': 'utf8', 'use_unicode': True, 'user': 'pp'
 class BaseModel(Model):
     class Meta:
         database = db
-    # Function to inform dicttoxml that we are not just digits
-    def isdigit(dummy):
-        return False
 
 class Phone(BaseModel):
     name = CharField()
@@ -33,7 +30,7 @@ class PhoneGroups(BaseModel):
     group = ForeignKeyField(Group)
 
 class ParamLevel(BaseModel):
-    name = CharField(null = True)#, unique = True,)
+    name = CharField(null = True)
 
 class BaseParam(BaseModel):
     param_level = ForeignKeyField(ParamLevel, backref = 'base_params')
