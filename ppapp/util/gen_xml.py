@@ -46,7 +46,7 @@ def build_dict(current, param_branch):
         result = query.get()
         temp_dict = {result.name: temp_dict}
         if i == 1:
-            temp_dict[current] = sanitize(param_branch)
+            temp_dict[current] = param_branch
         print(temp_dict)
         query = (ParamLevel
             .select()
@@ -55,6 +55,9 @@ def build_dict(current, param_branch):
             .where(ParamLevelParamLevels.child == result)
             )
     return temp_dict
+
+
+
 
 def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples
@@ -70,11 +73,12 @@ def gen_xml(rsop):
         param_branches = get_branch_dict(params)
 
         xmls = []
-        # for each param level, replace it with full surrounding dict
+        # for each param level, build a pure dict
         for param_branch_key, param_branch in param_branches.items():
-            branch_dict = build_dict(param_branch_key, param_branch)
+            # Create the surrounding dict with our branch appended
+            branch_dict = build_dict(param_branch_key, param_branch) 
 
-            xml_string = dicttoxml(branch_dict['polycomConfig'], custom_root='polycomConfig', attr_type=False).decode('utf-8')
+            xml_string = dicttoxml(branch_dict['polycomConfig'], root=False, attr_type=False).decode('utf-8')
             dom = xml.dom.minidom.parseString(xml_string)
             xmls.append(dom.toprettyxml())
     return(xmls)

@@ -5,6 +5,9 @@ db = MySQLDatabase('pp', **{'charset': 'utf8', 'use_unicode': True, 'user': 'pp'
 class BaseModel(Model):
     class Meta:
         database = db
+    # Function to inform dicttoxml that we are not just digits
+    def isdigit(dummy):
+        return False
 
 class Phone(BaseModel):
     name = CharField()
