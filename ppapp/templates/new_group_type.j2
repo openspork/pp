@@ -1,0 +1,25 @@
+{% extends "base.j2" %}
+{% block title %}
+New Group Type
+{% endblock %}
+{% block content %}
+    <h3>New Group Type</h3>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <br />
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+        <br />
+        <br />
+            {{ form.precedence.label }}<br>
+            {{ form.precedence(size=2) }}
+        <br />
+
+        <br />
+            {{ form.note.label }}<br>
+            {{ form.note(size=32) }}
+        <br />
+        {{ form.submit() }}
+    </form>
+
+{% endblock %}
