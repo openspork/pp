@@ -15,6 +15,7 @@ class Cert(BaseModel):
 
 class CertAuthority(Cert):
     name = CharField()
+    note = CharField(null=True)
 
 
 class ClientCert(Cert):

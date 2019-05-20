@@ -25,12 +25,14 @@ def index():
     # TODO: It would be nice to order by type, then name"
     groups = Group.select().order_by(Group.name)
     group_types = GroupType.select().order_by(GroupType.precedence)
+    cert_authorities = CertAuthority.select().order_by(CertAuthority.name)
     return render_template(
         "index.j2",
         phones=phones,
         avail_params=avail_params,
         groups=groups,
         group_types=group_types,
+        cert_authorities = cert_authorities
     )
 
 
