@@ -31,6 +31,7 @@ def new_group_type():
             flash_errors(form)
     return render_template("new_group_type.j2", form=form)
 
+
 @app.route("/edit_group_type/<id>", methods=["GET", "POST"])
 def edit_group_type(id):
     form = EditGroupTypeForm()
@@ -43,13 +44,9 @@ def edit_group_type(id):
 
     if request.method == "POST":
         # Additionally check that our precedence is unique
-        query = (GroupType
-            .select()
-            .where(
-                (GroupType.precedence == form.precedence.data) & 
-                (GroupType.id != id)
-            )
-            )
+        query = GroupType.select().where(
+            (GroupType.precedence == form.precedence.data) & (GroupType.id != id)
+        )
 
         for element in query:
             print(element)
@@ -60,9 +57,7 @@ def edit_group_type(id):
             if form.delete.data:
                 flash(
                     "Deleted - Group: {}, Type: {}, Note: {}".format(
-                        form.name.data,
-                        form.precedence.data,
-                        form.note.data,
+                        form.name.data, form.precedence.data, form.note.data
                     )
                 )
                 # Recursive to delete foreign keys
@@ -70,9 +65,7 @@ def edit_group_type(id):
             else:
                 flash(
                     "Updated - Group: {}, Type: {}, Note: {}".format(
-                        form.name.data,
-                        form.precedence.data,
-                        form.note.data,
+                        form.name.data, form.precedence.data, form.note.data
                     )
                 )
 
@@ -84,7 +77,7 @@ def edit_group_type(id):
 
             return redirect("/")
         else:
-            flash('Duplicate precedence!  Must be unique!')
+            flash("Duplicate precedence!  Must be unique!")
             flash_errors(form)
     elif request.method == "GET":
         form.name.data = group_type.name
