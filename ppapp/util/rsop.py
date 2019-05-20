@@ -46,8 +46,9 @@ def drill(group, rsop, depth):
                         overridden_param_overrides,
                     )  # Update param
                 elif group.type.precedence == existing_group.type.precedence:
+                    print()
                     raise Exception(
-                        "Duplicate param of equal precedence!  Cannot resolve!"
+                        "Duplicate param of equal precedence!  Cannot resolve!  Groups: %s, %s" % ( group.name, existing_group.name )
                     )
 
     groups = get_group_groups(group, "parents")[1]
