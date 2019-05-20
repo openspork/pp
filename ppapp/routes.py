@@ -18,6 +18,7 @@ from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
 
 
+
 @app.route("/")
 def index():
     phones = Phone.select()
