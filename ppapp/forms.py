@@ -103,7 +103,7 @@ class GroupForm(NameNoteSubmitForm):
     pass
 
 
-class NewGroupTypeForm(GroupForm):
+class NewGroupTypeForm(NameNoteSubmitForm):
     precedence = IntegerField(validators=[DataRequired()])
 
 
