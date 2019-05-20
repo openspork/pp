@@ -34,15 +34,64 @@ def new_group_type():
 @app.route("/edit_group_type/<id>", methods=["GET", "POST"])
 def edit_group_type(id):
     form = EditGroupTypeForm()
-    query = GroupType.select().where(Group.id == id)
+    query = GroupType.select().where(GroupType.id == id)
     if not query.exists():
         flash("Invalid ID!")
         return redirect("/")
     else:
-        group = query.get()
+        group_type = query.get()
 
+    if request.method == "POST":
+        # Additionally check that our precedence is unique
+        query = (GroupType
+            .select()
+            .where(
+                (GroupType.precedence == form.precedence.data) & 
+                (GroupType.id != id)
+            )
+            )
 
+        for element in query:
+            print(element)
 
+        if form.validate_on_submit() and not query.exists():
+            # Get data
+
+            if form.delete.data:
+                flash(
+                    "Deleted - Group: {}, Type: {}, Note: {}".format(
+                        form.name.data,
+                        form.precedence.data,
+                        form.note.data,
+                    )
+                )
+                # Recursive to delete foreign keys
+                group.delete_instance(recursive=True)
+            else:
+                flash(
+                    "Updated - Group: {}, Type: {}, Note: {}".format(
+                        form.name.data,
+                        form.precedence.data,
+                        form.note.data,
+                    )
+                )
+
+                # Handle base data
+                group_type.name = form.name.data
+                group_type.precedence = form.precedence.data
+                group_type.note = form.note.data
+                group_type.save()
+
+            return redirect("/")
+        else:
+            flash('Duplicate precedence!  Must be unique!')
+            flash_errors(form)
+    elif request.method == "GET":
+        form.name.data = group_type.name
+        form.precedence.data = group_type.precedence
+        form.note.data = group_type.note
+
+    return render_template("edit_group_type.j2", form=form)
 
 
 @app.route("/new_group", methods=["GET", "POST"])

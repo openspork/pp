@@ -86,7 +86,7 @@ Index
 				<td>{{ group_type.name }}</td>
 				<td>{{ group_type.precedence }}</td>
 				<td>{{ group_type.note }}</td>
-				<td><a href="{{ url_for('edit_group', id=group_type.id ) | safe }}">Edit</a></td>
+				<td><a href="{{ url_for('edit_group_type', id=group_type.id ) | safe }}">Edit</a></td>
 			</tr>
 			{% endfor %}
 	</table>

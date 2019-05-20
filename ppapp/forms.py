@@ -103,15 +103,16 @@ class GroupForm(NameNoteSubmitForm):
     pass
 
 
-class NewGroupTypeForm(NameNoteSubmitForm):
+class NewGroupTypeForm(NameNoteSubmitForm, DeleteForm):
     precedence = IntegerField(validators=[DataRequired()])
 
+class EditGroupTypeForm(NewGroupTypeForm):
+    pass
 
 class NewGroupForm(GroupForm):
     pass
 
-class EditGroupTypeForm(NewGroupForm):
-    pass
+
 
 class CertAuthorityForm(FlaskForm):
     cert_authority = SelectField("Available CAs", coerce=int, default=0)
