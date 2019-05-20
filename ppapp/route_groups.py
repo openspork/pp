@@ -14,9 +14,40 @@ from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 
 
+@app.route("/new_group_type", methods=["GET", "POST"])
+def new_group_type():
+    form = NewGroupTypeForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            group_type = GroupType.create(
+                name=form.name.data,
+                precedence=form.precedence.data,
+                note=form.note.data,
+            ).save()
+            flash("New Group Type - Name: {}".format(form.name.data))
+            return redirect("/")
+        else:
+            flash_errors(form)
+    return render_template("new_group_type.j2", form=form)
+
+@app.route("/edit_group_type/<id>", methods=["GET", "POST"])
+def edit_group_type(id):
+    form = EditGroupTypeForm()
+    query = GroupType.select().where(Group.id == id)
+    if not query.exists():
+        flash("Invalid ID!")
+        return redirect("/")
+    else:
+        group = query.get()
+
+
+
+
+
 @app.route("/new_group", methods=["GET", "POST"])
 def new_group():
-    form = GroupForm()
+    form = NewGroupForm()
 
     if request.method == "POST":
         if form.validate_on_submit():
@@ -30,9 +61,7 @@ def new_group():
             return redirect("/")
         else:
             flash_errors(form)
-            return render_template("new_group.j2", form=form)
-    elif request.method == "GET":
-        return render_template("new_group.j2", form=form)
+    return render_template("new_group.j2", form=form)
 
 
 @app.route("/edit_group/<id>", methods=["GET", "POST"])

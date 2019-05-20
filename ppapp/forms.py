@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import (
+    IntegerField,
     StringField,
     BooleanField,
     SubmitField,
@@ -34,11 +35,14 @@ def get_form_choices(query, Model):
     return form_choices
 
 
-class PhoneForm(FlaskForm):
+class NameNoteSubmitForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
-    mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
     note = StringField("Note")
     submit = SubmitField("Submit")
+
+
+class PhoneForm(NameNoteSubmitForm):
+    mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
 
 
 class NewPhoneForm(PhoneForm):
@@ -69,10 +73,8 @@ class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteFor
     pass
 
 
-class ParamForm(FlaskForm):
-    value = StringField("Value", validators=[DataRequired()])
-    note = StringField("Note")
-    submit = SubmitField("Submit")
+class ParamForm(NameNoteSubmitForm):
+    pass
 
 
 class NewParamForm(ParamForm):
@@ -90,22 +92,26 @@ class EditParamForm(ParamForm, DeleteForm):
     pass
 
 
-class GroupForm(FlaskForm):
+class GroupForm(NameNoteSubmitForm):
     type = SelectField(
-        "Type",
-        choices=get_form_choices(
-            GroupType.select().order_by(GroupType.name), GroupType
-        ),
-        coerce=int,
-    )
-    name = StringField("Name", validators=[DataRequired()])
-    note = StringField("Note")
-    submit = SubmitField("Submit")
+    "Type",
+    choices=get_form_choices(
+        GroupType.select().order_by(GroupType.name), GroupType
+    ),
+    coerce=int,
+)
+    pass
+
+
+class NewGroupTypeForm(GroupForm):
+    precedence = IntegerField(validators=[DataRequired()])
 
 
 class NewGroupForm(GroupForm):
     pass
 
+class EditGroupTypeForm(NewGroupForm):
+    pass
 
 class CertAuthorityForm(FlaskForm):
     cert_authority = SelectField("Available CAs", coerce=int, default=0)
