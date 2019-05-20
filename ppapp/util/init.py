@@ -1,4 +1,3 @@
-from ppapp.util.parse_xml import build_params
 from ppapp.models import *
 
 
@@ -64,10 +63,6 @@ def init_db():
             note="Group with CA for cert generation",
         )
 
-    if len(ParamLevel.select()) == 0:
-        print("populating paramlevels")
-        build_params()
 
-    build_params()
     db.close()
     print("db init")

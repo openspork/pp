@@ -74,6 +74,7 @@ class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteFor
 
 
 class ParamForm(NameNoteSubmitForm):
+    value = StringField("Value", validators=[DataRequired()])
     pass
 
 

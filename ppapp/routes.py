@@ -15,7 +15,7 @@ from ppapp.route_params import *
 from ppapp.route_groups import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
-from ppapp.util.init import init_db
+from ppapp.util.parse_xml import build_params
 
 
 @app.route("/")
@@ -38,7 +38,7 @@ def index():
 
 @app.route("/init")
 def init():
-    init_db()
+    build_params()
     flash("DB Init Performed")
     return redirect("/")
 
