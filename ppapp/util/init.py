@@ -22,6 +22,9 @@ def init_db():
             AvailParam,
             PhoneAvailParams,
             GroupAvailParams,
+            Cert,
+            CertAuthority,
+            ClientCert
         ],
         safe=True,
     )

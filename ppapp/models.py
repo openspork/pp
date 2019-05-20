@@ -1,9 +1,7 @@
 from peewee import *
 
-db = MySQLDatabase(
-    "pp",
-    **{"charset": "utf8", "use_unicode": True, "user": "pp", "password": "password"}
-)
+db = MySQLDatabase("pp", user="pp", password="password", host="localhost", port=3306)
+# db = SQLLite
 
 
 class BaseModel(Model):
@@ -11,10 +9,24 @@ class BaseModel(Model):
         database = db
 
 
+class Cert(BaseModel):
+    cert = TextField()
+
+
+class CertAuthority(Cert):
+    pass
+
+
+class ClientCert(Cert):
+    ca = ForeignKeyField(CertAuthority)
+    # phone = ForeignKeyField(Phone, backref="client_cert")
+
+
 class Phone(BaseModel):
     name = CharField()
     mac_address = CharField(unique=True)
-    note = CharField()
+    client_cert = ForeignKeyField(ClientCert, backref="phones", null=True) # Change this back to False default later
+    note = CharField(null=True)
 
 
 class GroupType(BaseModel):
