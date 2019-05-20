@@ -56,7 +56,7 @@ def edit_group_type(id):
 
             if form.delete.data:
                 flash(
-                    "Deleted - Group: {}, Type: {}, Note: {}".format(
+                    "Deleted - Group Type: {}, Type: {}, Note: {}".format(
                         form.name.data, form.precedence.data, form.note.data
                     )
                 )
@@ -64,7 +64,7 @@ def edit_group_type(id):
                 group_type.delete_instance(recursive=True)
             else:
                 flash(
-                    "Updated - Group: {}, Type: {}, Note: {}".format(
+                    "Updated - Group Type: {}, Type: {}, Note: {}".format(
                         form.name.data, form.precedence.data, form.note.data
                     )
                 )
@@ -90,6 +90,7 @@ def edit_group_type(id):
 @app.route("/new_group", methods=["GET", "POST"])
 def new_group():
     form = NewGroupForm()
+    form.type.choices=get_form_choices(GroupType.select().order_by(GroupType.name), GroupType)
 
     if request.method == "POST":
         if form.validate_on_submit():
@@ -120,6 +121,8 @@ def edit_group(id):
 
     form.cert_authority.choices = get_form_choices(cert_authorities, CertAuthority)
     form.cert_authority.choices.insert(0, (0, ""))
+
+    form.type.choices=get_form_choices(GroupType.select().order_by(GroupType.name), GroupType)
 
     params = get_group_params(group)
     children = get_group_groups(group, "children")

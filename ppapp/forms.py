@@ -99,9 +99,6 @@ class EditParamForm(ParamForm, DeleteForm):
 class GroupForm(NameNoteSubmitForm):
     type = SelectField(
     "Type",
-    choices=get_form_choices(
-        GroupType.select().order_by(GroupType.name), GroupType
-    ),
     coerce=int,
 )
     pass

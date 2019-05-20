@@ -61,7 +61,7 @@ class ParamLevel(BaseModel):
 
 class BaseParam(BaseModel):
     param_level = ForeignKeyField(ParamLevel, backref="base_params")
-    name = CharField()
+    name = CharField(unique=True)
     default_value = CharField()
     note = CharField(null=True)
 
