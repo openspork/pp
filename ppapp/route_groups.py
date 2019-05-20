@@ -61,7 +61,7 @@ def edit_group_type(id):
                     )
                 )
                 # Recursive to delete foreign keys
-                group.delete_instance(recursive=True)
+                group_type.delete_instance(recursive=True)
             else:
                 flash(
                     "Updated - Group: {}, Type: {}, Note: {}".format(
