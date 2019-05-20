@@ -11,6 +11,7 @@ from ppapp.forms import *
 from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
+from ppapp.util.view_ops import *
 
 
 @app.route("/new_group", methods=["GET", "POST"])
@@ -43,6 +44,11 @@ def edit_group(id):
         return redirect("/")
     else:
         group = query.get()
+
+    cert_authorities = CertAuthority.select()
+
+    form.cert_authority.choices = get_form_choices(cert_authorities, CertAuthority)
+    form.cert_authority.choices.insert(0, (0, ""))
 
     params = get_group_params(group)
     children = get_group_groups(group, "children")
@@ -95,6 +101,13 @@ def edit_group(id):
                 # Handle base data
                 group.name = form.name.data
                 group.type = GroupType.get(GroupType.id == form.type.data)
+                if form.cert_authority.data == 0:
+                    group.cert_authority = None
+                else:
+                    group.cert_authority = CertAuthority.get(
+                        CertAuthority.id == form.cert_authority.data
+                    )
+
                 group.note = form.note.data
                 group.save()
 
@@ -117,4 +130,7 @@ def edit_group(id):
         form.name.data = group.name
         form.type.data = group.type.id
         form.note.data = group.note
+        if group.cert_authority:
+            form.cert_authority.data = group.cert_authority.id
+
         return render_template("edit_group.j2", form=form)

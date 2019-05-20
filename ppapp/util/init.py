@@ -3,7 +3,6 @@ from ppapp.models import *
 
 
 def init_db():
-    print("db init")
     try:
         db.connect()
     except Exception as e:
@@ -24,7 +23,7 @@ def init_db():
             GroupAvailParams,
             Cert,
             CertAuthority,
-            ClientCert
+            ClientCert,
         ],
         safe=True,
     )
@@ -56,9 +55,19 @@ def init_db():
             name="Addon", precedence=15, note="Group for addon unit level config"
         )
 
+        query = GroupType.select().where(GroupType.name == "Certificate Authority")
+
+    if not query.exists():
+        GroupType.create(
+            name="Certificate Authority",
+            precedence=20,
+            note="Group with CA for cert generation",
+        )
+
     if len(ParamLevel.select()) == 0:
         print("populating paramlevels")
         build_params()
 
     build_params()
     db.close()
+    print("db init")

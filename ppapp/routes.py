@@ -55,7 +55,7 @@ def rsop(mac_address):
             flash(str(e))
             return redirect("/")
     return render_template(
-        "config.j2",
+        "rsop.j2",
         mac_address=mac_address,
         rsop=rsop,
         BaseParam=BaseParam,

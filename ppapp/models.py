@@ -14,31 +14,34 @@ class Cert(BaseModel):
 
 
 class CertAuthority(Cert):
-    pass
+    name = CharField()
 
 
 class ClientCert(Cert):
-    ca = ForeignKeyField(CertAuthority)
+    cert_authority = ForeignKeyField(CertAuthority)
     # phone = ForeignKeyField(Phone, backref="client_cert")
 
 
 class Phone(BaseModel):
     name = CharField()
     mac_address = CharField(unique=True)
-    client_cert = ForeignKeyField(ClientCert, backref="phones", null=True) # Change this back to False default later
+    client_cert = ForeignKeyField(
+        ClientCert, backref="phones", null=True
+    )  # Change this back to False default later
     note = CharField(null=True)
 
 
 class GroupType(BaseModel):
     name = CharField()
     precedence = IntegerField(unique=True)
-    note = CharField()
+    note = CharField(null=True)
 
 
 class Group(BaseModel):
     type = ForeignKeyField(GroupType, backref="groups")
+    cert_authority = ForeignKeyField(CertAuthority, backref="groups", null=True)
     name = CharField()
-    note = CharField()
+    note = CharField(null=True)
 
 
 class GroupGroups(BaseModel):

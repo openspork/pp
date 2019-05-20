@@ -17,18 +17,19 @@ def get_form_choices(query, Model):
     for choice in query:
         if Model == Group:
             choice_string = "%s: %s" % (choice.type.name, choice.name)
-        if Model == BaseParam:
+        elif Model == BaseParam:
             choice_string = "%s - Default: %s" % (
                 choice.name[1:],
                 choice.default_value[:24],
             )
-        if Model == AvailParam:
+        elif Model == AvailParam:
             choice_string = "%s - Value: %s" % (
                 choice.base_param.name[1:],
                 choice.value,
             )
-        if Model == GroupType:
+        else:
             choice_string = choice.name
+
         form_choices.append((choice.id, choice_string))
     return form_choices
 
@@ -106,7 +107,11 @@ class NewGroupForm(GroupForm):
     pass
 
 
-class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm):
+class CertAuthorityForm(FlaskForm):
+    cert_authority = SelectField("Available CAs", coerce=int, default=0)
+
+
+class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm, CertAuthorityForm):
     avail_parents = SelectMultipleField("Available parents", coerce=int)
     active_parents = SelectMultipleField("Active parents", coerce=int)
     avail_children = SelectMultipleField("Available children", coerce=int)

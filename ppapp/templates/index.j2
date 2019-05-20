@@ -12,7 +12,6 @@ Index
 			<th>Name</th>
 			<th>MAC Address</th>
 			<th>Member of</th>
-			<th>CA</th>
 			<th>Note</th>
 			<th><a href="{{ url_for('new_phone') | safe }}">New</a></th>
 			<th>Config</th>
@@ -27,7 +26,6 @@ Index
 					{% for group in get_phone_groups(phone)[1] %}
 						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
-				<td> phone.client_cert.ca </td> {# TODO #}
 				<td>{{ phone.note }}</td>
 				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
 				<td><a href="{{ url_for('rsop', mac_address=phone.mac_address ) | safe }}">View RSoP</a></td>
@@ -44,6 +42,7 @@ Index
 			<th>Name</th>
 			<th>Member of</th>
 			<th>Members</th>
+			<th>CA</th>
 			<th>Note</th>
 			<td><a href="{{ url_for('new_group') | safe }}">New</a>
 
@@ -63,6 +62,7 @@ Index
 						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</td>
+				<td> {{ group.cert_authority.name }} </td>
 				<td>{{ group.note }}</td>
 				<td><a href="{{ url_for('edit_group', id=group.id ) | safe }}">Edit</a></td>
 			</tr>
