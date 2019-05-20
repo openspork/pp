@@ -21,7 +21,7 @@ from ppapp.util.parse_xml import build_params
 @app.route("/")
 def index():
     phones = Phone.select()
-    avail_params = AvailParam.select().order_by(AvailParam.base_param.name)
+    avail_params = AvailParam.select().join(BaseParam).order_by(BaseParam.name)
     # TODO: It would be nice to order by type, then name"
     groups = Group.select().order_by(Group.name)
     group_types = GroupType.select().order_by(GroupType.precedence)

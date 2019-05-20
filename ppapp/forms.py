@@ -73,12 +73,15 @@ class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteFor
     pass
 
 
-class ParamForm(NameNoteSubmitForm):
+class ParamForm(FlaskForm):
+    note = StringField("Note")
+    submit = SubmitField("Submit")
     value = StringField("Value", validators=[DataRequired()])
     pass
 
 
 class NewParamForm(ParamForm):
+
     param = SelectField(
         "Parameter",
         choices=get_form_choices(
