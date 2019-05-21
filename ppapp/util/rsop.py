@@ -75,7 +75,6 @@ def drill(group, rsop, depth):
 
     return rsop
 
-
 def gen_rsop(phone):
     rsop = {}
     # RSoP format:
