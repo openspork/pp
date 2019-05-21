@@ -1,5 +1,5 @@
 import os
-from io import BytesIO
+
 from flask import (
     abort,
     flash,
@@ -16,6 +16,7 @@ from ppapp.models import *
 from ppapp.route_phones import *
 from ppapp.route_params import *
 from ppapp.route_groups import *
+from ppapp.route_logs import *
 from ppapp.route_conf import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
