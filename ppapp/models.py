@@ -3,6 +3,8 @@ from peewee import *
 db = MySQLDatabase("pp", user="pp", password="password", host="localhost", port=3306)
 # db = SQLLite
 
+class LongTextField(TextField):
+    field_type = 'LONGTEXT'
 
 class BaseModel(Model):
     class Meta:
@@ -85,3 +87,14 @@ class PhoneAvailParams(BaseModel):
 class GroupAvailParams(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
     group = ForeignKeyField(Group)
+
+class Log(BaseModel):
+    phone = ForeignKeyField(Phone, backref = 'logs')
+    date_time = DateTimeField()
+    data = LongTextField()
+
+class AppLog(Log):
+    pass
+
+class BootLog(Log):
+    pass
