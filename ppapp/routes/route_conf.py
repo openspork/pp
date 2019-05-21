@@ -2,7 +2,7 @@ from io import BytesIO
 from flask import abort, request, send_file
 from ppapp import app
 from ppapp.models import *
-from ppapp.util.rsop import gen_rsop
+from ppapp.rsop.rsop import gen_rsop
 from ppapp.util.gen_xml import gen_xml
 from ppapp.util.misc import format_mac
 

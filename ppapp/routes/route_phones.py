@@ -12,7 +12,7 @@ from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
-from ppapp.util.rsop import *
+from ppapp.rsop.rsop import *
 
 
 @app.route("/new_phone", methods=["GET", "POST"])
