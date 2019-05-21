@@ -6,7 +6,7 @@ from ppapp.util.rsop import gen_rsop
 from ppapp.util.gen_xml import gen_xml
 from ppapp.util.misc import format_mac
 
-@app.route("/poly/<mac_address>.cfg")
+@app.route('/poly/<mac_address>.cfg')
 def get_conf(mac_address):
     formatted_mac_address = format_mac(mac_address)
     query = Phone.select().where(Phone.mac_address == formatted_mac_address)
@@ -18,7 +18,6 @@ def get_conf(mac_address):
     try:
         rsop = gen_rsop(phone)
         xml = gen_xml(rsop)
-        print()
     except Exception as e:
         app.logger.error('Failed to generate XML for phone  #%s: %s (%s): %s ' % (phone.id, phone.name, formatted_mac_address, e))
         return abort(500)

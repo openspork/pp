@@ -5,10 +5,10 @@ from ppapp.models import *
 from ppapp.util.misc import format_mac
 
 
-@app.route('/poly/<mac_address>-<type>.log', methods=["GET", "HEAD", "PUT"])
+@app.route('/poly/<mac_address>-<type>.log', methods=['GET', 'HEAD', 'PUT'])
 def put_log(mac_address, type):
     formatted_mac_address = format_mac(mac_address)
-    if request.method =="PUT":
+    if request.method =='PUT':
         query = Phone.select().where(Phone.mac_address == formatted_mac_address)
         if query.exists():
             phone = Phone.get(Phone.mac_address == formatted_mac_address)
