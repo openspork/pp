@@ -18,6 +18,7 @@ from ppapp.routes.route_params import *
 from ppapp.routes.route_groups import *
 from ppapp.routes.route_logs import *
 from ppapp.routes.route_conf import *
+from ppapp.routes.route_cas import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
