@@ -35,7 +35,7 @@ def init_db():
 
     if not query.exists():
         GroupType.create(
-            name="Client", precedence=0, note="Group for client level config"
+            name="Client", precedence=1, note="Group for client level config"
         )
 
     query = GroupType.select().where(GroupType.name == "Site")
