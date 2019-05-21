@@ -3,13 +3,7 @@ from ppapp.util.group_ops import *
 from ppapp.util.param_ops import *
 
 
-def drill(group, rsop, depth):
-    if depth == 20:
-        raise Exception("Depth of %s reached!  Most likely a we have a loop!" % depth)
-    depth += 1
-    # print('processing %s' % group.name)
-    params = get_group_params(group)[1]
-
+def resolve_params(params, group, rsop, depth):
     for param in params:
         # If this is not a duplicate
         if param.base_param.id not in rsop.keys():
@@ -50,6 +44,17 @@ def drill(group, rsop, depth):
                     raise Exception(
                         "Duplicate param of equal precedence!  Cannot resolve!  Param: %s - Groups: %s, %s" % ( param.base_param.name, group.name, existing_group.name )
                     )
+    return group, rsop, depth
+
+
+def drill(group, rsop, depth):
+    if depth == 20:
+        raise Exception("Depth of %s reached!  Most likely a we have a loop!" % depth)
+    depth += 1
+    # print('processing %s' % group.name)
+    params = get_group_params(group)[1]
+    resolve_params(params, group, rsop, depth )
+
 
     groups = get_group_groups(group, "parents")[1]
     if len(groups) > 0:
