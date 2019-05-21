@@ -2,13 +2,17 @@ from ppapp.models import *
 from ppapp.util.group_ops import *
 from ppapp.util.param_ops import *
 
+def resolve_cert_authority(cert_authority, group, rsop, depth):
+    # If CA is not yet defined
+    pass
+
 
 def resolve_params(params, group, rsop, depth):
     for param in params:
-        # If this is not a duplicate
+        # If param is not yet defined
         if param.base_param.id not in rsop.keys():
             # Add to our dict
-            rsop[param.base_param.id] = (param.value, group, depth, [])
+            rsop[param.base_param.id] = (param.value, group, depth, [], None)
         else:
             # Compare depth of saved param to current
             if depth > rsop[param.base_param.id][2]:
@@ -52,9 +56,14 @@ def drill(group, rsop, depth):
         raise Exception("Depth of %s reached!  Most likely a we have a loop!" % depth)
     depth += 1
     # print('processing %s' % group.name)
+    
+    # Process CA, if exists
+    if group.cert_authority:
+        resolve_cert_authority(group.cert_authority, group, rsop, depth)
+
+    # Resolve parameters
     params = get_group_params(group)[1]
     resolve_params(params, group, rsop, depth )
-
 
     groups = get_group_groups(group, "parents")[1]
     if len(groups) > 0:
@@ -70,14 +79,14 @@ def drill(group, rsop, depth):
 def gen_rsop(phone):
     rsop = {}
     # RSoP format:
-    # rsop[id] = value, group, depth, array of overries
+    # rsop[base param id] = value, group, depth, array of overrides
     overrides = []
     params = get_phone_params(phone)[1]
 
+    # Before processing groups, populate with data from the phone itself
     for param in params:
         rsop[param.base_param.id] = (param.value, phone, 0, [])
-
-    groups = get_phone_groups(phone)[1]
+    groups = get_phone_groups(phone)[1] # Index 1 for active groups
     for group in groups:
         rsop = drill(group, rsop, 0)
 
