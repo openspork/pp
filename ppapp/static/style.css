@@ -6,9 +6,14 @@
 	size: 6;
 }
 
-textarea {
+.xmlDisplay {
 	height: 30em;
 	width: 100%;
+}
+
+.certInput {
+	height: 24em;
+	width: 50%;
 }
 
 table {

@@ -6,6 +6,7 @@ from wtforms import (
     SubmitField,
     SelectField,
     SelectMultipleField,
+    TextAreaField
 )
 from wtforms.validators import DataRequired, MacAddress
 
@@ -41,8 +42,8 @@ class NameNoteSubmitForm(FlaskForm):
     submit = SubmitField("Submit")
 
 class NewCAForm(NameNoteSubmitForm):
-    public_key = StringField("Public Key", validators=[DataRequired()])
-    private_key = StringField("Private Key", validators=[DataRequired()])
+    public_key = TextAreaField("Public Key", validators=[DataRequired()])
+    private_key = TextAreaField("Private Key", validators=[DataRequired()])
     
 
 class PhoneForm(NameNoteSubmitForm):
