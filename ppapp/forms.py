@@ -40,6 +40,10 @@ class NameNoteSubmitForm(FlaskForm):
     note = StringField("Note")
     submit = SubmitField("Submit")
 
+class NewCAForm(NameNoteSubmitForm):
+    public_key = StringField("Public Key", validators=[DataRequired()])
+    private_key = StringField("Private Key", validators=[DataRequired()])
+    
 
 class PhoneForm(NameNoteSubmitForm):
     mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
