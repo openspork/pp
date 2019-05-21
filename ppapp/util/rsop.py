@@ -12,7 +12,7 @@ def resolve_params(params, group, rsop, depth):
         # If param is not yet defined
         if param.base_param.id not in rsop.keys():
             # Add to our dict
-            rsop[param.base_param.id] = (param.value, group, depth, [], None)
+            rsop[param.base_param.id] = (param.value, group, depth, [])
         else:
             # Compare depth of saved param to current
             if depth > rsop[param.base_param.id][2]:
