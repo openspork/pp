@@ -4,4 +4,4 @@ from ppapp.util.init import init_db
 
 init_db()
 
-from ppapp import routes
+from ppapp.routes import routes
