@@ -1,9 +1,12 @@
 {% extends "base.j2" %}
 {% block title %}
-Content Template
+RSoP
 {% endblock %}
+
 {% block content %}
 	<h3>Resultant Set of Policy for: {{ mac_address }} </h3>
+	<textarea class='xmlDisplay'>{{ xml }}</textarea>
+	<h4>Inheritance / override details:</h4>
 	<ul>
 		{# key = param, value = (value, depth, overrides) #}
 		{% for key, value in rsop|dictsort %}
@@ -31,8 +34,5 @@ Content Template
 			{% endif %}
 		{% endfor %}
 	</ul>
-
-
-	<textarea class='xmlDisplay'>{{ xml }}</textarea>
 	<br />
 {% endblock %}

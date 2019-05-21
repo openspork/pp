@@ -12,7 +12,7 @@ from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
-from ppapp.rsop.rsop import *
+from ppapp.rsop.generate import gen_rsop
 
 
 @app.route("/new_ca", methods=["GET", "POST"])

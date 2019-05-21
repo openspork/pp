@@ -19,7 +19,7 @@ from ppapp.routes.route_groups import *
 from ppapp.routes.route_logs import *
 from ppapp.routes.route_conf import *
 from ppapp.routes.route_cas import *
-from ppapp.rsop.rsop import *
+from ppapp.rsop.generate import gen_rsop
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
 
