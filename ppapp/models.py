@@ -12,12 +12,13 @@ class BaseModel(Model):
 
 
 class Cert(BaseModel):
-    cert = TextField()
+    public_key = TextField()
 
 
 class CertAuthority(Cert):
     name = CharField()
     note = CharField(null=True)
+    private_key = CharField()
 
 
 class ClientCert(Cert):

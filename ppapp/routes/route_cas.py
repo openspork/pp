@@ -17,5 +17,18 @@ from ppapp.util.rsop import *
 
 @app.route("/new_ca", methods=["GET", "POST"])
 def new_ca():
-	form = NewCAForm()
-	return render_template("new_ca.j2", form=form)
+    form = NewCAForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            cert_authority = CertAuthority.create(
+                name=form.name.data,
+                public_key=form.public_key.data,
+                private_key=form.private_key.data,
+                note=form.note.data,
+            ).save()
+            flash("New CA - Name: {}".format(form.name.data))
+            return redirect("/")
+        else:
+            flash_errors(form)
+    return render_template("new_ca.j2", form=form)
