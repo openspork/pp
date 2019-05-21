@@ -69,6 +69,10 @@ def edit_phone(id):
             new_group_ids = form.avail_groups.data
             prev_group_ids = form.active_groups.data
 
+            if form.issue_cert:
+                pass
+
+
             if form.delete.data:
                 flash(
                     "Deleted - Phone: {}, MAC address: {}, Note: {}".format(
