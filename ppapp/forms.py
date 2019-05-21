@@ -6,7 +6,7 @@ from wtforms import (
     SubmitField,
     SelectField,
     SelectMultipleField,
-    TextAreaField
+    TextAreaField,
 )
 from wtforms.validators import DataRequired, MacAddress
 
@@ -75,7 +75,7 @@ class AddRemoveGroupForm(FlaskForm):
 
 
 class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteForm):
-    pass
+    issue_cert = BooleanField()
 
 
 class ParamForm(FlaskForm):
