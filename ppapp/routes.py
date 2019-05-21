@@ -1,6 +1,9 @@
 import os
+from io import BytesIO
 from flask import (
+    abort,
     flash,
+    send_file,
     send_from_directory,
     render_template,
     request,
@@ -16,8 +19,6 @@ from ppapp.route_groups import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
-
-
 
 @app.route("/")
 def index():
@@ -36,6 +37,24 @@ def index():
         cert_authorities = cert_authorities
     )
 
+@app.route("/poly/<mac>.cfg")
+def get_conf(mac):
+    formatted_mac = ':'.join(mac[i:i+2] for i in range(0,12,2))
+    try:
+        phone = Phone.get(Phone.mac_address == formatted_mac)
+        rsop = gen_rsop(phone)
+        xml = gen_xml(rsop)
+        print(phone.name)
+    except Exception as e:
+        return abort(500)
+
+    byte_io = BytesIO()
+    byte_io.write(xml.encode())
+    byte_io.seek(0)
+
+    return send_file(byte_io,
+        attachment_filename="%s.cfg" % mac,
+        as_attachment=True)
 
 @app.route("/init")
 def init():
@@ -53,7 +72,7 @@ def rsop(mac_address):
         phone = query.get()
         try:
             rsop = gen_rsop(phone)
-            xmls = gen_xml(rsop)
+            xml = gen_xml(rsop)
         except Exception as e:
             flash(str(e))
             return redirect("/")
@@ -64,7 +83,7 @@ def rsop(mac_address):
         BaseParam=BaseParam,
         Group=Group,
         Phone=Phone,
-        xmls=xmls,
+        xml=xml,
     )
 
 

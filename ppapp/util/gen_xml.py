@@ -88,7 +88,6 @@ def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples from RSoP
     params = []
     dicts = []
-    xmls = []
     for base_param_id, param_value in rsop.items():
         base_param = BaseParam.get(BaseParam.id == base_param_id)
         param_level = base_param.param_level
@@ -109,6 +108,5 @@ def gen_xml(rsop):
         merge_dict(current_dict, full_tree)
 
     xml_string = xmltodict.unparse(AlphaDict(current_dict), pretty=True)
-    xmls.append(xml_string)
 
-    return xmls
+    return xml_string
