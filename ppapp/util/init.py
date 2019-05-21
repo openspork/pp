@@ -24,7 +24,8 @@ def init_db():
             CertAuthority,
             ClientCert,
             BootLog,
-            AppLog
+            AppLog,
+            CallLog
         ],
         safe=True,
     )

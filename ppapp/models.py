@@ -98,3 +98,6 @@ class AppLog(Log):
 
 class BootLog(Log):
     pass
+
+class CallLog(Log):
+    pass
