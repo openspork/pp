@@ -11,13 +11,13 @@ def find_node(parent, d):
             # Check if our ParamLevel already exists
             query = ParamLevel.select().where(ParamLevel.name == key)
             if not query.exists():
-                print('Value is a dictionary!')
+                #print('Value is a dictionary!')
                 new_param_level = ParamLevel.create(name=key)
                 if parent == None:  # This is the root node
-                    print("Root node: %s" % key)
-
+                    #print("Root node: %s" % key)
+                    pass
                 elif parent != None:
-                    print('Creating parent / child mapping! %s -> %s' % (parent.name, new_param_level.name))
+                    #print('Creating parent / child mapping! %s -> %s' % (parent.name, new_param_level.name))
                     ParamLevelParamLevels.create(parent=parent, child=new_param_level)
             else:
                 # Define so as to continue recursion
@@ -33,7 +33,7 @@ def find_node(parent, d):
             query = BaseParam.select().where(BaseParam.name == key)
             if not query.exists():
                 # If value is not a dict, key[val] is a keypair itself
-                print('Value is not a dictionary: it is a: %s  Create a leaf: %s = %s ' % (type(value), key, value))
+                #print('Value is not a dictionary: it is a: %s  Create a leaf: %s = %s ' % (type(value), key, value))
                 BaseParam.create(
                     param_level=parent, name=key, default_value=value, note=None
                 )
@@ -44,10 +44,10 @@ def import_file(file):
     with open('./configs/%s' % file) as fd:
         content = fd.read()
         doc = xmltodict.parse(content)
-        # try:
-        find_node(None, doc)
-    # except Exception as e:
-    # print(e)
+        try:
+            find_node(None, doc)
+        except Exception as e:
+            print(e)
 
 def build_params():
     print("building params")

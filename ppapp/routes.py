@@ -16,6 +16,7 @@ from ppapp.models import *
 from ppapp.route_phones import *
 from ppapp.route_params import *
 from ppapp.route_groups import *
+from ppapp.route_conf import *
 from ppapp.util.rsop import *
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
@@ -37,24 +38,6 @@ def index():
         cert_authorities = cert_authorities
     )
 
-@app.route("/poly/<mac>.cfg")
-def get_conf(mac):
-    formatted_mac = ':'.join(mac[i:i+2] for i in range(0,12,2))
-    try:
-        phone = Phone.get(Phone.mac_address == formatted_mac)
-        rsop = gen_rsop(phone)
-        xml = gen_xml(rsop)
-        print(phone.name)
-    except Exception as e:
-        return abort(500)
-
-    byte_io = BytesIO()
-    byte_io.write(xml.encode())
-    byte_io.seek(0)
-
-    return send_file(byte_io,
-        attachment_filename="%s.cfg" % mac,
-        as_attachment=True)
 
 @app.route("/init")
 def init():
