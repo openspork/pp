@@ -70,7 +70,7 @@ def resolve_params(params, group, rsop, depth):
 
 def drill(group, rsop, depth):
     if depth == 20:
-        raise Exception("Param depth of %s reached!  Most likely a we have a loop!" % depth)
+        raise Exception("RSoP param depth of %s reached!  Most likely a we have a loop!" % depth)
     depth += 1
     #print('processing %s' % group.name)
     
@@ -89,9 +89,6 @@ def drill(group, rsop, depth):
     return rsop
 
 def gen_rsop(phone):
-
-    ca_rsop = CertAuthorityRSoP(phone)
-
     params = get_phone_params(phone)[1] # Index 1 for active groups
     rsop = {}
     # RSoP format:

@@ -12,7 +12,7 @@ class CertAuthorityRSoP:
     def drill(self, group, depth):
         depth += 1
         if depth == 20:
-            raise Exception("CA depth of %s reached!  Most likely a we have a loop!" % depth)
+            raise Exception("RSoP CA depth of %s reached!  Most likely a we have a loop!" % depth)
         # If this group is a CA
         if group.cert_authority:
             # Create the discovered CA
@@ -35,7 +35,6 @@ class CertAuthorityRSoP:
                     curr_precedence = self.current_cert_authority.group.type.precedence
                     # Check by group priorities
                     if precedence > curr_precedence:
-                        print('updating current ca')
                         # If higher, add current to overrides, set to us
                         self.cert_authority_overrides.append(self.current_cert_authority)
                         self.current_cert_authority = found_cert_authority
