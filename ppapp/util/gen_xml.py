@@ -25,17 +25,16 @@ def get_branch_dict_by_name(params):
                 param_levels[param_level][
                     base_param
                 ] = param_value  # Add our value with base as key
-
     return param_levels
 
 
 # "current" - is a ParamLevel
 def build_parent_tree(current):
-    # print(f'Found root node {current.name}')
-    temp_dict = {}
+    print('Current: %s' % current.name)
+    temp_dict = { current.name: {} }
     query = (
-        ParamLevel.select()
         # If we are looking for parents, we are matching on child
+        ParamLevel.select()
         .join(
             ParamLevelParamLevels,
             JOIN.LEFT_OUTER,
@@ -43,8 +42,11 @@ def build_parent_tree(current):
         ).where(ParamLevelParamLevels.child == current)
     )
     while query.exists():
+        # While we have a parent
         result = query.get()
+        print('Parent: %s' % result.name)
         temp_dict = {result.name: temp_dict}
+
         query = (
             ParamLevel.select()
             # If we are looking for parents, we are matching on child
@@ -58,12 +60,14 @@ def build_parent_tree(current):
 
 
 def assemble_full_tree(parent_tree, raw_param_branch):
+    print('assemble parent tree')
     position = parent_tree
     root = position
     while position:
+        print(position)
         position = next(iter(position.values()))
     position.update(raw_param_branch)
-
+    print(root)
     return root
 
 
@@ -103,7 +107,12 @@ def gen_xml(rsop):
         parent_tree = build_parent_tree(
             ParamLevel.get(ParamLevel.name == param_branch_name)
         )
+
         full_tree = assemble_full_tree(parent_tree, param_branch)
+        print('\nParent ', parent_tree)
+        print('Branch: ', param_branch)
+        print('Full: ', full_tree, '\n')
+
 
         merge_dict(current_dict, full_tree)
 

@@ -52,15 +52,16 @@ def init():
 def rsop(mac_address):
     query = Phone.select().where(Phone.mac_address == mac_address)
     if not query.exists():
-        mac_address = "not found!"
+        mac_address = "Phone not found!"
+        return redirect("/")
     else:
         phone = query.get()
-        try:
-            rsop = gen_rsop(phone)
-            xml = gen_xml(rsop)
-        except Exception as e:
-            flash(str(e))
-            return redirect("/")
+        #try:
+        rsop = gen_rsop(phone)
+        xml = gen_xml(rsop)
+        # except Exception as e:
+        #     flash(str(e))
+        #     return redirect("/")
     return render_template(
         "rsop.j2",
         mac_address=mac_address,
