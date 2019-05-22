@@ -1,10 +1,8 @@
 import os
-
 from flask import (
     abort,
     flash,
     send_file,
-    send_from_directory,
     render_template,
     request,
     redirect,
@@ -76,5 +74,5 @@ def rsop(mac_address):
 
 @app.route("/favicon.ico")
 def favicon():
-    dir = os.path.join(app.root_path, "static")
-    return send_from_directory(dir, "favicon.ico", mimetype="image/vnd.microsoft.icon")
+    file = os.path.join(app.root_path, "static", "favicon.ico")
+    return send_file(file, mimetype="image/vnd.microsoft.icon")
