@@ -3,11 +3,6 @@ from ppapp.util.group_ops import *
 from ppapp.util.param_ops import *
 from .RSoP import *
 
-def resolve_cert_authority(cert_authority, group, rsop, depth):
-    # If CA is not yet defined
-    pass
-
-
 def resolve_params(params, group, rsop, depth):
     for param in params:
         # If param is not yet defined
@@ -20,6 +15,9 @@ def resolve_params(params, group, rsop, depth):
                 # If deeper, add as an override
                 # print('Deeper dupe!')
                 rsop[param.base_param.id][3].append((param.value, group.id, depth))
+            # TODO: handle shallower
+
+
             elif rsop[param.base_param.id][2] == depth:
                 # If equal, prefer based on group type precedence
                 existing_group = Group.get(Group.id == rsop[param.base_param.id][1])
@@ -54,14 +52,10 @@ def resolve_params(params, group, rsop, depth):
 
 def drill(group, rsop, depth):
     if depth == 20:
-        raise Exception("Depth of %s reached!  Most likely a we have a loop!" % depth)
+        raise Exception("Param depth of %s reached!  Most likely a we have a loop!" % depth)
     depth += 1
     #print('processing %s' % group.name)
     
-    # Process CA, if exists
-    if group.cert_authority:
-        resolve_cert_authority(group.cert_authority, group, rsop, depth)
-
     # Resolve parameters
     params = get_group_params(group)[1]
     resolve_params(params, group, rsop, depth )
@@ -78,14 +72,16 @@ def drill(group, rsop, depth):
 
 def gen_rsop(phone):
 
-    rsop_obj = RSoP_(phone)
 
+    ca_rsop = CertAuthorityRSoP(phone)
+    print(ca_rsop)
+
+    params = get_phone_params(phone)[1] # Index 1 for active groups
     rsop = {}
     # RSoP format:
     # rsop[base param id] = value, group, depth, array of overrides
     overrides = []
-    params = get_phone_params(phone)[1]
-
+    
     # Before processing groups, populate with data from the phone itself
     for param in params:
         rsop[param.base_param.id] = (param.value, phone, 0, [])
