@@ -17,7 +17,7 @@ from ppapp.rsop.ca_rsop import *
 
 @app.route("/new_ca", methods=["GET", "POST"])
 def new_ca():
-    form = NewCAForm()
+    form = NewCertAuthorityForm()
     if request.method == "POST":
         if form.validate_on_submit():
             cert_authority = CertAuthority.create(
@@ -34,4 +34,34 @@ def new_ca():
 
 @app.route("/edit_ca/<id>", methods=["GET", "POST"])
 def edit_ca(id):
-    return(id)
+    query = CertAuthority.select().where(CertAuthority.id == id)
+    if not query.exists():
+        flash("Invalid ID!")
+        return redirect("/")
+    else:
+        cert_authority = query.get()
+
+    form = EditCertAuthorityForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            if form.delete.data:
+                flash("Deleted - CA: {}".format(cert_authority.name))
+                cert_authority.delete_instance(recursive=True)
+            else:
+                flash("Updated - CA: {}".format(cert_authority.name))
+                # Handle base data
+                cert_authority.name = form.name.data
+                cert_authority.private_key = form.private_key.data
+                cert_authority.public_key = form.public_key.data
+                cert_authority.note = form.note.data
+                cert_authority.save()
+            return redirect("/")
+        else:
+            flash_errors(form)
+    elif request.method == "GET":
+        form.name.data = cert_authority.name
+        form.private_key.data = cert_authority.private_key
+        form.public_key.data = cert_authority.public_key
+        form.note.data = cert_authority.note
+    return render_template("edit_ca.j2", form=form, cert_authority=cert_authority)

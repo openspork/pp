@@ -7,8 +7,7 @@ def init_db():
     except Exception as e:
         print(str(e))
 
-    db.create_tables(
-        [
+    tables = [
             Phone,
             Group,
             GroupType,
@@ -20,15 +19,16 @@ def init_db():
             AvailParam,
             PhoneAvailParams,
             GroupAvailParams,
-            Cert,
             CertAuthority,
             ClientCert,
             BootLog,
             AppLog,
             CallLog
-        ],
-        safe=True,
-    )
+            ]
+    # Creating missing tables
+    for table in tables:
+        db.create_tables([table], safe=True)
+
 
     # Create our group types
     query = GroupType.select().where(GroupType.name == "Client")

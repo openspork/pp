@@ -1,0 +1,45 @@
+{% extends "base.j2" %}
+{% block title %}
+New CA
+{% endblock %}
+{% block content %}
+
+    <h3>Edit CA</h3>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                {{ form.name.label }}
+                <br>
+                {{ form.name(size=32) }}
+            </div>
+        </div>
+        <br>
+        <div class="pure-g">
+                <div class="pure-u-1-2">
+                    {{ form.public_key.label }}
+                    <br>
+                    {{ form.public_key(class_='certInput') }}
+                </div>
+                <div class="pure-u-1-2">
+                    {{ form.private_key.label }}
+                    <br>
+                    {{ form.private_key(class_='certInput') }}
+                </div>
+        </div>
+        <br>
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                {{ form.note.label }}
+                <br>
+                {{ form.note(size=32) }}
+                {{ form.delete.label }}
+                {{ form.delete }}
+                <br />
+                <br />
+                {{ form.submit() }}<br>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

@@ -58,8 +58,7 @@ def edit_param(id):
             return redirect("/")
         else:
             flash_errors(form)
-        return render_template("edit_param.j2", form=form, avail_param=avail_param)
     elif request.method == "GET":
         form.value.data = avail_param.value
         form.note.data = avail_param.note
-        return render_template("edit_param.j2", form=form, avail_param=avail_param)
+    return render_template("edit_param.j2", form=form, avail_param=avail_param)

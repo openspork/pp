@@ -41,9 +41,6 @@ class NameNoteSubmitForm(FlaskForm):
     note = StringField("Note")
     submit = SubmitField("Submit")
 
-class NewCAForm(NameNoteSubmitForm):
-    public_key = TextAreaField("Public Key", validators=[DataRequired()])
-    private_key = TextAreaField("Private Key", validators=[DataRequired()])
     
 
 class PhoneForm(NameNoteSubmitForm):
@@ -119,12 +116,21 @@ class NewGroupForm(GroupForm):
     pass
 
 
+class CertAuthorityForm(NameNoteSubmitForm, FlaskForm):
+    public_key = TextAreaField("Public Key", validators=[DataRequired()])
+    private_key = TextAreaField("Private Key", validators=[DataRequired()])
+    
 
-class CertAuthorityForm(FlaskForm):
+class NewCertAuthorityForm(CertAuthorityForm):
+    pass
+
+class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):
+    pass
+
+class SelectCertAuthorityForm(FlaskForm):
     cert_authority = SelectField("Available CAs", coerce=int, default=0)
 
-
-class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm, CertAuthorityForm):
+class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm, SelectCertAuthorityForm):
     avail_parents = SelectMultipleField("Available parents", coerce=int)
     active_parents = SelectMultipleField("Active parents", coerce=int)
     avail_children = SelectMultipleField("Available children", coerce=int)

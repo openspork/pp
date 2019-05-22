@@ -1,51 +1,42 @@
 from peewee import *
 
 db = MySQLDatabase("pp", user="pp", password="password", host="localhost", port=3306)
-# db = SQLLite
 
 class LongTextField(TextField):
     field_type = 'LONGTEXT'
+
+class NameNoteField(Model):
+    name = CharField()
+    note = CharField(null=True)
+
 
 class BaseModel(Model):
     class Meta:
         database = db
 
-
 class Cert(BaseModel):
     public_key = TextField()
 
-
-class CertAuthority(Cert):
-    name = CharField()
-    note = CharField(null=True)
-    private_key = CharField()
+class CertAuthority(Cert, NameNoteField):
+    private_key = TextField()
 
 
 class ClientCert(Cert):
     cert_authority = ForeignKeyField(CertAuthority)
-    # phone = ForeignKeyField(Phone, backref="client_cert")
 
-
-class Phone(BaseModel):
-    name = CharField()
+class Phone(BaseModel, NameNoteField):
     mac_address = CharField(unique=True)
     client_cert = ForeignKeyField(
         ClientCert, backref="phones", null=True
     )  # Change this back to False default later
-    note = CharField(null=True)
 
 
-class GroupType(BaseModel):
-    name = CharField()
+class GroupType(BaseModel, NameNoteField):
     precedence = IntegerField(unique=True)
-    note = CharField(null=True)
 
-
-class Group(BaseModel):
+class Group(BaseModel, NameNoteField):
     type = ForeignKeyField(GroupType, backref="groups")
     cert_authority = ForeignKeyField(CertAuthority, backref="groups", null=True)
-    name = CharField()
-    note = CharField(null=True)
 
 
 class GroupGroups(BaseModel):
@@ -62,11 +53,9 @@ class ParamLevel(BaseModel):
     name = CharField(null=True)
 
 
-class BaseParam(BaseModel):
+class BaseParam(BaseModel, NameNoteField):
     param_level = ForeignKeyField(ParamLevel, backref="base_params")
-    name = CharField()
     default_value = CharField()
-    note = CharField(null=True)
 
 
 class ParamLevelParamLevels(BaseModel):
