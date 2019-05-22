@@ -8,52 +8,86 @@ RSoP
 	<textarea class='xmlDisplay'>{{ xml }}</textarea>
 	<h4>Inheritance / override details:</h4>
 	Certificate Authorities:
-	<ul>
-		<li>
-		<a href='{{ url_for('edit_ca', id=cert_authority_rsop.current_cert_authority.cert_authority.id ) | safe }}'>
-		{{ cert_authority_rsop.current_cert_authority.cert_authority.name }}
-		</a>
-		from 
-		<a href='{{ url_for('edit_group', id=cert_authority_rsop.current_cert_authority.group.id ) | safe }}'>
-		{{ cert_authority_rsop.current_cert_authority.group.name }}
-		</a>
-		at depth
-		{{ cert_authority_rsop.current_cert_authority.depth }}
-		</li>
+	{% if cert_authority_rsop.cert_authority %}
+		<ul>
+			<li>
+				<a href='{{ url_for('edit_ca', id=cert_authority_rsop.current_cert_authority.cert_authority.id ) | safe }}'>
+					{{ cert_authority_rsop.current_cert_authority.cert_authority.name }}
+				</a>
+				from 
+				<a href='{{ url_for('edit_group', id=cert_authority_rsop.current_cert_authority.group.id ) | safe }}'>
+					{{ cert_authority_rsop.current_cert_authority.group.name }}
+				</a>
+				at depth {{ cert_authority_rsop.current_cert_authority.depth }}
+			</li>
 
-		{% if cert_authority_rsop.cert_authority_overrides|length > 0 %}
-			Overrode:
-			<ul>
-				{% for found_cert_authority in cert_authority_rsop.cert_authority_overrides %}
-
-				<li>{{ found_cert_authority.cert_authority.name }} from <a href='{{ url_for('edit_group', id=found_cert_authority.group.id ) | safe }}'>{{ found_cert_authority.group.name }}</a> at depth {{ found_cert_authority.depth }}</li>
-
-				{% endfor %}
-			</ul>
-		{% endif %}
-	</ul>
+			{% if cert_authority_rsop.cert_authority_overrides|length > 0 %}
+				Overrode:
+				<ul>
+					{% for found_cert_authority in cert_authority_rsop.cert_authority_overrides %}
+						<li>
+							{{ found_cert_authority.cert_authority.name }}
+							from 
+							<a href='{{ url_for('edit_group', id=found_cert_authority.group.id ) | safe }}'>
+								{{ found_cert_authority.group.name }}
+							</a>
+							at depth {{ found_cert_authority.depth }}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</ul>
+	{% endif %}
+	<br>
+	<br>
 	Paramaters:
 	<ul>
 		{# key = param, value = (value, depth, overrides) #}
 		{% for key, value in rsop|dictsort %}
 			{# if at depth 0, this is a phone #}
 			{% if value[2] == 0 %} 
-				<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>{{ Phone.get(Phone.id == value[1] ).name }}</a> at depth {{ value[2] }}
-				{% if value[3] | length > 0 %} </li>
+				<li>
+					{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }}
+					from
+					<a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>
+						{{ Phone.get(Phone.id == value[1] ).name }}
+					</a>
+					at depth {{ value[2] }}
+				</li>
+				{% if value[3] | length > 0 %} 
 					Overrode:
 					<ul>
 						{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-							<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }}</li>
+							<li>
+								{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }}
+								from
+								<a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>
+									{{ Group.get(Group.id == overridden_group ).name }}
+								</a>
+								at depth {{ overridden_depth }}
+							</li>
 						{% endfor %}
 					</ul>
 				{% endif %}
 			{% else %} {# if > depth 0, this is a group #}
-				<li>{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }} from <a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>{{ Group.get(Group.id == value[1] ).name }}</a> at depth {{ value[2] }}
+				<li>
+					{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }}
+					from
+					<a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>
+						{{ Group.get(Group.id == value[1] ).name }}
+					</a> at depth {{ value[2] }}
 				{% if value[3] | length > 0 %}</li>
 					Overrode:
 					<ul>
 						{% for overridden_value, overridden_group, overridden_depth in value[3] %}
-							<li> {{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }} from <a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>{{ Group.get(Group.id == overridden_group ).name }}</a> at depth {{ overridden_depth }} </li>
+							<li>
+								{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }}
+								from
+								<a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>
+									{{ Group.get(Group.id == overridden_group ).name }}
+								</a>
+								at depth {{ overridden_depth }}
+							</li>
 						{% endfor %}
 					</ul>
 				{% endif %}
