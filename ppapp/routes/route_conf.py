@@ -3,7 +3,7 @@ from io import BytesIO
 from flask import abort, request, send_file
 from ppapp import app
 from ppapp.models import *
-from ppapp.rsop.generate import gen_rsop
+from ppapp.rsop.param_rsop import gen_param_rsop
 from ppapp.util.gen_xml import gen_xml
 from ppapp.util.misc import format_mac
 
@@ -23,7 +23,7 @@ def get_custom_conf(mac_address):
     else:
         phone = query.get()
     try:
-        rsop = gen_rsop(phone)
+        rsop = gen_param_rsop(phone)
         xml = gen_xml(rsop)
     except Exception as e:
         app.logger.error('Failed to generate XML for phone  #%s: %s (%s): %s ' % (phone.id, phone.name, formatted_mac_address, e))

@@ -12,7 +12,7 @@ from ppapp.models import *
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
-from ppapp.rsop.generate import gen_rsop
+from ppapp.rsop.param_rsop import gen_param_rsop
 
 
 @app.route("/new_phone", methods=["GET", "POST"])
@@ -102,7 +102,7 @@ def edit_phone(id):
 
                 # Validate RSoP
                 try:
-                    rsop = gen_rsop(phone)
+                    rsop = gen_param_rsop(phone)
                 except Exception as e:
                     flash(str(e))
             return redirect("/")

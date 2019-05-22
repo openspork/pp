@@ -17,10 +17,10 @@ from ppapp.routes.route_groups import *
 from ppapp.routes.route_logs import *
 from ppapp.routes.route_conf import *
 from ppapp.routes.route_cas import *
-from ppapp.rsop.generate import gen_rsop
+from ppapp.rsop.param_rsop import gen_param_rsop
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
-from ppapp.rsop.RSoP import *
+from ppapp.rsop.ca_rsop import *
 
 @app.route("/")
 def index():
@@ -56,7 +56,7 @@ def rsop(mac_address):
     else:
         phone = query.get()
         try:
-            param_rsop = gen_rsop(phone)
+            param_rsop = gen_param_rsop(phone)
         except Exception as e:
             flash(str(e))
             return redirect("/")
