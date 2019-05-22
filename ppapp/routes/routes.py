@@ -53,17 +53,15 @@ def init():
 def rsop(mac_address):
     query = Phone.select().where(Phone.mac_address == mac_address)
     if not query.exists():
-        mac_address = "Phone not found!"
+        flash("Can't display RSoP - phone not found!")
         return redirect("/")
     else:
         phone = query.get()
-        #try:
-        param_rsop = gen_rsop(phone)
-        #current_cert_authority
-
-        # except Exception as e:
-        #     flash(str(e))
-        #     return redirect("/")
+        try:
+            param_rsop = gen_rsop(phone)
+        except Exception as e:
+            flash(str(e))
+            return redirect("/")
     return render_template(
         "rsop.j2",
         mac_address=mac_address,
