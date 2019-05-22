@@ -32,3 +32,7 @@ def new_ca():
         else:
             flash_errors(form)
     return render_template("new_ca.j2", form=form)
+
+@app.route("/edit_ca/<id>", methods=["GET", "POST"])
+def edit_ca(id):
+    return(id)

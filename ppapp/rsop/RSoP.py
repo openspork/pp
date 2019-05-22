@@ -22,19 +22,31 @@ class CertAuthorityRSoP:
                 # Assign the CA to us
                 self.current_cert_authority = found_cert_authority
             else:
-                # If deeper, add as an override
-                if depth > self.current_cert_authority.depth:
-                    print('Deeper dupe!')
+                prev_depth = self.current_cert_authority.depth
+                # If deeper, add to overrides
+                if depth > prev_depth:
                     self.cert_authority_overrides.append(found_cert_authority)
-                elif depth < self.current_cert_authority.depth:
+                elif depth < prev_depth:
                     # If shallower, add current to overrides, set to us
                     self.cert_authority_overrides.append(self.current_cert_authority)
                     self.current_cert_authority = found_cert_authority
-                elif depth == self.current_cert_authority.depth:
-                    raise Exception(
-                        "Duplicate CA of equal depth!  Cannot resolve!  CAs: %s, %s" % 
-                        ( found_cert_authority.cert_authority.name, self.current_cert_authority.cert_authority.name )
-                    )
+                elif depth == prev_depth:
+                    precedence = group.type.precedence
+                    curr_precedence = self.current_cert_authority.group.type.precedence
+                    # Check by group priorities
+                    if precedence > curr_precedence:
+                        print('updating current ca')
+                        # If higher, add current to overrides, set to us
+                        self.cert_authority_overrides.append(self.current_cert_authority)
+                        self.current_cert_authority = found_cert_authority
+                    elif precedence < curr_precedence:
+                        # If lower, add to overrides
+                        self.cert_authority_overrides.append(found_cert_authority)
+                    elif precedence == curr_precedence:
+                        raise Exception(
+                            "Duplicate CA of equal depth!  Cannot resolve!  CAs: %s, %s" % 
+                            ( found_cert_authority.cert_authority.name, self.current_cert_authority.cert_authority.name )
+                        )
 
         groups = get_group_groups(group, "parents")[1]
         if len(groups) > 0:
