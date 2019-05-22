@@ -90,7 +90,6 @@ def drill(group, rsop, depth):
 
 def gen_rsop(phone):
 
-
     ca_rsop = CertAuthorityRSoP(phone)
 
     params = get_phone_params(phone)[1] # Index 1 for active groups
