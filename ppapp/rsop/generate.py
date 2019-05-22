@@ -16,8 +16,26 @@ def resolve_params(params, group, rsop, depth):
                 # print('Deeper dupe!')
                 rsop[param.base_param.id][3].append((param.value, group.id, depth))
             # TODO: handle shallower
-
-
+            if depth < rsop[param.base_param.id][2]:
+                # print('Higher priority dupe!')
+                overridden_param_overrides = rsop[param.base_param.id][
+                    3
+                ]  # Save existing overrides
+                # Format param to override for storage
+                overridden_param = (
+                    rsop[param.base_param.id][0],
+                    rsop[param.base_param.id][1].id,
+                    rsop[param.base_param.id][2],
+                )
+                overridden_param_overrides.append(
+                    overridden_param
+                )  # Concatenate previously overridden params with current
+                rsop[param.base_param.id] = (
+                    param.value,
+                    group,
+                    depth,
+                    overridden_param_overrides,
+                )  # Update param
             elif rsop[param.base_param.id][2] == depth:
                 # If equal, prefer based on group type precedence
                 existing_group = Group.get(Group.id == rsop[param.base_param.id][1])
