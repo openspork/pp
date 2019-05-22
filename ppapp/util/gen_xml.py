@@ -64,10 +64,10 @@ def assemble_full_tree(parent_tree, raw_param_branch):
     position = parent_tree
     root = position
     while position:
-        print(position)
+        #print(position)
         position = next(iter(position.values()))
     position.update(raw_param_branch)
-    print(root)
+    #print(root)
     return root
 
 # Merge A into B

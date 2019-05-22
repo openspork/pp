@@ -12,11 +12,10 @@ class ParamRSoP():
 
 # Define an RSoP object that will be extensible for additional future RSoPs
 class RSoP_:
+	i =123
 	def __init__(self, phone):
-		phone = self.phone
-		param_rsop = self.ParamRSoP()
-	
-
+		print(phone.name)
+	pass
 
 
 

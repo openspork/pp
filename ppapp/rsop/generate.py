@@ -56,7 +56,7 @@ def drill(group, rsop, depth):
     if depth == 20:
         raise Exception("Depth of %s reached!  Most likely a we have a loop!" % depth)
     depth += 1
-    print('processing %s' % group.name)
+    #print('processing %s' % group.name)
     
     # Process CA, if exists
     if group.cert_authority:
@@ -71,12 +71,15 @@ def drill(group, rsop, depth):
         for group in groups:
             drill(group, rsop, depth)
     else:
-        print('final group found')
+        #print('final group found')
         pass
 
     return rsop
 
 def gen_rsop(phone):
+
+    rsop_obj = RSoP_(phone)
+
     rsop = {}
     # RSoP format:
     # rsop[base param id] = value, group, depth, array of overrides
