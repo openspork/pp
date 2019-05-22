@@ -35,7 +35,7 @@ class CertAuthorityRSoP:
                     self.current_cert_authority = found_cert_authority
                 elif depth == self.current_cert_authority.depth:
                     raise Exception(
-                        "Duplicate param of equal precedence!  Cannot resolve!  CAs: %s, %s" % 
+                        "Duplicate CA of equal depth!  Cannot resolve!  CAs: %s, %s" % 
                         ( found_cert_authority.cert_authority.name, self.current_cert_authority.cert_authority.name )
                     )
 
@@ -51,7 +51,6 @@ class CertAuthorityRSoP:
 
     def __init__(self, phone):
         self.resolve_ca(get_phone_groups(phone)[1])
-        print(self.current_cert_authority.cert_authority.name)
 
 # Stub, TODO
 class EffectiveParam():

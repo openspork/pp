@@ -92,7 +92,6 @@ def gen_rsop(phone):
 
 
     ca_rsop = CertAuthorityRSoP(phone)
-    print(ca_rsop)
 
     params = get_phone_params(phone)[1] # Index 1 for active groups
     rsop = {}
