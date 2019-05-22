@@ -22,6 +22,7 @@ from ppapp.routes.route_cas import *
 from ppapp.rsop.generate import gen_rsop
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
+from ppapp.rsop.RSoP import *
 
 @app.route("/")
 def index():
@@ -57,19 +58,21 @@ def rsop(mac_address):
     else:
         phone = query.get()
         #try:
-        rsop = gen_rsop(phone)
-        xml = gen_xml(rsop)
+        param_rsop = gen_rsop(phone)
+        #current_cert_authority
+
         # except Exception as e:
         #     flash(str(e))
         #     return redirect("/")
     return render_template(
         "rsop.j2",
         mac_address=mac_address,
-        rsop=rsop,
+        rsop=param_rsop,
+        cert_authority_rsop = CertAuthorityRSoP(phone),
         BaseParam=BaseParam,
         Group=Group,
         Phone=Phone,
-        xml=xml,
+        xml=gen_xml(param_rsop)
     )
 
 

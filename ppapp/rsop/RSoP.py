@@ -9,10 +9,6 @@ class FoundCertAuthority:
         self.depth = depth
 
 class CertAuthorityRSoP:
-    current_cert_authority = None
-    cert_authority_overrides = []
-
-
     def drill(self, group, depth):
         depth += 1
         if depth == 20:
@@ -28,6 +24,7 @@ class CertAuthorityRSoP:
             else:
                 # If deeper, add as an override
                 if depth > self.current_cert_authority.depth:
+                    print('Deeper dupe!')
                     self.cert_authority_overrides.append(found_cert_authority)
                 elif depth < self.current_cert_authority.depth:
                     # If shallower, add current to overrides, set to us
@@ -50,6 +47,8 @@ class CertAuthorityRSoP:
             ca = self.drill(group, depth = 0)
 
     def __init__(self, phone):
+        self.current_cert_authority = None
+        self.cert_authority_overrides = []
         self.resolve_ca(get_phone_groups(phone)[1])
 
 # Stub, TODO
