@@ -18,7 +18,6 @@ from ppapp.rsop.ca_rsop import *
 @app.route("/new_ca", methods=["GET", "POST"])
 def new_ca():
     form = NewCAForm()
-
     if request.method == "POST":
         if form.validate_on_submit():
             cert_authority = CertAuthority.create(
