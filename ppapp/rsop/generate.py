@@ -15,7 +15,6 @@ def resolve_params(params, group, rsop, depth):
                 # If deeper, add as an override
                 # print('Deeper dupe!')
                 rsop[param.base_param.id][3].append((param.value, group.id, depth))
-            # TODO: handle shallower
             if depth < rsop[param.base_param.id][2]:
                 # print('Higher priority dupe!')
                 overridden_param_overrides = rsop[param.base_param.id][
