@@ -2,34 +2,43 @@ from peewee import *
 
 db = MySQLDatabase("pp", user="pp", password="password", host="localhost", port=3306)
 
+
 class LongTextField(TextField):
-    field_type = 'LONGTEXT'
+    field_type = "LONGTEXT"
+
 
 class BaseModel(Model):
     class Meta:
         database = db
 
+
 class NameNoteField(BaseModel):
     name = CharField()
     note = CharField(null=True)
 
+
 class Phone(NameNoteField):
     mac_address = CharField()
 
+
 class Cert(BaseModel):
     public_key = TextField()
+
 
 class CertAuthority(Cert, NameNoteField):
     private_key = TextField()
 
 
 class ClientCert(Cert):
-    phone = ForeignKeyField(Phone, backref = 'client_certs')
-    cert_authority = ForeignKeyField(CertAuthority, null=True) # Change this back to False default later
+    phone = ForeignKeyField(Phone, backref="client_certs")
+    cert_authority = ForeignKeyField(
+        CertAuthority, null=True
+    )  # Change this back to False default later
 
 
 class GroupType(NameNoteField):
     precedence = IntegerField(unique=True)
+
 
 class Group(NameNoteField):
     pass
@@ -76,16 +85,20 @@ class GroupAvailParams(BaseModel):
     avail_param = ForeignKeyField(AvailParam)
     group = ForeignKeyField(Group)
 
+
 class Log(BaseModel):
-    phone = ForeignKeyField(Phone, backref = 'logs', null=True)
+    phone = ForeignKeyField(Phone, backref="logs", null=True)
     date_time = DateTimeField()
     data = LongTextField()
+
 
 class AppLog(Log):
     pass
 
+
 class BootLog(Log):
     pass
+
 
 class CallLog(Log):
     pass

@@ -73,7 +73,6 @@ def edit_phone(id):
             if form.reissue_cert.data:
                 reissue_client_cert(phone)
 
-
             if form.delete.data:
                 flash(
                     "Deleted - Phone: {}, MAC address: {}".format(

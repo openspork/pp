@@ -1,10 +1,11 @@
 from collections import OrderedDict
 
+
 def format_mac(mac_address):
-    return ':'.join(mac_address[i:i+2] for i in range(0,12,2))
+    return ":".join(mac_address[i : i + 2] for i in range(0, 12, 2))
+
 
 class AlphaDict(OrderedDict):
-
     def __setitem__(self, *args, **kwargs):
         ret = super(AlphaDict, self).__setitem__(*args, **kwargs)
         self.__sort_my_thing()

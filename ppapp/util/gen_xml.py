@@ -4,6 +4,7 @@ import xmltodict
 from collections import OrderedDict
 from ppapp.util.misc import AlphaDict
 
+
 def get_branch_dict_by_name(params):
     # Create a dict of dicts with each ParamLevel name as key
     param_levels = {}
@@ -30,8 +31,8 @@ def get_branch_dict_by_name(params):
 
 # "current" - is a ParamLevel
 def build_parent_tree(current):
-    #print('Current: %s' % current.name)
-    temp_dict = { current.name: {} }
+    # print('Current: %s' % current.name)
+    temp_dict = {current.name: {}}
     query = (
         # If we are looking for parents, we are matching on child
         ParamLevel.select()
@@ -39,12 +40,13 @@ def build_parent_tree(current):
             ParamLevelParamLevels,
             JOIN.LEFT_OUTER,
             on=(ParamLevelParamLevels.parent == ParamLevel.id),
-        ).where(ParamLevelParamLevels.child == current)
+        )
+        .where(ParamLevelParamLevels.child == current)
     )
     while query.exists():
         # While we have a parent
         result = query.get()
-        #print('Parent: %s' % result.name)
+        # print('Parent: %s' % result.name)
         temp_dict = {result.name: temp_dict}
 
         query = (
@@ -60,15 +62,16 @@ def build_parent_tree(current):
 
 
 def assemble_full_tree(parent_tree, raw_param_branch):
-    #print('assemble parent tree')
+    # print('assemble parent tree')
     position = parent_tree
     root = position
     while position:
-        #print(position)
+        # print(position)
         position = next(iter(position.values()))
     position.update(raw_param_branch)
-    #print(root)
+    # print(root)
     return root
+
 
 # Merge A into B
 def merge_dict(a, b, path=None):
@@ -108,9 +111,9 @@ def gen_xml(rsop):
         )
 
         full_tree = assemble_full_tree(parent_tree, param_branch)
-        #print('\nParent ', parent_tree)
-        #print('Branch: ', param_branch)
-        #print('Full: ', full_tree, '\n')
+        # print('\nParent ', parent_tree)
+        # print('Branch: ', param_branch)
+        # print('Full: ', full_tree, '\n')
 
         merge_dict(current_dict, full_tree)
 

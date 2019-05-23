@@ -8,15 +8,20 @@ class FoundCertAuthority:
         self.group = group
         self.depth = depth
 
+
 class CertAuthorityRSoP:
     def drill(self, group, depth):
         depth += 1
         if depth == 20:
-            raise Exception("RSoP CA depth of %s reached!  Most likely a we have a loop!" % depth)
+            raise Exception(
+                "RSoP CA depth of %s reached!  Most likely a we have a loop!" % depth
+            )
         # If this group is a CA
         if group.cert_authority:
             # Create the discovered CA
-            found_cert_authority = FoundCertAuthority(group.cert_authority, group, depth)
+            found_cert_authority = FoundCertAuthority(
+                group.cert_authority, group, depth
+            )
             # If CA is not yet defined
             if not self.current_cert_authority:
                 # Assign the CA to us
@@ -36,15 +41,20 @@ class CertAuthorityRSoP:
                     # Check by group priorities
                     if precedence > curr_precedence:
                         # If higher, add current to overrides, set to us
-                        self.cert_authority_overrides.append(self.current_cert_authority)
+                        self.cert_authority_overrides.append(
+                            self.current_cert_authority
+                        )
                         self.current_cert_authority = found_cert_authority
                     elif precedence < curr_precedence:
                         # If lower, add to overrides
                         self.cert_authority_overrides.append(found_cert_authority)
                     elif precedence == curr_precedence:
                         raise Exception(
-                            "Duplicate CA of equal depth!  Cannot resolve!  CAs: %s, %s" % 
-                            ( found_cert_authority.cert_authority.name, self.current_cert_authority.cert_authority.name )
+                            "Duplicate CA of equal depth!  Cannot resolve!  CAs: %s, %s"
+                            % (
+                                found_cert_authority.cert_authority.name,
+                                self.current_cert_authority.cert_authority.name,
+                            )
                         )
 
         groups = get_group_groups(group, "parents")[1]
@@ -52,18 +62,11 @@ class CertAuthorityRSoP:
             for group in groups:
                 self.drill(group, depth)
 
-
     def resolve_ca(self, groups):
         for group in groups:
-            ca = self.drill(group, depth = 0)
+            ca = self.drill(group, depth=0)
 
     def __init__(self, phone):
         self.current_cert_authority = None
         self.cert_authority_overrides = []
         self.resolve_ca(get_phone_groups(phone)[1])
-
-
-
-
-
-

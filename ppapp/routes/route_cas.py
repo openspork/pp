@@ -32,6 +32,7 @@ def new_ca():
             flash_errors(form)
     return render_template("new_ca.j2", form=form)
 
+
 @app.route("/edit_ca/<id>", methods=["GET", "POST"])
 def edit_ca(id):
     query = CertAuthority.select().where(CertAuthority.id == id)

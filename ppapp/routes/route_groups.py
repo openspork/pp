@@ -90,7 +90,9 @@ def edit_group_type(id):
 @app.route("/new_group", methods=["GET", "POST"])
 def new_group():
     form = NewGroupForm()
-    form.type.choices=get_form_choices(GroupType.select().order_by(GroupType.name), GroupType)
+    form.type.choices = get_form_choices(
+        GroupType.select().order_by(GroupType.name), GroupType
+    )
 
     if request.method == "POST":
         if form.validate_on_submit():
@@ -122,7 +124,9 @@ def edit_group(id):
     form.cert_authority.choices = get_form_choices(cert_authorities, CertAuthority)
     form.cert_authority.choices.insert(0, (0, ""))
 
-    form.type.choices=get_form_choices(GroupType.select().order_by(GroupType.name), GroupType)
+    form.type.choices = get_form_choices(
+        GroupType.select().order_by(GroupType.name), GroupType
+    )
 
     params = get_group_params(group)
     children = get_group_groups(group, "children")
@@ -157,7 +161,7 @@ def edit_group(id):
                 flash(
                     "Deleted - Group: {}, Type: {}".format(
                         form.name.data,
-                        GroupType.get(GroupType.id == form.type.data).name
+                        GroupType.get(GroupType.id == form.type.data).name,
                     )
                 )
                 # Recursive to delete foreign keys
@@ -166,7 +170,7 @@ def edit_group(id):
                 flash(
                     "Updated - Group: {}, Type: {}".format(
                         form.name.data,
-                        GroupType.get(GroupType.id == form.type.data).name
+                        GroupType.get(GroupType.id == form.type.data).name,
                     )
                 )
 

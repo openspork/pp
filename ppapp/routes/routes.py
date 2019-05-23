@@ -1,13 +1,5 @@
 import os
-from flask import (
-    abort,
-    flash,
-    send_file,
-    render_template,
-    request,
-    redirect,
-    url_for,
-)
+from flask import abort, flash, send_file, render_template, request, redirect, url_for
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
@@ -21,6 +13,7 @@ from ppapp.rsop.param_rsop import gen_param_rsop
 from ppapp.util.gen_xml import *
 from ppapp.util.parse_xml import build_params
 from ppapp.rsop.ca_rsop import *
+
 
 @app.route("/")
 def index():
@@ -36,7 +29,7 @@ def index():
         avail_params=avail_params,
         groups=groups,
         group_types=group_types,
-        cert_authorities = cert_authorities
+        cert_authorities=cert_authorities,
     )
 
 
@@ -64,11 +57,11 @@ def rsop(mac_address):
         "rsop.j2",
         mac_address=mac_address,
         rsop=param_rsop,
-        cert_authority_rsop = CertAuthorityRSoP(phone),
+        cert_authority_rsop=CertAuthorityRSoP(phone),
         BaseParam=BaseParam,
         Group=Group,
         Phone=Phone,
-        xml=gen_xml(param_rsop)
+        xml=gen_xml(param_rsop),
     )
 
 
