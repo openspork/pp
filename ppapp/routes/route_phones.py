@@ -25,8 +25,8 @@ def new_phone():
                 flash("Duplicate MAC Address!")
             else:
                 flash(
-                    "New - Phone: {}, MAC Address: {}, Note: {}".format(
-                        form.name.data, form.mac_address.data, form.note.data
+                    "New - Phone: {}, MAC Address: {}: {}".format(
+                        form.name.data, form.mac_address.data
                     )
                 )
                 Phone.create(
@@ -75,7 +75,7 @@ def edit_phone(id):
 
             if form.delete.data:
                 flash(
-                    "Deleted - Phone: {}, MAC address: {}, Note: {}".format(
+                    "Deleted - Phone: {}, MAC address: {}".format(
                         form.name.data, form.mac_address.data, form.note.data
                     )
                 )
@@ -83,7 +83,7 @@ def edit_phone(id):
                 phone.delete_instance(recursive=True)
             else:
                 flash(
-                    "Updated - Phone: {}, MAC address: {}, Note: {}".format(
+                    "Updated - Phone: {}, MAC address: {}".format(
                         form.name.data, form.mac_address.data, form.note.data
                     )
                 )

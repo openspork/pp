@@ -56,16 +56,16 @@ def edit_group_type(id):
 
             if form.delete.data:
                 flash(
-                    "Deleted - Group Type: {}, Type: {}, Note: {}".format(
-                        form.name.data, form.precedence.data, form.note.data
+                    "Deleted - Group Type: {}, Type: {}".format(
+                        form.name.data, form.precedence.data
                     )
                 )
                 # Recursive to delete foreign keys
                 group_type.delete_instance(recursive=True)
             else:
                 flash(
-                    "Updated - Group Type: {}, Type: {}, Note: {}".format(
-                        form.name.data, form.precedence.data, form.note.data
+                    "Updated - Group Type: {}, Type:: {}".format(
+                        form.name.data, form.precedence.data
                     )
                 )
 
@@ -155,20 +155,18 @@ def edit_group(id):
 
             if form.delete.data:
                 flash(
-                    "Deleted - Group: {}, Type: {}, Note: {}".format(
+                    "Deleted - Group: {}, Type: {}".format(
                         form.name.data,
-                        GroupType.get(GroupType.id == form.type.data).name,
-                        form.note.data,
+                        GroupType.get(GroupType.id == form.type.data).name
                     )
                 )
                 # Recursive to delete foreign keys
                 group.delete_instance(recursive=True)
             else:
                 flash(
-                    "Updated - Group: {}, Type: {}, Note: {}".format(
+                    "Updated - Group: {}, Type: {}".format(
                         form.name.data,
-                        GroupType.get(GroupType.id == form.type.data).name,
-                        form.note.data,
+                        GroupType.get(GroupType.id == form.type.data).name
                     )
                 )
 
