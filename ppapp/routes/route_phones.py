@@ -25,7 +25,7 @@ def new_phone():
                 flash("Duplicate MAC Address!")
             else:
                 flash(
-                    "New - Phone: {}, MAC Address: {}: {}".format(
+                    "New - Phone: {}, MAC Address: {}:".format(
                         form.name.data, form.mac_address.data
                     )
                 )
@@ -69,14 +69,14 @@ def edit_phone(id):
             new_group_ids = form.avail_groups.data
             prev_group_ids = form.active_groups.data
 
-            if form.issue_cert:
+            if form.reissue_cert:
                 pass
 
 
             if form.delete.data:
                 flash(
                     "Deleted - Phone: {}, MAC address: {}".format(
-                        form.name.data, form.mac_address.data, form.note.data
+                        form.name.data, form.mac_address.data
                     )
                 )
                 # Recursive to delete foreign keys
@@ -84,7 +84,7 @@ def edit_phone(id):
             else:
                 flash(
                     "Updated - Phone: {}, MAC address: {}".format(
-                        form.name.data, form.mac_address.data, form.note.data
+                        form.name.data, form.mac_address.data
                     )
                 )
 

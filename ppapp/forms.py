@@ -72,7 +72,7 @@ class AddRemoveGroupForm(FlaskForm):
 
 
 class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteForm):
-    issue_cert = BooleanField()
+    reissue_cert = BooleanField()
 
 
 class ParamForm(FlaskForm):

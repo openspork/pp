@@ -62,24 +62,6 @@ class CertAuthorityRSoP:
         self.cert_authority_overrides = []
         self.resolve_ca(get_phone_groups(phone)[1])
 
-# Stub, TODO
-class EffectiveParam():
-    param = None
-    owner = None
-    depth = None
-    overrides = []
-
-class ParamRSoP:
-    effective_params = [] # Keep an array of EffectiveParams
-
-# Define an RSoP object that will be extensible for additional future RSoPs
-class RSoP:
-    def __init__(self, phone, certauthority_rsop, param, rsop):
-        self.phone = phone
-        self.certauthority_rsop = certauthority_rsop
-        self.param_rsop = param_rsop
-
-
 
 
 
