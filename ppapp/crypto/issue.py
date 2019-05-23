@@ -39,23 +39,23 @@ def create_cert(cert_authority, private_key):
     #     x509.BasicConstraints(ca=False, path_length=None), critical=True,
     # )
 
-    certificate = builder.sign(
+    cert = builder.sign(
         private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
     )
 
-    print(certificate.issuer)
-
-    ClientCert.create()
+    return cert
 
 
 def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
     cert_authority_rsop = CertAuthorityRSoP(phone)
-    create_cert(
-        cert_authority_rsop.current_cert_authority.cert_authority.public_key,
-        cert_authority_rsop.current_cert_authority.cert_authority.private_key,
-    )
+    cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
 
+
+    client_cert = create_cert(
+        cert_authority.cert,
+        cert_authority.private_key
+    )
 
 # Create the cert, assign it to the phone
 # Mark the previous as cert needing to revoked

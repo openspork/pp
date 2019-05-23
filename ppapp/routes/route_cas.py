@@ -22,7 +22,7 @@ def new_ca():
         if form.validate_on_submit():
             cert_authority = CertAuthority.create(
                 name=form.name.data,
-                public_key=form.public_key.data,
+                cert=form.cert.data,
                 private_key=form.private_key.data,
                 note=form.note.data,
             ).save()
@@ -54,7 +54,7 @@ def edit_ca(id):
                 # Handle base data
                 cert_authority.name = form.name.data
                 cert_authority.private_key = form.private_key.data
-                cert_authority.public_key = form.public_key.data
+                cert_authority.cert = form.cert.data
                 cert_authority.note = form.note.data
                 cert_authority.save()
             return redirect("/")
@@ -63,6 +63,6 @@ def edit_ca(id):
     elif request.method == "GET":
         form.name.data = cert_authority.name
         form.private_key.data = cert_authority.private_key
-        form.public_key.data = cert_authority.public_key
+        form.cert.data = cert_authority.cert
         form.note.data = cert_authority.note
     return render_template("edit_ca.j2", form=form, cert_authority=cert_authority)

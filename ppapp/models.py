@@ -22,7 +22,7 @@ class Phone(NameNoteField):
 
 
 class Cert(BaseModel):
-    public_key = TextField()
+    cert = TextField()
 
 
 class CertAuthority(Cert, NameNoteField):
