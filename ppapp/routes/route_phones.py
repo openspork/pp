@@ -13,6 +13,7 @@ from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.param_rsop import gen_param_rsop
+from ppapp.crypto.issue import reissue_client_cert
 
 
 @app.route("/new_phone", methods=["GET", "POST"])
@@ -70,7 +71,7 @@ def edit_phone(id):
             prev_group_ids = form.active_groups.data
 
             if form.reissue_cert:
-                pass
+                reissue_client_cert(phone)
 
 
             if form.delete.data:
