@@ -8,7 +8,7 @@ from wtforms import (
     SelectMultipleField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired, MacAddress
+from wtforms.validators import DataRequired, MacAddress, NumberRange
 
 # Careful, ppapp.models will clobber wtforms' BooleanField!
 from ppapp.models import BaseParam, AvailParam, Group, GroupType
@@ -103,7 +103,7 @@ class GroupForm(NameNoteSubmitForm):
 
 
 class NewGroupTypeForm(NameNoteSubmitForm, DeleteForm):
-    precedence = IntegerField(validators=[DataRequired()])
+    precedence = IntegerField(validators=[NumberRange(min = 0, max = 100)])
 
 
 class EditGroupTypeForm(NewGroupTypeForm):

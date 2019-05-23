@@ -22,17 +22,20 @@ def new_group_type():
         query = GroupType.select().where(
             (GroupType.precedence == form.precedence.data)
         )
-        if form.validate_on_submit()  and not query.exists():
-            group_type = GroupType.create(
-                name=form.name.data,
-                precedence=form.precedence.data,
-                note=form.note.data,
-            ).save()
-            flash("New Group Type - Name: {}".format(form.name.data))
-            return redirect("/")
+        if form.validate_on_submit():
+            if not query.exists():
+                group_type = GroupType.create(
+                    name=form.name.data,
+                    precedence=form.precedence.data,
+                    note=form.note.data,
+                ).save()
+
+                flash("New Group Type - Name: {}".format(form.name.data))
+                return redirect("/")
+            else:
+                flash("Duplicate precedence!  Must be unique!")
         else:
             # May want to create two error handlers, currently not an issue due to form not allowing submit
-            flash("Duplicate precedence!  Must be unique!")
             flash_errors(form)
     return render_template("new_group_type.j2", form=form)
 
@@ -53,34 +56,34 @@ def edit_group_type(id):
             (GroupType.precedence == form.precedence.data) & (GroupType.id != id)
         )
 
-        if form.validate_on_submit() and not query.exists():
+        if form.validate_on_submit():
             # Get data
-
-            if form.delete.data:
-                flash(
-                    "Deleted - Group Type: {}, Type: {}".format(
-                        form.name.data, form.precedence.data
+            if not query.exists():
+                if form.delete.data:
+                    flash(
+                        "Deleted - Group Type: {}, Type: {}".format(
+                            form.name.data, form.precedence.data
+                        )
                     )
-                )
-                # Recursive to delete foreign keys
-                group_type.delete_instance(recursive=True)
+                    # Recursive to delete foreign keys
+                    group_type.delete_instance(recursive=True)
+                else:
+                    flash(
+                        "Updated - Group Type: {}, Type:: {}".format(
+                            form.name.data, form.precedence.data
+                        )
+                    )
+
+                    # Handle base data
+                    group_type.name = form.name.data
+                    group_type.precedence = form.precedence.data
+                    group_type.note = form.note.data
+                    group_type.save()
+
+                return redirect("/")
             else:
-                flash(
-                    "Updated - Group Type: {}, Type:: {}".format(
-                        form.name.data, form.precedence.data
-                    )
-                )
-
-                # Handle base data
-                group_type.name = form.name.data
-                group_type.precedence = form.precedence.data
-                group_type.note = form.note.data
-                group_type.save()
-
-            return redirect("/")
+                flash("Duplicate precedence!  Must be unique!")
         else:
-            # May want to create two error handlers, currently not an issue due to form not allowing submit
-            flash("Duplicate precedence!  Must be unique!")
             flash_errors(form)
     elif request.method == "GET":
         form.name.data = group_type.name
