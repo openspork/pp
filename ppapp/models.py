@@ -21,6 +21,7 @@ class CertAuthority(Cert, NameNoteField):
 
 
 class ClientCert(Cert):
+    asdf = 0
     cert_authority = ForeignKeyField(CertAuthority, null=True) # Change this back to False default later
 
 class Phone(NameNoteField):

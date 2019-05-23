@@ -17,9 +17,9 @@ from ppapp.util.view_ops import *
 @app.route("/new_group_type", methods=["GET", "POST"])
 def new_group_type():
     form = NewGroupTypeForm()
-
     if request.method == "POST":
         if form.validate_on_submit():
+            # TODO Ensure precedence is unique
             group_type = GroupType.create(
                 name=form.name.data,
                 precedence=form.precedence.data,

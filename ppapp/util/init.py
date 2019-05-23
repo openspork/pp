@@ -7,7 +7,7 @@ def init_db():
     except Exception as e:
         print(str(e))
 
-    tables = [
+    db.create_tables([
             Phone,
             Group,
             GroupType,
@@ -24,10 +24,7 @@ def init_db():
             BootLog,
             AppLog,
             CallLog
-            ]
-    # Creating missing tables
-    for table in tables:
-        db.create_tables([table], safe=True)
+            ], safe=True)
 
 
     # Create our group types
