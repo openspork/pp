@@ -14,7 +14,7 @@ Index
 			<th>Parent</th>
 			<th>Note</th>
 			<th><a href="{{ url_for('new_phone') | safe }}">New</a></th>
-			<th>Config</th>
+			<th>RSoP & Config</th>
 
 		</tr>
 			{% for phone in phones %}
@@ -28,7 +28,7 @@ Index
 					{% endfor %}
 				<td>{{ phone.note }}</td>
 				<td><a href="{{ url_for('edit_phone', id=phone.id ) | safe }}">Edit</a></td>
-				<td><a href="{{ url_for('rsop', mac_address=phone.mac_address ) | safe }}">View RSoP</a></td>
+				<td><a href="{{ url_for('rsop', mac_address=phone.mac_address ) | safe }}">View</a></td>
 			</tr>
 			{% endfor %}
 	</table>

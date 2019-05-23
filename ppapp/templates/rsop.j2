@@ -8,7 +8,8 @@ RSoP
 	<textarea class='xmlDisplay'>{{ xml }}</textarea>
 	<h4>Inheritance / override details:</h4>
 	Certificate Authorities:
-	{% if cert_authority_rsop.cert_authority %}
+
+	{% if cert_authority_rsop.current_cert_authority is defined %}
 		<ul>
 			<li>
 				<a href='{{ url_for('edit_ca', id=cert_authority_rsop.current_cert_authority.cert_authority.id ) | safe }}'>
