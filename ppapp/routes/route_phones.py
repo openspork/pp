@@ -70,7 +70,7 @@ def edit_phone(id):
             new_group_ids = form.avail_groups.data
             prev_group_ids = form.active_groups.data
 
-            if form.reissue_cert:
+            if form.reissue_cert.data:
                 reissue_client_cert(phone)
 
 

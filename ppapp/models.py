@@ -13,6 +13,9 @@ class NameNoteField(BaseModel):
     name = CharField()
     note = CharField(null=True)
 
+class Phone(NameNoteField):
+    mac_address = CharField()
+
 class Cert(BaseModel):
     public_key = TextField()
 
@@ -21,14 +24,8 @@ class CertAuthority(Cert, NameNoteField):
 
 
 class ClientCert(Cert):
-    asdf = 0
+    phone = ForeignKeyField(Phone, backref = 'client_certs')
     cert_authority = ForeignKeyField(CertAuthority, null=True) # Change this back to False default later
-
-class Phone(NameNoteField):
-    mac_address = CharField()
-    client_cert = ForeignKeyField(
-        ClientCert, backref="phones", null=True
-    )  # Change this back to False default later
 
 
 class GroupType(NameNoteField):

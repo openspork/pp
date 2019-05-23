@@ -60,8 +60,6 @@ def rsop(mac_address):
         except Exception as e:
             flash(str(e))
             return redirect("/")
-    xxx = CertAuthorityRSoP(phone)
-    print(xxx.current_cert_authority.cert_authority.name)
     return render_template(
         "rsop.j2",
         mac_address=mac_address,
