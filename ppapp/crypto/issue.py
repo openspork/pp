@@ -43,6 +43,8 @@ def create_cert(cert_authority, private_key):
         private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
     )
 
+    print(vars(cert))
+    # Want to return in PEM format for storage in DB
     return cert
 
 
