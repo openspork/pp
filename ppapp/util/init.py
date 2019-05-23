@@ -57,15 +57,5 @@ def init_db():
             name="Addon", precedence=15, note="Group for addon unit level config"
         )
 
-        query = GroupType.select().where(GroupType.name == "Certificate Authority")
-
-    if not query.exists():
-        GroupType.create(
-            name="Certificate Authority",
-            precedence=20,
-            note="Group with CA for cert generation",
-        )
-
-
     db.close()
     print("db init")

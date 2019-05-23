@@ -5,14 +5,13 @@ db = MySQLDatabase("pp", user="pp", password="password", host="localhost", port=
 class LongTextField(TextField):
     field_type = 'LONGTEXT'
 
-class NameNoteField(Model):
-    name = CharField()
-    note = CharField(null=True)
-
-
 class BaseModel(Model):
     class Meta:
         database = db
+
+class NameNoteField(BaseModel):
+    name = CharField()
+    note = CharField(null=True)
 
 class Cert(BaseModel):
     public_key = TextField()
@@ -22,19 +21,20 @@ class CertAuthority(Cert, NameNoteField):
 
 
 class ClientCert(Cert):
-    cert_authority = ForeignKeyField(CertAuthority)
+    cert_authority = ForeignKeyField(CertAuthority, null=True) # Change this back to False default later
 
-class Phone(BaseModel, NameNoteField):
-    mac_address = CharField(unique=True)
+class Phone(NameNoteField):
+    mac_address = CharField()
     client_cert = ForeignKeyField(
         ClientCert, backref="phones", null=True
     )  # Change this back to False default later
 
 
-class GroupType(BaseModel, NameNoteField):
+class GroupType(NameNoteField):
     precedence = IntegerField(unique=True)
 
-class Group(BaseModel, NameNoteField):
+class Group(NameNoteField):
+    pass
     type = ForeignKeyField(GroupType, backref="groups")
     cert_authority = ForeignKeyField(CertAuthority, backref="groups", null=True)
 
@@ -53,7 +53,7 @@ class ParamLevel(BaseModel):
     name = CharField(null=True)
 
 
-class BaseParam(BaseModel, NameNoteField):
+class BaseParam(NameNoteField):
     param_level = ForeignKeyField(ParamLevel, backref="base_params")
     default_value = CharField()
 
@@ -79,7 +79,7 @@ class GroupAvailParams(BaseModel):
     group = ForeignKeyField(Group)
 
 class Log(BaseModel):
-    phone = ForeignKeyField(Phone, backref = 'logs')
+    phone = ForeignKeyField(Phone, backref = 'logs', null=True)
     date_time = DateTimeField()
     data = LongTextField()
 
