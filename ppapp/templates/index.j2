@@ -38,10 +38,10 @@ Index
 	<table class="pure-table">
 		<tr>
 			<th>ID</th>
-			<th>Type</th>
 			<th>Name</th>
-			<th>Children</th>
+			<th>Type</th>
 			<th>Parents</th>
+			<th>Children</th>
 			<th>CA</th>
 			<th>Note</th>
 			<td><a href="{{ url_for('new_group') | safe }}">New</a>
@@ -50,15 +50,15 @@ Index
 			{% for group in groups %}
 			<tr>
 				<td>{{ group.id }}</td>
+				<td><b>{{ group.name }}</b></td>
 				<td>{{ group.type.name }}</td>
-				<td>{{ group.name }}</td>
 				<td> 
-					{% for group in get_group_groups(group,'children')[1] %}
+					{% for group in get_group_groups(group,'parents')[1] %}
 						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</td>
 				<td> 
-					{% for group in get_group_groups(group,'parents')[1] %}
+					{% for group in get_group_groups(group,'children')[1] %}
 						{{ group.name }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</td>

@@ -18,8 +18,11 @@ from ppapp.util.view_ops import *
 def new_group_type():
     form = NewGroupTypeForm()
     if request.method == "POST":
-        if form.validate_on_submit():
-            # TODO Ensure precedence is unique
+        # Additionally check that our precedence is unique
+        query = GroupType.select().where(
+            (GroupType.precedence == form.precedence.data)
+        )
+        if form.validate_on_submit()  and not query.exists():
             group_type = GroupType.create(
                 name=form.name.data,
                 precedence=form.precedence.data,
@@ -28,6 +31,8 @@ def new_group_type():
             flash("New Group Type - Name: {}".format(form.name.data))
             return redirect("/")
         else:
+            # May want to create two error handlers, currently not an issue due to form not allowing submit
+            flash("Duplicate precedence!  Must be unique!")
             flash_errors(form)
     return render_template("new_group_type.j2", form=form)
 
@@ -47,9 +52,6 @@ def edit_group_type(id):
         query = GroupType.select().where(
             (GroupType.precedence == form.precedence.data) & (GroupType.id != id)
         )
-
-        for element in query:
-            print(element)
 
         if form.validate_on_submit() and not query.exists():
             # Get data
@@ -77,6 +79,7 @@ def edit_group_type(id):
 
             return redirect("/")
         else:
+            # May want to create two error handlers, currently not an issue due to form not allowing submit
             flash("Duplicate precedence!  Must be unique!")
             flash_errors(form)
     elif request.method == "GET":

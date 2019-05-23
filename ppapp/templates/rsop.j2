@@ -9,7 +9,7 @@ RSoP
 	<h4>Inheritance / override details:</h4>
 	Certificate Authorities:
 
-	{% if cert_authority_rsop.current_cert_authority is defined %}
+	{% if cert_authority_rsop.current_cert_authority is not none %}
 		<ul>
 			<li>
 				<a href='{{ url_for('edit_ca', id=cert_authority_rsop.current_cert_authority.cert_authority.id ) | safe }}'>
