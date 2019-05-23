@@ -49,7 +49,9 @@ def rsop(mac_address):
     else:
         phone = query.get()
         try:
+            cert_authority_rsop = CertAuthorityRSoP(phone)
             param_rsop = gen_param_rsop(phone)
+            xml = gen_xml(param_rsop)
         except Exception as e:
             flash(str(e))
             return redirect("/")
@@ -57,11 +59,11 @@ def rsop(mac_address):
         "rsop.j2",
         mac_address=mac_address,
         rsop=param_rsop,
-        cert_authority_rsop=CertAuthorityRSoP(phone),
+        cert_authority_rsop=cert_authority_rsop,
         BaseParam=BaseParam,
         Group=Group,
         Phone=Phone,
-        xml=gen_xml(param_rsop),
+        xml=xml,
     )
 
 
