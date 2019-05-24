@@ -23,11 +23,12 @@ class Phone(NameNoteField):
 
 
 class Cert(BaseModel):
+    private_key = TextField()
     cert = TextField()
 
 
 class CertAuthority(Cert, NameNoteField):
-    private_key = TextField()
+    pass
 
 
 class ClientCert(Cert):
