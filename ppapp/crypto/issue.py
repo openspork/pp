@@ -31,27 +31,23 @@ def create_cert(cert_authority, private_key):
     builder = builder.public_key(public_key)
 
     builder = builder.add_extension(
-        x509.SubjectAlternativeName(
-            [x509.DNSName(u'cryptography.io')]
-        ),
-        critical=False
+        x509.SubjectAlternativeName([x509.DNSName(u"cryptography.io")]), critical=False
     )
     builder = builder.add_extension(
-        x509.BasicConstraints(ca=False, path_length=None), critical=True,
+        x509.BasicConstraints(ca=False, path_length=None), critical=True
     )
 
     cert = builder.sign(
         private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
     )
+    # Dump to scratch
+    # with open("scratch/phone_cert.pem", "wb") as f:
+    #     f.write(cert.public_bytes(
+    #         encoding=serialization.Encoding.PEM
+    #     ))
 
-    print(cert.public_bytes(encoding=serialization.Encoding.PEM))
-
-    # Want to return in PEM format for storage in DB
-    with open("key.pem", "wb") as f:
-        f.write(cert.public_bytes(
-            encoding=serialization.Encoding.PEM
-        ))
-
+    # Return PEM
+    return cert.public_bytes(encoding=serialization.Encoding.PEM)
 
 
 def issue_client_cert(phone):
@@ -59,11 +55,9 @@ def issue_client_cert(phone):
     cert_authority_rsop = CertAuthorityRSoP(phone)
     cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
 
+    client_cert = create_cert(cert_authority.cert, cert_authority.private_key)
 
-    client_cert = create_cert(
-        cert_authority.cert,
-        cert_authority.private_key
-    )
+    ClientCert.create(cert = client_cert, cert_authority = cert_authority, phone = phone)
 
 # Create the cert, assign it to the phone
 # Mark the previous as cert needing to revoked
