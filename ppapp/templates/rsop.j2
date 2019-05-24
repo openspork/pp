@@ -59,7 +59,7 @@ RSoP
 					<ul>
 						{% for overridden_value, overridden_group, overridden_depth in value[3] %}
 							<li>
-								{{ BaseParam.get(BaseParam.id == key).name }} = {{ overridden_value }}
+								{{ BaseParam.get(BaseParam.name == key).name }} = {{ overridden_value }}
 								from
 								<a href='{{ url_for('edit_group', id=overridden_group ) | safe }}'>
 									{{ Group.get(Group.id == overridden_group ).name }}
