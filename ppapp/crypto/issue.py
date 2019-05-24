@@ -31,6 +31,9 @@ def create_cert(cert_authority, private_key):
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Org Name"),
         ]
     )
+
+    crl_distribution_point = x509.DistributionPoint(full_name=[x509.UniformResourceIdentifier(value='https://fq.dn')], relative_name=None, crl_issuer=None, reasons=None)
+
     cert = (
         x509.CertificateBuilder()
         .subject_name(new_subject)
@@ -39,11 +42,14 @@ def create_cert(cert_authority, private_key):
         .serial_number(x509.random_serial_number())
         .not_valid_before(datetime.datetime.utcnow())
         .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=30))
+        .add_extension(
+            x509.CRLDistributionPoints([crl_distribution_point]), critical=True
+        )
         .sign(root_key, hashes.SHA256(), default_backend())
     )
 
     # Dump to scratch
-    with open("scratch/phone_cert.pem", "wb") as f:
+    with open("scratch/phone_cert.crt", "wb") as f:
         f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
 
     # Return PEM
