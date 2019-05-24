@@ -54,10 +54,12 @@ def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
     cert_authority_rsop = CertAuthorityRSoP(phone)
     cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
-
-    client_cert = create_cert(cert_authority.cert, cert_authority.private_key)
-
-    ClientCert.create(cert = client_cert, cert_authority = cert_authority, phone = phone)
+    # Get client cert in PEM to add to DB
+    client_cert_pem = create_cert(cert_authority.cert, cert_authority.private_key)
+    # Create the client cert in DB
+    client_cert = ClientCert.create(cert = client_cert_pem, cert_authority = cert_authority, phone = phone)
+    # Set it as the phone's current
+    phone.active_client_cert = client_cert
 
 # Create the cert, assign it to the phone
 # Mark the previous as cert needing to revoked
