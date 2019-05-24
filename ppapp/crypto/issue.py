@@ -11,43 +11,51 @@ from ppapp.models import ClientCert
 def create_cert(cert_authority, private_key):
     one_day = datetime.timedelta(1, 0, 0)
     # Use our private key to generate a public key
-    private_key = serialization.load_pem_private_key(
+    root_key = serialization.load_pem_private_key(
         private_key.encode("ascii"), password=None, backend=default_backend()
     )
-    public_key = private_key.public_key()
 
-    ca = x509.load_pem_x509_certificate(
+    root_cert = x509.load_pem_x509_certificate(
         cert_authority.encode("ascii"), default_backend()
     )
 
-    builder = x509.CertificateBuilder()
-    builder = builder.subject_name(
-        x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, u"cryptography.io")])
+    # Now we want to generate a cert from that root
+    cert_key = rsa.generate_private_key(
+        public_exponent=65537, key_size=2048, backend=default_backend()
     )
-    builder = builder.issuer_name(ca.issuer)
-    builder = builder.not_valid_before(datetime.datetime.today() - one_day)
-    builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
-    builder = builder.serial_number(x509.random_serial_number())
-    builder = builder.public_key(public_key)
+    new_subject = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "California"),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, "Glendale"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Org Name"),
+        ]
+    )
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(new_subject)
+        .issuer_name(root_cert.issuer)
+        .public_key(cert_key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(datetime.datetime.utcnow())
+        .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=30))
+        .sign(root_key, hashes.SHA256(), default_backend())
+    )
 
-    builder = builder.add_extension(
-        x509.SubjectAlternativeName([x509.DNSName(u"cryptography.io")]), critical=False
-    )
-    builder = builder.add_extension(
-        x509.BasicConstraints(ca=False, path_length=None), critical=True
-    )
-
-    cert = builder.sign(
-        private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
-    )
     # Dump to scratch
-    # with open("scratch/phone_cert.pem", "wb") as f:
-    #     f.write(cert.public_bytes(
-    #         encoding=serialization.Encoding.PEM
-    #     ))
+    with open("scratch/phone_cert.pem", "wb") as f:
+        f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
 
     # Return PEM
-    return cert.public_bytes(encoding=serialization.Encoding.PEM)
+    cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
+
+    cert_key_pem = cert_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
+
+    return cert_pem, cert_key_pem
 
 
 def issue_client_cert(phone):
@@ -55,11 +63,17 @@ def issue_client_cert(phone):
     cert_authority_rsop = CertAuthorityRSoP(phone)
     cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
     # Get client cert in PEM to add to DB
-    client_cert_pem = create_cert(cert_authority.cert, cert_authority.private_key)
+    client_cert_pem, client_key_pem = create_cert(cert_authority.cert, cert_authority.private_key)
     # Create the client cert in DB
-    client_cert = ClientCert.create(cert = client_cert_pem, cert_authority = cert_authority, phone = phone)
+    client_cert = ClientCert.create(
+        cert=client_cert_pem,
+        private_key=client_key_pem,
+        cert_authority=cert_authority,
+        phone=phone,
+    )
     # Set it as the phone's current
     phone.active_client_cert = client_cert
+
 
 # Create the cert, assign it to the phone
 # Mark the previous as cert needing to revoked
