@@ -29,23 +29,29 @@ def create_cert(cert_authority, private_key):
     builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 30))
     builder = builder.serial_number(x509.random_serial_number())
     builder = builder.public_key(public_key)
-    # builder = builder.add_extension(
-    #     x509.SubjectAlternativeName(
-    #         [x509.DNSName(u'cryptography.io')]
-    #     ),
-    #     critical=False
-    # )
-    # builder = builder.add_extension(
-    #     x509.BasicConstraints(ca=False, path_length=None), critical=True,
-    # )
+
+    builder = builder.add_extension(
+        x509.SubjectAlternativeName(
+            [x509.DNSName(u'cryptography.io')]
+        ),
+        critical=False
+    )
+    builder = builder.add_extension(
+        x509.BasicConstraints(ca=False, path_length=None), critical=True,
+    )
 
     cert = builder.sign(
         private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
     )
 
-    print(cert.public_bytes(serialization.Encoding.PEM))
+    print(cert.public_bytes(encoding=serialization.Encoding.PEM))
+
     # Want to return in PEM format for storage in DB
-    return cert
+    with open("key.pem", "wb") as f:
+        f.write(cert.public_bytes(
+            encoding=serialization.Encoding.PEM
+        ))
+
 
 
 def issue_client_cert(phone):
