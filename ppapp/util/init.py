@@ -28,35 +28,6 @@ def init_db():
         ],
         safe=True,
     )
-    # Think we have to make this safe for DB re-inits
-    # Phone._schema.create_foreign_key(Phone.active_client_cert)
-
-    # Create our group types
-    query = GroupType.select().where(GroupType.name == "Client")
-
-    if not query.exists():
-        GroupType.create(
-            name="Client", precedence=1, note="Group for client level config"
-        )
-
-    query = GroupType.select().where(GroupType.name == "Site")
-
-    if not query.exists():
-        GroupType.create(name="Site", precedence=5, note="Group for site level config")
-
-    query = GroupType.select().where(GroupType.name == "Model")
-
-    if not query.exists():
-        GroupType.create(
-            name="Model", precedence=10, note="Group for phone model level config"
-        )
-
-    query = GroupType.select().where(GroupType.name == "Addon")
-
-    if not query.exists():
-        GroupType.create(
-            name="Addon", precedence=15, note="Group for addon unit level config"
-        )
 
     db.close()
     print("db init")
