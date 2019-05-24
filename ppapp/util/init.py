@@ -28,7 +28,8 @@ def init_db():
         ],
         safe=True,
     )
-    Phone._schema.create_foreign_key(Phone.active_client_cert)
+    # Think we have to make this safe for DB re-inits
+    # Phone._schema.create_foreign_key(Phone.active_client_cert)
 
     # Create our group types
     query = GroupType.select().where(GroupType.name == "Client")
