@@ -47,7 +47,7 @@ RSoP
 			{# if at depth 0, this is a phone #}
 			{% if value[2] == 0 %} 
 				<li>
-					{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }}
+					{{ BaseParam.get(BaseParam.name == key).name }} = {{ value[0] }}
 					from
 					<a href='{{ url_for('edit_phone', id=value[1] ) | safe }}'>
 						{{ Phone.get(Phone.id == value[1] ).name }}
@@ -71,7 +71,7 @@ RSoP
 				{% endif %}
 			{% else %}
 				<li>
-					{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }}
+					{{ BaseParam.get(BaseParam.name == key).name }} = {{ value[0] }}
 					from
 					<a href='{{ url_for('edit_group', id=value[1] ) | safe }}'>
 						{{ Group.get(Group.id == value[1] ).name }}

@@ -94,8 +94,8 @@ def gen_xml(rsop):
     # Build an array of (ParamLevel, BaseParam, avail_param_value) tuples from RSoP
     params = []
     dicts = []
-    for base_param_id, param_value in rsop.items():
-        base_param = BaseParam.get(BaseParam.id == base_param_id)
+    for base_param_name, param_value in rsop.items():
+        base_param = BaseParam.get(BaseParam.name == base_param_name)
         param_level = base_param.param_level
         avail_param_value = param_value[0]
         tup = (param_level, base_param, avail_param_value)
