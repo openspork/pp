@@ -30,7 +30,7 @@ def new_ca():
             return redirect("/")
         else:
             flash_errors(form)
-    return render_template("new_ca.j2", form=form)
+    return render_template("ca.j2", form=form)
 
 
 @app.route("/edit_ca/<id>", methods=["GET", "POST"])
@@ -65,4 +65,4 @@ def edit_ca(id):
         form.private_key.data = cert_authority.private_key
         form.cert.data = cert_authority.cert
         form.note.data = cert_authority.note
-    return render_template("edit_ca.j2", form=form, cert_authority=cert_authority)
+    return render_template("ca_edit.j2", form=form, cert_authority=cert_authority)
