@@ -43,8 +43,7 @@ RSoP
 	<br>
 	Paramaters:
 	<ul>
-		{# key = param, value = (value, depth, overrides) #}
-		{% for key, value in rsop|dictsort %}
+		{% for key, value in rsop | dictsort %}
 			{# if at depth 0, this is a phone #}
 			{% if value[2] == 0 %} 
 				<li>
@@ -70,7 +69,7 @@ RSoP
 						{% endfor %}
 					</ul>
 				{% endif %}
-			{% else %} {# if > depth 0, this is a group #}
+			{% else %}
 				<li>
 					{{ BaseParam.get(BaseParam.id == key).name }} = {{ value[0] }}
 					from
