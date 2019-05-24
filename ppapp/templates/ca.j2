@@ -12,6 +12,11 @@ New CA
                 {{ form.name.label }}
                 <br>
                 {{ form.name(size=32) }}
+                <br>
+                <br>
+                {{ form.note.label }}
+                <br>
+                {{ form.note(size=32) }}
             </div>
         </div>
         <br>
@@ -30,12 +35,7 @@ New CA
         <br>
         <div class="pure-g">
             <div class="pure-u-1-1">
-                {{ form.note.label }}
-                <br>
-                {{ form.note(size=32) }}
                 {% block op_ops %}
-
-
                 {% endblock %}
                 <br>
                 <br>
