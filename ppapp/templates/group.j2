@@ -1,0 +1,39 @@
+{% extends "base.j2" %}
+{% block title %}
+Edit Group
+{% endblock %}
+{% block content %}
+
+    <h3>{% block op_header %}New{% endblock %} Group</h3>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                <h3>Edit Group:</h3>
+                {{ form.name.label }}
+                <br />
+                {{ form.name(size=32) }}
+                <br />
+                {{ form.type.label }}
+                <br />
+                {{ form.type(size=8) }}
+                <br />
+                {{ form.cert_authority.label }}
+                <br />
+                {{ form.cert_authority }}
+                <br />
+                {{ form.note.label }}
+                <br />
+                {{ form.note(size=32) }}
+            </div>
+        </div>
+        <br />
+
+                {% block op_ops %}
+                {% endblock %}
+                <br />
+                {{ form.submit() }}
+            </div>
+        </div>
+    </form>
+{% endblock %}
