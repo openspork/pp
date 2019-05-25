@@ -10,22 +10,6 @@ from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
 from ppapp.util.param_ops import get_phone_params
 
 
-def pem_to_pkcs7(data):
-    data = (
-        data.decode()
-        .replace("-----BEGIN CERTIFICATE-----", "-----Begin PKCS7-----")
-        .replace("-----END CERTIFICATE-----", "-----End PKCS7-----")
-        .replace("-----BEGIN RSA PRIVATE KEY-----", "-----Begin PKCS7-----")
-        .replace("-----END RSA PRIVATE KEY-----", "-----End PKCS7-----")
-        .encode()
-    )
-    padder = padding.PKCS7(256).padder()
-    padded_data = padder.update(data)
-    padded_data += padder.finalize()
-    print("Padded data:\n\n%s\n" % data)
-    return data
-
-
 def create_cert(cert_authority, private_key):
     one_day = datetime.timedelta(1, 0, 0)
     # Use our private key to generate a public key
@@ -72,8 +56,8 @@ def create_cert(cert_authority, private_key):
     )
 
     # Dump to scratch
-    with open("scratch/phone_cert.pkcs7", "wb") as f:
-        f.write(pem_to_pkcs7(cert.public_bytes(encoding=serialization.Encoding.PEM)))
+    # with open("scratch/phone_cert.pkcs7", "wb") as f:
+    #     f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
 
     # Return PEM
     cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
@@ -139,8 +123,6 @@ def issue_client_cert(phone):
         ("@device.sec.TLS.customDeviceCert1.set", 1),
         ("@device.sec.TLS.customDeviceCert1.publicCert", client_cert_pem),
         ("@device.sec.TLS.customDeviceCert1.privateKey", client_key_pem),
-        # ("@device.sec.TLS.customDeviceCert1.publicCert", pem_to_pkcs7(client_cert_pem)),
-        # ("@device.sec.TLS.customDeviceCert1.privateKey", pem_to_pkcs7(client_key_pem)),
     ]
 
     for param in param_values:
