@@ -123,7 +123,7 @@ def issue_client_cert(phone):
         ("@device.sec.TLS.customDeviceCert1.set", 1),
         ("@device.sec.TLS.customDeviceCert1.publicCert", client_cert_pem),
         ("@device.sec.TLS.customDeviceCert1.privateKey", client_key_pem),
-    ]
+        ("@device.sec.TLS.profile.deviceCert1", 1)]
 
     for param in param_values:
         apply_client_cert(phone, param[0], param[1])
