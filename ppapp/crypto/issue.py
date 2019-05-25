@@ -10,16 +10,16 @@ from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
 from ppapp.util.param_ops import get_phone_params
 
 
-def create_cert(cert_authority, private_key):
+def create_cert(cert_authority_pem, private_key_pem):
     one_day = datetime.timedelta(1, 0, 0)
     # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
-        cert_authority.encode("ascii"), default_backend()
+        cert_authority_pem.encode("ascii"), default_backend()
     )
 
     # Load our root key
     root_key = serialization.load_pem_private_key(
-        private_key.encode("ascii"), password=None, backend=default_backend()
+        private_key_pem.encode("ascii"), password=None, backend=default_backend()
     )
 
     # Now we want to generate a cert from that root
