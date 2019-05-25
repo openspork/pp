@@ -126,7 +126,7 @@ Index
 			<tr>
 				<td>{{ avail_param.id }}</td>
 				<td>{{ avail_param.base_param.name[1:] }}</td>
-				<td>{{ avail_param.value }}</td>
+				<td>{{ avail_param.value | truncate(length=40, killwords=True, end='...') }}</td>
 				<td>{{ avail_param.note }}</td>
 				<td><a href="{{ url_for('edit_param', id=avail_param.id ) | safe }}">Edit</a></td>
 			</tr>

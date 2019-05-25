@@ -27,7 +27,7 @@ def get_form_choices(query, Model):
         elif Model == AvailParam:
             choice_string = "%s - Value: %s" % (
                 choice.base_param.name[1:],
-                choice.value,
+                choice.value[:16],
             )
         else:
             choice_string = choice.name
