@@ -5,7 +5,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 import datetime
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
-from ppapp.models import ClientCert
+from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
+from ppapp.util.param_ops import  get_phone_params
 
 
 def create_cert(cert_authority, private_key):
@@ -64,6 +65,26 @@ def create_cert(cert_authority, private_key):
     return cert_pem, cert_key_pem
 
 
+def apply_client_cert(phone, param, value):
+    query = (
+        AvailParam.select()
+        .join(PhoneAvailParams)
+        .where(PhoneAvailParams.phone == phone)
+        .switch(AvailParam)
+        .join(BaseParam, on=BaseParam.id == AvailParam.base_param)
+        .where(BaseParam.name == param)       
+    )
+
+    if query.exists():
+        avail_param = query.get()
+        avail_param.value = value
+        avail_param.save()
+    else:
+        base_param = BaseParam.get(BaseParam.name == param)
+        avail_param = AvailParam.create( base_param=base_param, value=value, note='Auto-generated due to inherited CA')
+        PhoneAvailParams.create(phone=phone, avail_param=avail_param, note='Auto-generated due to inherited CA')
+
+
 def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
     cert_authority_rsop = CertAuthorityRSoP(phone)
@@ -79,6 +100,16 @@ def issue_client_cert(phone):
     )
     # Set it as the phone's current
     phone.active_client_cert = client_cert
+
+    # Determine if custom device cert already set
+
+    param_values = [('@device.sec.TLS.customDeviceCert1.set', 1),
+                     ('@device.sec.TLS.customDeviceCert1.publicCert', client_cert_pem),
+                     ('@device.sec.TLS.customDeviceCert1.privateKey', client_key_pem)]
+
+    for param in param_values:
+        apply_client_cert(phone, param[0], param[1])
+
 
 
 # Create the cert, assign it to the phone
