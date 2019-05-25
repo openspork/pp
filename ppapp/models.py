@@ -19,7 +19,6 @@ class NameNoteField(BaseModel):
 
 class Phone(NameNoteField):
     mac_address = CharField()
-    active_client_cert = DeferredForeignKey("ClientCert")
 
 
 class Cert(BaseModel):
@@ -37,6 +36,9 @@ class ClientCert(Cert):
         CertAuthority, null=True
     )  # Change this back to False default later
 
+class PhoneActiveClientCert:
+    phone = ForeignKeyField(Phone, unique=True)
+    active_client_cert = ForeignKeyField(ClientCert, unique=True)
 
 class GroupType(NameNoteField):
     precedence = IntegerField(unique=True)
