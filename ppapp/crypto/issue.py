@@ -12,13 +12,14 @@ from ppapp.util.param_ops import get_phone_params
 
 def create_cert(cert_authority, private_key):
     one_day = datetime.timedelta(1, 0, 0)
-    # Use our private key to generate a public key
-    root_key = serialization.load_pem_private_key(
-        private_key.encode("ascii"), password=None, backend=default_backend()
-    )
-
+    # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
         cert_authority.encode("ascii"), default_backend()
+    )
+
+    # Load our root key
+    root_key = serialization.load_pem_private_key(
+        private_key.encode("ascii"), password=None, backend=default_backend()
     )
 
     # Now we want to generate a cert from that root
@@ -123,7 +124,8 @@ def issue_client_cert(phone):
         ("@device.sec.TLS.customDeviceCert1.set", 1),
         ("@device.sec.TLS.customDeviceCert1.publicCert", client_cert_pem),
         ("@device.sec.TLS.customDeviceCert1.privateKey", client_key_pem),
-        ("@device.sec.TLS.profile.deviceCert1", 1)]
+        ("@device.sec.TLS.profile.deviceCert1", 1),
+    ]
 
     for param in param_values:
         apply_client_cert(phone, param[0], param[1])

@@ -19,7 +19,7 @@ class NameNoteField(BaseModel):
 
 class Phone(NameNoteField):
     mac_address = CharField()
-    active_client_cert = DeferredForeignKey('ClientCert')
+    active_client_cert = DeferredForeignKey("ClientCert")
 
 
 class Cert(BaseModel):
@@ -28,7 +28,7 @@ class Cert(BaseModel):
 
 
 class CertAuthority(Cert, NameNoteField):
-    pass
+    cert_revocation_list = LongTextField()
 
 
 class ClientCert(Cert):

@@ -13,6 +13,7 @@ from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.ca_rsop import *
+from ppapp.crypto.revoke import build_crl
 
 
 @app.route("/new_ca", methods=["GET", "POST"])
@@ -20,12 +21,20 @@ def new_ca():
     form = NewCertAuthorityForm()
     if request.method == "POST":
         if form.validate_on_submit():
+            # Build our empty CRL
+            cert_revocation_list = build_crl(form.cert.data,form.private_key.data)
+
+
             cert_authority = CertAuthority.create(
                 name=form.name.data,
                 cert=form.cert.data,
                 private_key=form.private_key.data,
+                cert_revocation_list = cert_revocation_list,
                 note=form.note.data,
             ).save()
+
+            
+
             flash("New CA - Name: {}".format(form.name.data))
             return redirect("/")
         else:
