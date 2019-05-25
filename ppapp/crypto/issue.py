@@ -3,10 +3,20 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
+from cryptography.hazmat.primitives import padding
 import datetime
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
 from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
 from ppapp.util.param_ops import  get_phone_params
+
+
+def pem_to_pkcs7(data):
+    data = data.decode().replace('-----BEGIN CERTIFICATE-----','-----BEGIN PKCS7-----').replace('-----END CERTIFICATE-----','-----END PKCS7-----').encode()
+    padder = padding.PKCS7(256).padder()
+    padded_data = padder.update(data)
+    padded_data += padder.finalize()
+    print('Padded data:\n\n%s\n' % padded_data)
+    return padded_data
 
 
 def create_cert(cert_authority, private_key):
@@ -50,8 +60,8 @@ def create_cert(cert_authority, private_key):
     )
 
     # Dump to scratch
-    with open("scratch/phone_cert.crt", "wb") as f:
-        f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
+    with open("scratch/phone_cert.pkcs7", "wb") as f:
+        f.write(pem_to_pkcs7(cert.public_bytes(encoding=serialization.Encoding.PEM)))
 
     # Return PEM
     cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
@@ -66,6 +76,7 @@ def create_cert(cert_authority, private_key):
 
 
 def apply_client_cert(phone, param, value):
+
     query = (
         AvailParam.select()
         .join(PhoneAvailParams)
@@ -74,7 +85,6 @@ def apply_client_cert(phone, param, value):
         .join(BaseParam, on=BaseParam.id == AvailParam.base_param)
         .where(BaseParam.name == param)       
     )
-
     if query.exists():
         avail_param = query.get()
         avail_param.value = value
@@ -104,8 +114,8 @@ def issue_client_cert(phone):
     # Determine if custom device cert already set
 
     param_values = [('@device.sec.TLS.customDeviceCert1.set', 1),
-                     ('@device.sec.TLS.customDeviceCert1.publicCert', client_cert_pem),
-                     ('@device.sec.TLS.customDeviceCert1.privateKey', client_key_pem)]
+                     ('@device.sec.TLS.customDeviceCert1.publicCert', pem_to_pkcs7(client_cert_pem)),
+                     ('@device.sec.TLS.customDeviceCert1.privateKey', pem_to_pkcs7(client_key_pem))]
 
     for param in param_values:
         apply_client_cert(phone, param[0], param[1])
