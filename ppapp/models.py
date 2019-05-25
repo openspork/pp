@@ -89,18 +89,18 @@ class GroupAvailParams(BaseModel):
 
 
 class Log(BaseModel):
-    phone = ForeignKeyField(Phone, backref="logs", null=True)
     date_time = DateTimeField()
     data = LongTextField()
 
 
 class AppLog(Log):
-    pass
+    phone = ForeignKeyField(Phone, backref="logs", null=True)
 
 
 class BootLog(Log):
-    pass
+    phone = ForeignKeyField(Phone, backref="logs", null=True)
 
 
 class CallLog(Log):
-    pass
+    phone = ForeignKeyField(Phone, backref="logs", null=True)
+

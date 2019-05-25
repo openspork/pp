@@ -23,7 +23,7 @@ def new_ca():
         if form.validate_on_submit():
             # Build our empty CRL
             cert_revocation_list = build_crl(form.cert.data,form.private_key.data)
-
+            # TODO: Change this to build our intermediate CA from the input data
 
             cert_authority = CertAuthority.create(
                 name=form.name.data,

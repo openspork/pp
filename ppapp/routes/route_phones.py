@@ -13,7 +13,7 @@ from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.param_rsop import gen_param_rsop
-from ppapp.crypto.issue import reissue_client_cert
+from ppapp.crypto.issue import issue_client_cert, reissue_client_cert
 
 
 @app.route("/new_phone", methods=["GET", "POST"])
@@ -30,11 +30,12 @@ def new_phone():
                         form.name.data, form.mac_address.data
                     )
                 )
-                Phone.create(
+                phone = Phone.create(
                     name=form.name.data,
                     mac_address=form.mac_address.data,
                     note=form.note.data,
-                ).save()
+                )
+                issue_client_cert(phone)
             return redirect("/")
         else:
             flash_errors(form)

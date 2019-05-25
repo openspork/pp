@@ -8,6 +8,7 @@ import datetime
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
 from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
 from ppapp.util.param_ops import get_phone_params
+from .revoke import revoke_cert
 
 
 def create_cert(cert_authority_pem, private_key_pem):
@@ -102,8 +103,14 @@ def apply_client_cert(phone, param, value):
 
 def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
-    cert_authority_rsop = CertAuthorityRSoP(phone)
-    cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
+
+    # If phone has no active client cert, it is new so use RSoP
+    if not phone.active_client_cert.exists():
+        cert_authority_rsop = CertAuthorityRSoP(phone)
+        cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
+    else: # Use the currently active cert
+        cert_authority = phone.active_client_cert.cert_authority
+
     # Get client cert in PEM to add to DB
     client_cert_pem, client_key_pem = create_cert(
         cert_authority.cert, cert_authority.private_key
@@ -136,4 +143,4 @@ def issue_client_cert(phone):
 # When the phone next checks in revoke it
 def reissue_client_cert(phone):
     issue_client_cert(phone)
-    pass
+    revoke_client_cert(phone)
