@@ -79,7 +79,7 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = 
         encryption_algorithm=serialization.NoEncryption(),
     )
 
-    return cert_pem, cert_key_pem, str((cert.fingerprint(hashes.SHA256())))
+    return cert_pem, cert_key_pem, (cert.fingerprint(hashes.SHA1())).hex()
 
 
 def apply_client_cert(phone, param, value):
