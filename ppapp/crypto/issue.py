@@ -62,8 +62,8 @@ def create_cert(cert_authority_pem, private_key_pem):
         )
         .sign(root_key, hashes.SHA256(), default_backend())
     )
-    print('new cert', cert.fingerprint(hashes.SHA256()))
 
+    # print('new cert', cert.fingerprint(hashes.SHA256()))
     # Dump to scratch
     # with open("scratch/phone_cert.pkcs7", "wb") as f:
     #     f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
@@ -163,4 +163,3 @@ def issue_client_cert(phone):
 def reissue_client_cert(phone):
     revoke_client_cert(phone)
     issue_client_cert(phone)
-    

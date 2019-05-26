@@ -11,7 +11,7 @@ from ppapp.models import (
 )
 
 
-def build_crl(cert_authority_pem, private_key_pem, certs_to_revoke = None):
+def build_crl(cert_authority_pem, private_key_pem, certs_to_revoke=None):
     # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
         cert_authority_pem.encode("ascii"), default_backend()
@@ -47,7 +47,7 @@ def revoke_cert(cert_authority, private_key, cert_revocation_list_pem, cert_pem)
 
     # Load cert
     cert = x509.load_pem_x509_certificate(cert_pem.encode("ascii"), default_backend())
-    print('revoking cert', cert.fingerprint(hashes.SHA256()))
+    # print('revoking cert', cert.fingerprint(hashes.SHA256()))
     # Create a revoked cert
     builder = x509.RevokedCertificateBuilder()
     builder = builder.revocation_date(datetime.today())
@@ -78,5 +78,7 @@ def revoke_client_cert(phone):
     cert_revocation_list_pem = cert_authority.cert_revocation_list
 
     # Save our new CRL to our CA
-    cert_authority.cert_revocation_list = revoke_cert(cert_authority_pem, private_key_pem, cert_revocation_list_pem, client_cert_pem)
+    cert_authority.cert_revocation_list = revoke_cert(
+        cert_authority_pem, private_key_pem, cert_revocation_list_pem, client_cert_pem
+    )
     cert_authority.save()
