@@ -19,9 +19,7 @@ def new_group_type():
     form = NewGroupTypeForm()
     if request.method == "POST":
         # Additionally check that our precedence is unique
-        query = GroupType.select().where(
-            (GroupType.precedence == form.precedence.data)
-        )
+        query = GroupType.select().where((GroupType.precedence == form.precedence.data))
         if form.validate_on_submit():
             if not query.exists():
                 group_type = GroupType.create(

@@ -29,7 +29,7 @@ def put_log(mac_address, dir, type, ext):
                 if type == "calls":
                     CallLog.create(
                         phone=phone, date_time=datetime.now(), data=request.data
-                    ) 
+                    )
         else:
             app.logger.warn("Failed to find phone: %s" % formatted_mac_address)
             return abort(403)

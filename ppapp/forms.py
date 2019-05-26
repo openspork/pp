@@ -103,7 +103,7 @@ class GroupForm(NameNoteSubmitForm):
 
 
 class NewGroupTypeForm(NameNoteSubmitForm, DeleteForm):
-    precedence = IntegerField(validators=[NumberRange(min = 0, max = 100)])
+    precedence = IntegerField(validators=[NumberRange(min=0, max=100)])
 
 
 class EditGroupTypeForm(NewGroupTypeForm):
