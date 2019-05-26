@@ -6,7 +6,7 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import padding
 import datetime
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
-from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams
+from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams, PhoneActiveClientCert
 from ppapp.util.param_ops import get_phone_params
 from .revoke import revoke_cert
 
@@ -105,6 +105,9 @@ def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
 
     # If phone has no active client cert, it is new so use RSoP
+
+    query=PhoneActiveClientCert.select().where
+
     if not phone.active_client_cert.exists():
         cert_authority_rsop = CertAuthorityRSoP(phone)
         cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
