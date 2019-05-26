@@ -104,11 +104,10 @@ def apply_client_cert(phone, param, value):
 def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
 
+    query=PhoneActiveClientCert.select().where(PhoneActiveClientCert.phone == phone)
+
     # If phone has no active client cert, it is new so use RSoP
-
-    query=PhoneActiveClientCert.select().where
-
-    if not phone.active_client_cert.exists():
+    if not query.exists()
         cert_authority_rsop = CertAuthorityRSoP(phone)
         cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
     else: # Use the currently active cert
@@ -126,7 +125,9 @@ def issue_client_cert(phone):
         phone=phone,
     )
     # Set it as the phone's current
-    phone.active_client_cert = client_cert
+    phone_active_client_cert = PhoneActiveClientCert.get(PhoneActiveClientCert.phone == phone)
+    phone_active_client_cert.active_client_cert = client_cert
+
 
     # Determine if custom device cert already set
 
