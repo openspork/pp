@@ -117,6 +117,7 @@ class NewGroupForm(GroupForm):
 class CertAuthorityForm(NameNoteSubmitForm, FlaskForm):
     cert = TextAreaField("Cert", validators=[DataRequired()])
     private_key = TextAreaField("Private Key", validators=[DataRequired()])
+    cert_revocation_list = TextAreaField("CRL (Leave blank to generate)")
 
 
 class NewCertAuthorityForm(CertAuthorityForm):
@@ -124,7 +125,7 @@ class NewCertAuthorityForm(CertAuthorityForm):
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):
-    cert_revocation_list = TextAreaField("CRL (Blank to Regen)")
+    pass
 
 
 class SelectCertAuthorityForm(FlaskForm):

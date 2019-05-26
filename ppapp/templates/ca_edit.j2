@@ -1,11 +1,10 @@
 {% extends "ca.j2" %}
 {% block op_header %}
 Edit
-{%endblock%}
+{% endblock %}
 {% block op_ops%}
     <br>
     <br>
-    {# show crl with option to blank #}
     {{ form.delete.label }}
     {{ form.delete }}
 {% endblock %}

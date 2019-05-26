@@ -79,7 +79,7 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = 
         encryption_algorithm=serialization.NoEncryption(),
     )
 
-    return cert_pem, cert_key_pem
+    return cert_pem, cert_key_pem, str((cert.fingerprint(hashes.SHA256())))
 
 
 def apply_client_cert(phone, param, value):
@@ -127,7 +127,7 @@ def issue_client_cert(phone):
         cert_authority = phone_active_client_cert.active_client_cert.cert_authority
 
     # Get client cert in PEM to add to DB
-    client_cert_pem, client_key_pem, fingerprint = create_cert(
+    client_cert_pem, client_key_pem, thumbprint = create_cert(
         cert_authority.cert, cert_authority.private_key, 'fq.dn' #url_for('get_certificate_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
     )
     # Create the client cert in DB

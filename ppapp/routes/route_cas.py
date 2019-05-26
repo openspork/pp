@@ -24,12 +24,13 @@ def new_ca():
     if request.method == "POST":
         if form.validate_on_submit():
             # Build a new CA:
-            cert_pem, cert_key_pem = create_cert(form.cert.data, form.private_key.data, 'https://fq.dn/crl/global') # CRL URI should probably be inputtable...
+            cert_pem, cert_key_pem, thumbprint = create_cert(form.cert.data, form.private_key.data, 'https://fq.dn/crl/global') # CRL URI should probably be inputtable...
             # Build our empty CRL
             cert_revocation_list_pem = build_crl(form.cert.data, form.private_key.data)
             cert_authority = CertAuthority.create(
                 name=form.name.data,
                 cert=cert_pem,
+                thumbprint=thumbprint,
                 private_key=cert_key_pem,
                 cert_revocation_list=cert_revocation_list_pem,
                 note=form.note.data,
