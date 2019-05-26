@@ -124,7 +124,7 @@ class NewCertAuthorityForm(CertAuthorityForm):
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):
-    pass
+    cert_revocation_list = TextAreaField("CRL (Blank to Regen)")
 
 
 class SelectCertAuthorityForm(FlaskForm):
