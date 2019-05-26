@@ -47,7 +47,7 @@ def revoke_cert(cert_authority, private_key, cert_revocation_list_pem, cert_pem)
 
     # Load cert
     cert = x509.load_pem_x509_certificate(cert_pem.encode("ascii"), default_backend())
-
+    print('revoking cert', cert.fingerprint(hashes.SHA256()))
     # Create a revoked cert
     builder = x509.RevokedCertificateBuilder()
     builder = builder.revocation_date(datetime.today())

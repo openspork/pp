@@ -139,6 +139,7 @@ def issue_client_cert(phone):
     if query.exists():
         phone_active_client_cert = query.get()
         phone_active_client_cert.active_client_cert = client_cert
+        phone_active_client_cert.save()
     # Else create
     else:
         PhoneActiveClientCert.create(phone=phone, active_client_cert=client_cert)
