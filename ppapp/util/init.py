@@ -22,6 +22,7 @@ def init_db():
             GroupAvailParams,
             CertAuthority,
             ClientCert,
+            PhoneActiveClientCert,
             BootLog,
             AppLog,
             CallLog,

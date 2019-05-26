@@ -36,7 +36,7 @@ class ClientCert(Cert):
         CertAuthority, null=True
     )  # Change this back to False default later
 
-class PhoneActiveClientCert:
+class PhoneActiveClientCert(BaseModel):
     phone = ForeignKeyField(Phone, unique=True)
     active_client_cert = ForeignKeyField(ClientCert, unique=True)
 

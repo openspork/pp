@@ -22,19 +22,17 @@ def new_ca():
     if request.method == "POST":
         if form.validate_on_submit():
             # Build our empty CRL
-            cert_revocation_list = build_crl(form.cert.data,form.private_key.data)
-            # TODO: Change this to build our intermediate CA from the input data
+            if form.cert_revocation_list.data == "":
+                cert_revocation_list = build_crl(form.cert.data, form.private_key.data)
+                # TODO: Change this to build our intermediate CA from the input data
 
             cert_authority = CertAuthority.create(
                 name=form.name.data,
                 cert=form.cert.data,
                 private_key=form.private_key.data,
-                cert_revocation_list = cert_revocation_list,
+                cert_revocation_list=cert_revocation_list,
                 note=form.note.data,
             ).save()
-
-            
-
             flash("New CA - Name: {}".format(form.name.data))
             return redirect("/")
         else:
@@ -64,6 +62,13 @@ def edit_ca(id):
                 cert_authority.name = form.name.data
                 cert_authority.private_key = form.private_key.data
                 cert_authority.cert = form.cert.data
+                # Allow blanking input to regen CRL
+                if form.cert_revocation_list.data == "":
+                    cert_authority.cert_revocation_list = build_crl(
+                        form.cert.data, form.private_key.data
+                    )
+                else:
+                    cert_authority.cert_revocation_list = form.cert_revocation_list.data
                 cert_authority.note = form.note.data
                 cert_authority.save()
             return redirect("/")
@@ -73,5 +78,6 @@ def edit_ca(id):
         form.name.data = cert_authority.name
         form.private_key.data = cert_authority.private_key
         form.cert.data = cert_authority.cert
+        form.cert_revocation_list.data = cert_authority.cert_revocation_list
         form.note.data = cert_authority.note
     return render_template("ca_edit.j2", form=form, cert_authority=cert_authority)

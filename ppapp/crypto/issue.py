@@ -6,9 +6,15 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import padding
 import datetime
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
-from ppapp.models import ClientCert, BaseParam, AvailParam, PhoneAvailParams, PhoneActiveClientCert
+from ppapp.models import (
+    ClientCert,
+    BaseParam,
+    AvailParam,
+    PhoneAvailParams,
+    PhoneActiveClientCert,
+)
 from ppapp.util.param_ops import get_phone_params
-from .revoke import revoke_cert
+from .revoke import revoke_client_cert
 
 
 def create_cert(cert_authority_pem, private_key_pem):
@@ -56,6 +62,7 @@ def create_cert(cert_authority_pem, private_key_pem):
         )
         .sign(root_key, hashes.SHA256(), default_backend())
     )
+    print('new cert', cert.fingerprint(hashes.SHA256()))
 
     # Dump to scratch
     # with open("scratch/phone_cert.pkcs7", "wb") as f:
@@ -104,14 +111,18 @@ def apply_client_cert(phone, param, value):
 def issue_client_cert(phone):
     # Get our phone's CA from RSoP data
 
-    query=PhoneActiveClientCert.select().where(PhoneActiveClientCert.phone == phone)
+    query = PhoneActiveClientCert.select().where(PhoneActiveClientCert.phone == phone)
 
     # If phone has no active client cert, it is new so use RSoP
-    if not query.exists()
+    if not query.exists():
+        # Needs to be revisted once new phones can already be group members
+        # Until then bypass
         cert_authority_rsop = CertAuthorityRSoP(phone)
-        cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
-    else: # Use the currently active cert
-        cert_authority = phone.active_client_cert.cert_authority
+        if cert_authority_rsop.current_cert_authority:
+            cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
+    else:  # Use the currently active cert
+        phone_active_client_cert = query.get()
+        cert_authority = phone_active_client_cert.active_client_cert.cert_authority
 
     # Get client cert in PEM to add to DB
     client_cert_pem, client_key_pem = create_cert(
@@ -124,10 +135,13 @@ def issue_client_cert(phone):
         cert_authority=cert_authority,
         phone=phone,
     )
-    # Set it as the phone's current
-    phone_active_client_cert = PhoneActiveClientCert.get(PhoneActiveClientCert.phone == phone)
-    phone_active_client_cert.active_client_cert = client_cert
-
+    # If query exists, update
+    if query.exists():
+        phone_active_client_cert = query.get()
+        phone_active_client_cert.active_client_cert = client_cert
+    # Else create
+    else:
+        PhoneActiveClientCert.create(phone=phone, active_client_cert=client_cert)
 
     # Determine if custom device cert already set
 
@@ -146,5 +160,6 @@ def issue_client_cert(phone):
 # Mark the previous as cert needing to revoked
 # When the phone next checks in revoke it
 def reissue_client_cert(phone):
-    issue_client_cert(phone)
     revoke_client_cert(phone)
+    issue_client_cert(phone)
+    
