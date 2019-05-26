@@ -33,6 +33,11 @@ def index():
         cert_authorities=cert_authorities,
     )
 
+@app.route("/crl/<thumbprint>")
+def get_certificate_revocation_list(thumbprint):
+    pass
+
+
 
 @app.route("/init")
 def init():

@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import padding
 import datetime
+from flask import url_for
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
 from ppapp.models import (
     ClientCert,
@@ -17,7 +18,7 @@ from ppapp.util.param_ops import get_phone_params
 from .revoke import revoke_client_cert
 
 
-def create_cert(cert_authority_pem, private_key_pem):
+def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = None):
     one_day = datetime.timedelta(1, 0, 0)
     # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
@@ -62,6 +63,7 @@ def create_cert(cert_authority_pem, private_key_pem):
         )
         .sign(root_key, hashes.SHA256(), default_backend())
     )
+
 
     # print('new cert', cert.fingerprint(hashes.SHA256()))
     # Dump to scratch
@@ -125,8 +127,8 @@ def issue_client_cert(phone):
         cert_authority = phone_active_client_cert.active_client_cert.cert_authority
 
     # Get client cert in PEM to add to DB
-    client_cert_pem, client_key_pem = create_cert(
-        cert_authority.cert, cert_authority.private_key
+    client_cert_pem, client_key_pem, fingerprint = create_cert(
+        cert_authority.cert, cert_authority.private_key, 'fq.dn' #url_for('get_certificate_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(
@@ -157,9 +159,11 @@ def issue_client_cert(phone):
         apply_client_cert(phone, param[0], param[1])
 
 
-# Create the cert, assign it to the phone
-# Mark the previous as cert needing to revoked
-# When the phone next checks in revoke it
+# Need to add phase logic to revoke > reissue
+# 1 - new cert has been sent
+# 2 - phone has checked back in
+# 3 - previous cert has been revoked
 def reissue_client_cert(phone):
+
     revoke_client_cert(phone)
     issue_client_cert(phone)

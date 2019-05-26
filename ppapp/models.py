@@ -27,6 +27,7 @@ class Cert(BaseModel):
 
 
 class CertAuthority(Cert, NameNoteField):
+    thumbprint = CharField()
     cert_revocation_list = LongTextField()
 
 
