@@ -6,6 +6,7 @@ from flask import (
     redirect,
     url_for,
 )
+import base36
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
@@ -14,6 +15,7 @@ from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.ca_rsop import *
 from ppapp.crypto.revoke import build_crl
+from ppapp.crypto.issue import create_cert
 
 
 @app.route("/new_ca", methods=["GET", "POST"])
@@ -21,16 +23,15 @@ def new_ca():
     form = NewCertAuthorityForm()
     if request.method == "POST":
         if form.validate_on_submit():
+            # Build a new CA:
+            cert_pem, cert_key_pem = create_cert(form.cert.data, form.private_key.data, 'https://fq.dn/crl/global') # CRL URI should probably be inputtable...
             # Build our empty CRL
-            if form.cert_revocation_list.data == "":
-                cert_revocation_list = build_crl(form.cert.data, form.private_key.data)
-                # TODO: Change this to build our intermediate CA from the input data
-
+            cert_revocation_list_pem = build_crl(form.cert.data, form.private_key.data)
             cert_authority = CertAuthority.create(
                 name=form.name.data,
-                cert=form.cert.data,
-                private_key=form.private_key.data,
-                cert_revocation_list=cert_revocation_list,
+                cert=cert_pem,
+                private_key=cert_key_pem,
+                cert_revocation_list=cert_revocation_list_pem,
                 note=form.note.data,
             ).save()
             flash("New CA - Name: {}".format(form.name.data))
