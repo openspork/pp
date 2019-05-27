@@ -121,7 +121,10 @@ class CertAuthorityForm(NameNoteSubmitForm, FlaskForm):
 
 
 class NewCertAuthorityForm(CertAuthorityForm):
-    pass
+    country_name = StringField("Country Name", validators=[DataRequired])
+    state_province_name = StringField("State or Province Name", validators=[DataRequired])
+    locality_name = StringField("State or Province Name", validators=[DataRequired])
+    organization_name = StringField("Organization Name", validators=[DataRequired])
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):
