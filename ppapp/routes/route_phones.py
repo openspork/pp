@@ -19,6 +19,13 @@ from ppapp.crypto.issue import issue_client_cert, reissue_client_cert
 @app.route("/new_phone", methods=["GET", "POST"])
 def new_phone():
     form = NewPhoneForm()
+
+    params = AvailParam.select()
+    groups = Group.select()
+
+    form.avail_params.choices = get_form_choices(params, AvailParam)
+    form.avail_groups.choices = get_form_choices(groups, Group)
+
     if request.method == "POST":
         if form.validate_on_submit():
             query = Phone.select().where(Phone.mac_address == form.mac_address.data)
@@ -41,7 +48,7 @@ def new_phone():
             flash_errors(form)
             return render_template("new_phone.j2", form=form)
     elif request.method == "GET":
-        return render_template("new_phone.j2", form=form)
+        return render_template("phone.j2", form=form)
 
 
 @app.route("/edit_phone/<id>", methods=["GET", "POST"])
@@ -115,4 +122,4 @@ def edit_phone(id):
         form.mac_address.data = phone.mac_address
         form.name.data = phone.name
         form.note.data = phone.note
-        return render_template("edit_phone.j2", form=form)
+        return render_template("phone_edit.j2", form=form)

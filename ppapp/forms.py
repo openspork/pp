@@ -42,14 +42,6 @@ class NameNoteSubmitForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
-class PhoneForm(NameNoteSubmitForm):
-    mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
-
-
-class NewPhoneForm(PhoneForm):
-    pass
-
-
 class DeleteForm(FlaskForm):
     delete = BooleanField("Delete")
 
@@ -68,6 +60,14 @@ class AddRemoveGroupForm(FlaskForm):
     # Groups
     avail_groups = SelectMultipleField("Available groups - Select to Apply", coerce=int)
     active_groups = SelectMultipleField("Active groups - Select to Remove", coerce=int)
+
+
+class PhoneForm(NameNoteSubmitForm):
+    mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
+
+
+class NewPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm):
+    pass
 
 
 class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteForm):
