@@ -11,27 +11,27 @@ Edit Group
             <div class="pure-u-1-1">
                 <h3>Edit Group:</h3>
                 {{ form.name.label }}
-                <br />
+                <br>
                 {{ form.name(size=32) }}
-                <br />
+                <br>
                 {{ form.type.label }}
-                <br />
+                <br>
                 {{ form.type(size=8) }}
-                <br />
+                <br>
                 {{ form.cert_authority.label }}
-                <br />
+                <br>
                 {{ form.cert_authority }}
-                <br />
+                <br>
                 {{ form.note.label }}
-                <br />
+                <br>
                 {{ form.note(size=32) }}
             </div>
         </div>
-        <br />
+        <br>
 
                 {% block op_ops %}
                 {% endblock %}
-                <br />
+                <br>
                 {{ form.submit() }}
             </div>
         </div>

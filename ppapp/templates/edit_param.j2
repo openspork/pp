@@ -6,27 +6,27 @@ Edit Parameter
 <div>
         <h3>Edit Parameter:</h3>
         {{ avail_param.base_param.name }}
-        <br />
-        <br />
+        <br>
+        <br>
         <form action="" method="post">
             {{ form.hidden_tag() }}
             <div>
                 {{ form.value.label }}
-                <br />
+                <br>
                 {{ form.value(size=32) }}
             </div>
-            <br />
+            <br>
             <div>
                 {{ form.note.label }}
-                <br />
+                <br>
                 {{ form.note(size=32) }}
             </div>
-            <br />
+            <br>
             <div>
                 {{ form.delete.label }}
                 {{ form.delete }}
             </div>
-            <br />
+            <br>
             <div>{{ form.submit() }}</div>
         </form>
 </div>
