@@ -1,12 +1,5 @@
 from io import BytesIO
-from flask import (
-    flash,
-    send_file,
-    render_template,
-    request,
-    redirect,
-    url_for,
-)
+from flask import flash, send_file, render_template, request, redirect, url_for
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
@@ -41,10 +34,17 @@ def new_ca():
                 cert_revocation_list_uri = None
 
             cert_pem, cert_key_pem, thumbprint = create_cert(
-                form.cert.data, form.private_key.data, cert_revocation_list_uri
+                cert_authority_pem=form.cert.data,
+                private_key_pem=form.private_key.data,
+                cert_revocation_list_uri=cert_revocation_list_uri,
+                country_name=form.country_name.data,
+                state_or_province_name=form.state_or_province_name.data,
+                locality_name=form.locality_name.data,
+                organization_name=form.organization_name.data,
             )
             # Build our empty CRL
             cert_revocation_list_pem = build_crl(form.cert.data, form.private_key.data)
+            # Save our CA in DB
             cert_authority = CertAuthority.create(
                 name=form.name.data,
                 cert=cert_pem,

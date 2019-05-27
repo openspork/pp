@@ -18,7 +18,15 @@ from ppapp.util.param_ops import get_phone_params
 from .revoke import revoke_client_cert
 
 
-def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=None):
+def create_cert(
+    cert_authority_pem,
+    private_key_pem,
+    cert_revocation_list_uri=None,
+    country_name=None,
+    state_or_province_name=None,
+    locality_name=None,
+    organization_name=None,
+):
     one_day = datetime.timedelta(1, 0, 0)
     # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
@@ -36,28 +44,36 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=No
     cert_key = rsa.generate_private_key(
         public_exponent=65537, key_size=2048, backend=default_backend()
     )
+
+    # If all subject info is blank use defaults
+    if (
+        country_name == None
+        and state_or_province_name == None
+        and locality_name == None
+        and organization_name == None
+    ):
+        country_name = "US"
+        state_or_province_name = "California"
+        locality_name = "Glendale"
+        organization_name = "Org"
+    # TODO: Add error handling if some are blank
+
     new_subject = x509.Name(
         [
-            x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
-            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "California"),
-            x509.NameAttribute(NameOID.LOCALITY_NAME, "Glendale"),
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Org Name"),
+            x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_or_province_name),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
         ]
     )
 
     if not cert_revocation_list_uri:
         cert_revocation_list_uri = url_for(
-                    "get_cert_revocation_list",
-                    thumbprint=root_cert_thumbprint,
-                    _external=True,
-                )
+            "get_cert_revocation_list", thumbprint=root_cert_thumbprint, _external=True
+        )
 
     crl_distribution_point = x509.DistributionPoint(
-        full_name=[
-            x509.UniformResourceIdentifier(
-                value=cert_revocation_list_uri
-            )
-        ],
+        full_name=[x509.UniformResourceIdentifier(value=cert_revocation_list_uri)],
         relative_name=None,
         crl_issuer=[x509.DirectoryName(value=root_cert.subject)],
         reasons=frozenset(
