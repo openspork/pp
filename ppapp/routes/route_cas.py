@@ -1,12 +1,12 @@
+from io import BytesIO
 from flask import (
     flash,
-    send_from_directory,
+    send_file,
     render_template,
     request,
     redirect,
     url_for,
 )
-import base36
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
@@ -20,7 +20,14 @@ from ppapp.crypto.issue import create_cert
 
 @app.route("/crl/<thumbprint>")
 def get_cert_revocation_list(thumbprint):
-    pass
+    cert_authority = CertAuthority.get(CertAuthority.thumbprint == thumbprint)
+    byte_io = BytesIO()
+    byte_io.write(cert_authority.cert_revocation_list.encode())
+    byte_io.seek(0)
+
+    return send_file(
+        byte_io, attachment_filename="%s.pem" % thumbprint, as_attachment=True
+    )
 
 
 @app.route("/new_ca", methods=["GET", "POST"])
