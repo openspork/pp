@@ -19,7 +19,7 @@ from ppapp.crypto.issue import create_cert
 
 
 @app.route("/crl/<thumbprint>")
-def get_certificate_revocation_list(thumbprint):
+def get_cert_revocation_list(thumbprint):
     pass
 
 

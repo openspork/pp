@@ -25,7 +25,7 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=No
         cert_authority_pem.encode("ascii"), default_backend()
     )
 
-    root_cert_thumbprint = cert.fingerprint(hashes.SHA1()).hex()
+    root_cert_thumbprint = root_cert.fingerprint(hashes.SHA1()).hex()
 
     # Load our root key
     root_key = serialization.load_pem_private_key(
@@ -46,19 +46,29 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=No
     )
 
     crl_distribution_point = x509.DistributionPoint(
-        full_name=[x509.UniformResourceIdentifier(value=url_for('get_cert_revocation_list', thumbprint=root_cert_thumbprint,_external=True))],
+        full_name=[
+            x509.UniformResourceIdentifier(
+                value=url_for(
+                    "get_cert_revocation_list",
+                    thumbprint=root_cert_thumbprint,
+                    _external=True,
+                )
+            )
+        ],
         relative_name=None,
-        crl_issuer=root_cert.subject,
+        crl_issuer=[x509.DirectoryName(value=root_cert.subject)],
         reasons=frozenset(
-            x509.ReasonFlags.key_compromise,
-            x509.ReasonFlags.ca_compromise,
-            x509.ReasonFlags.affiliation_changed,
-            x509.ReasonFlags.superseded,
-            x509.ReasonFlags.cessation_of_operation,
-            x509.ReasonFlags.certificate_hold,
-            x509.ReasonFlags.privilege_withdrawn,
-            x509.ReasonFlags.privilege_withdrawn,
-            x509.ReasonFlags.aa_compromise,
+            (
+                x509.ReasonFlags.key_compromise,
+                x509.ReasonFlags.ca_compromise,
+                x509.ReasonFlags.affiliation_changed,
+                x509.ReasonFlags.superseded,
+                x509.ReasonFlags.cessation_of_operation,
+                x509.ReasonFlags.certificate_hold,
+                x509.ReasonFlags.privilege_withdrawn,
+                x509.ReasonFlags.privilege_withdrawn,
+                x509.ReasonFlags.aa_compromise,
+            )
         ),
     )
 
@@ -78,8 +88,8 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=No
 
     # print('new cert', cert.fingerprint(hashes.SHA256()))
     # Dump to scratch
-    # with open("scratch/phone_cert.pkcs7", "wb") as f:
-    #     f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
+    with open("scratch/new_cert.pem", "wb") as f:
+        f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
 
     # Return PEM
     cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)

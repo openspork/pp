@@ -42,6 +42,19 @@ def new_phone():
                     mac_address=form.mac_address.data,
                     note=form.note.data,
                 )
+
+                # Process phone's children
+                add_params_to_phone(form.avail_params.data, phone)
+                add_groups_to_phone(form.avail_groups.data, phone)
+
+                # Validate RSoP
+                try:
+                    rsop = gen_param_rsop(phone)
+                except Exception as e:
+                    flash(str(e))
+
+
+
                 issue_client_cert(phone)
             return redirect("/")
         else:
