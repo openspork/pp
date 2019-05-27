@@ -18,13 +18,20 @@ from ppapp.crypto.revoke import build_crl
 from ppapp.crypto.issue import create_cert
 
 
+@app.route("/crl/<thumbprint>")
+def get_certificate_revocation_list(thumbprint):
+    pass
+
+
 @app.route("/new_ca", methods=["GET", "POST"])
 def new_ca():
     form = NewCertAuthorityForm()
     if request.method == "POST":
         if form.validate_on_submit():
             # Build a new CA:
-            cert_pem, cert_key_pem, thumbprint = create_cert(form.cert.data, form.private_key.data, 'https://fq.dn/crl/global') # CRL URI should probably be inputtable...
+            cert_pem, cert_key_pem, thumbprint = create_cert(
+                form.cert.data, form.private_key.data, "https://fq.dn/crl/global"
+            )  # CRL URI should probably be inputtable...
             # Build our empty CRL
             cert_revocation_list_pem = build_crl(form.cert.data, form.private_key.data)
             cert_authority = CertAuthority.create(

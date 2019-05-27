@@ -18,12 +18,14 @@ from ppapp.util.param_ops import get_phone_params
 from .revoke import revoke_client_cert
 
 
-def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = None):
+def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=None):
     one_day = datetime.timedelta(1, 0, 0)
     # Load our root cert
     root_cert = x509.load_pem_x509_certificate(
         cert_authority_pem.encode("ascii"), default_backend()
     )
+
+    root_cert_thumbprint = cert.fingerprint(hashes.SHA1()).hex()
 
     # Load our root key
     root_key = serialization.load_pem_private_key(
@@ -44,16 +46,26 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = 
     )
 
     crl_distribution_point = x509.DistributionPoint(
-        full_name=[x509.UniformResourceIdentifier(value="https://fq.dn")],
+        full_name=[x509.UniformResourceIdentifier(value=url_for('get_cert_revocation_list', thumbprint=root_cert_thumbprint,_external=True))],
         relative_name=None,
-        crl_issuer=None,
-        reasons=None,
+        crl_issuer=root_cert.subject,
+        reasons=frozenset(
+            x509.ReasonFlags.key_compromise,
+            x509.ReasonFlags.ca_compromise,
+            x509.ReasonFlags.affiliation_changed,
+            x509.ReasonFlags.superseded,
+            x509.ReasonFlags.cessation_of_operation,
+            x509.ReasonFlags.certificate_hold,
+            x509.ReasonFlags.privilege_withdrawn,
+            x509.ReasonFlags.privilege_withdrawn,
+            x509.ReasonFlags.aa_compromise,
+        ),
     )
 
     cert = (
         x509.CertificateBuilder()
         .subject_name(new_subject)
-        .issuer_name(root_cert.issuer)
+        .issuer_name(root_cert.subject)
         .public_key(cert_key.public_key())
         .serial_number(x509.random_serial_number())
         .not_valid_before(datetime.datetime.utcnow())
@@ -63,7 +75,6 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = 
         )
         .sign(root_key, hashes.SHA256(), default_backend())
     )
-
 
     # print('new cert', cert.fingerprint(hashes.SHA256()))
     # Dump to scratch
@@ -79,7 +90,7 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri = 
         encryption_algorithm=serialization.NoEncryption(),
     )
 
-    return cert_pem, cert_key_pem, (cert.fingerprint(hashes.SHA1())).hex()
+    return cert_pem, cert_key_pem, cert.fingerprint(hashes.SHA1()).hex()
 
 
 def apply_client_cert(phone, param, value):
@@ -128,7 +139,9 @@ def issue_client_cert(phone):
 
     # Get client cert in PEM to add to DB
     client_cert_pem, client_key_pem, thumbprint = create_cert(
-        cert_authority.cert, cert_authority.private_key, 'fq.dn' #url_for('get_certificate_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
+        cert_authority.cert,
+        cert_authority.private_key,
+        "fq.dn",  # url_for('get_certificate_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(
