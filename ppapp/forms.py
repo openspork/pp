@@ -125,6 +125,7 @@ class NewCertAuthorityForm(CertAuthorityForm):
     state_province_name = StringField("State or Province Name", validators=[DataRequired])
     locality_name = StringField("State or Province Name", validators=[DataRequired])
     organization_name = StringField("Organization Name", validators=[DataRequired])
+    cert_revocation_list_uri = StringField("CRL URI")
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):

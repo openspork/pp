@@ -36,8 +36,12 @@ def new_ca():
     if request.method == "POST":
         if form.validate_on_submit():
             # Build a new CA:
+
+            if cert_revocation_list_uri == "":
+                cert_revocation_list_uri = None
+
             cert_pem, cert_key_pem, thumbprint = create_cert(
-                form.cert.data, form.private_key.data, "https://fq.dn/crl/global"
+                form.cert.data, form.private_key.data, cert_revocation_list_uri
             )  # CRL URI should probably be inputtable...
             # Build our empty CRL
             cert_revocation_list_pem = build_crl(form.cert.data, form.private_key.data)

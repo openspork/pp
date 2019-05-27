@@ -45,14 +45,17 @@ def create_cert(cert_authority_pem, private_key_pem, cert_revocation_list_uri=No
         ]
     )
 
-    crl_distribution_point = x509.DistributionPoint(
-        full_name=[
-            x509.UniformResourceIdentifier(
-                value=url_for(
+    if not cert_revocation_list_uri:
+        cert_revocation_list_uri = url_for(
                     "get_cert_revocation_list",
                     thumbprint=root_cert_thumbprint,
                     _external=True,
                 )
+
+    crl_distribution_point = x509.DistributionPoint(
+        full_name=[
+            x509.UniformResourceIdentifier(
+                value=cert_revocation_list_uri
             )
         ],
         relative_name=None,
