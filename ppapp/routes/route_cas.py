@@ -57,7 +57,7 @@ def new_ca():
             return redirect("/")
         else:
             flash_errors(form)
-    return render_template("ca.j2", form=form)
+    return render_template("ca_new.j2", form=form)
 
 
 @app.route("/edit_ca/<id>", methods=["GET", "POST"])

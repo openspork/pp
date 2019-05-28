@@ -3,35 +3,35 @@
 Phone
 {% endblock %}
 {% block content %}
-<h3>{% block op_header %}{% endblock %}</h3>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <div class="pure-g">
-        <div class="pure-u-1-1">
-            {{ form.name.label }}
-            <br>
-            {{ form.name(size=32) }}
-            <br>
-            <br>
-            {{ form.mac_address.label }}
-            <br>
-            {{ form.mac_address(size=32) }}
-            <br>
-            <br>
-            {{ form.note.label }}
-            <br>
-            {{ form.note(size=32) }}
+    <h3>{% block op_header %}{% endblock %}</h3>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                {{ form.name.label }}
+                <br>
+                {{ form.name(size=32) }}
+                <br>
+                <br>
+                {{ form.mac_address.label }}
+                <br>
+                {{ form.mac_address(size=32) }}
+                <br>
+                <br>
+                {{ form.note.label }}
+                <br>
+                {{ form.note(size=32) }}
+            </div>
         </div>
-    </div>
-    <br>
-    {% block group_params %}
-    {% endblock %}
-    <br>
-    <br>
-    {% block op_ops %}
-    {% endblock %}
-    <br>
-    <br>
-    {{ form.submit() }}<br>
-</form>
+        <br>
+        {% block group_params %}
+        {% endblock %}
+        <br>
+        <br>
+        {% block op_ops %}
+        {% endblock %}
+        <br>
+        <br>
+        {{ form.submit() }}<br>
+    </form>
 {% endblock %}
