@@ -36,6 +36,8 @@ def new_ca():
             cert_pem, cert_key_pem, thumbprint = create_cert(
                 cert_authority_pem=form.cert.data,
                 private_key_pem=form.private_key.data,
+                common_name=form.name.data,
+                is_ca=True,
                 cert_revocation_list_uri=cert_revocation_list_uri,
                 country_name=form.country_name.data,
                 state_or_province_name=form.state_or_province_name.data,

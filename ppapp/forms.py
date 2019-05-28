@@ -8,7 +8,7 @@ from wtforms import (
     SelectMultipleField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired, MacAddress, NumberRange
+from wtforms.validators import DataRequired, MacAddress, NumberRange, URL
 
 # Careful, ppapp.models will clobber wtforms' BooleanField!
 from ppapp.models import BaseParam, AvailParam, Group, GroupType
@@ -125,7 +125,7 @@ class NewCertAuthorityForm(CertAuthorityForm):
     )
     locality_name = StringField("Locality Name", validators=[DataRequired()])
     organization_name = StringField("Organization Name", validators=[DataRequired()])
-    cert_revocation_list_uri = StringField("CRL URI")
+    cert_revocation_list_uri = StringField("CRL URI", validators=[DataRequired(),URL()])
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):

@@ -22,6 +22,8 @@ from .revoke import revoke_client_cert
 def create_cert(
     cert_authority_pem,
     private_key_pem,
+    common_name,
+    is_ca=False,
     cert_revocation_list_uri=None,
     country_name=None,
     state_or_province_name=None,
@@ -46,27 +48,24 @@ def create_cert(
         public_exponent=65537, key_size=2048, backend=default_backend()
     )
 
-    # If all subject info is blank use defaults
+    # If all subject info is present
     if (
-        country_name == None
-        and state_or_province_name == None
-        and locality_name == None
-        and organization_name == None
+        country_name
+        and state_or_province_name
+        and locality_name
+        and organization_name
     ):
-        country_name = "US"
-        state_or_province_name = "California"
-        locality_name = "Glendale"
-        organization_name = "Org"
-    # TODO: Add error handling if some are blank
-
-    new_subject = x509.Name(
-        [
-            x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
-            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_or_province_name),
-            x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
-        ]
-    )
+       new_subject = x509.Name(
+            [
+                x509.NameAttribute(NameOID.COMMON_NAME, common_name),
+                x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
+                x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_or_province_name),
+                x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
+                x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
+            ]
+        )
+    else:
+        new_subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, common_name)])
 
     if not cert_revocation_list_uri:
         cert_revocation_list_uri = url_for(
@@ -100,6 +99,9 @@ def create_cert(
         .serial_number(x509.random_serial_number())
         .not_valid_before(datetime.datetime.utcnow())
         .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=30))
+        .add_extension(
+            x509.BasicConstraints(ca=is_ca, path_length=None), critical=True
+        )
         .add_extension(
             x509.CRLDistributionPoints([crl_distribution_point]), critical=True
         )
@@ -174,13 +176,14 @@ def issue_client_cert(phone):
 
     # Get client cert in PEM to add to DB
     client_cert_pem, client_key_pem, thumbprint = create_cert(
-        cert_authority.cert,
-        cert_authority.private_key,
-        url_for(
-            "get_cert_revocation_list",
-            thumbprint=cert_authority.thumbprint,
-            _external=True,
-        ),
+            cert_authority_pem=cert_authority.cert,
+            private_key_pem=cert_authority.private_key,
+            common_name=phone.mac_address,
+            cert_revocation_list_uri=url_for(
+                "get_cert_revocation_list",
+                thumbprint=cert_authority.thumbprint,
+                _external=True,
+                ),
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(
