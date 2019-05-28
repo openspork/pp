@@ -170,7 +170,7 @@ def issue_client_cert(phone):
     client_cert_pem, client_key_pem, thumbprint = create_cert(
         cert_authority.cert,
         cert_authority.private_key,
-        "fq.dn",  # url_for('get_certificate_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
+        url_for('get_cert_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(
