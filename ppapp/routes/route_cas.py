@@ -1,4 +1,7 @@
 from io import BytesIO
+from cryptography import x509
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 from flask import flash, send_file, render_template, request, redirect, url_for
 from ppapp import app
 from ppapp.forms import *
@@ -28,6 +31,17 @@ def new_ca():
     form = NewCertAuthorityForm()
     if request.method == "POST":
         if form.validate_on_submit():
+            try:
+                x509.load_pem_x509_certificate(
+                    form.cert.data.encode("ascii"), default_backend()
+                )
+                serialization.load_pem_private_key(
+                    form.private_key.data.encode("ascii"), password=None, backend=default_backend()
+                )
+            except ValueError as e:
+                flash(e)
+                return render_template("ca_new.j2", form=form)
+
             # Build a new CA:
             cert_revocation_list_uri = form.cert_revocation_list_uri.data
             if cert_revocation_list_uri == "":
