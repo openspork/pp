@@ -60,7 +60,7 @@ def new_phone():
             flash_errors(form)
             return render_template("new_phone.j2", form=form)
     elif request.method == "GET":
-        return render_template("phone.j2", form=form)
+        return render_template("phone_new.j2", form=form)
 
 
 @app.route("/edit_phone/<id>", methods=["GET", "POST"])

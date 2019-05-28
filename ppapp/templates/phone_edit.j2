@@ -1,8 +1,13 @@
 {% extends "phone.j2" %}
-{% block op_header %}
-Edit
+
+{% block title %}
+New Phone
 {% endblock %}
-{% block params %}
+
+{% block op_header %}Edit Phone{% endblock %}
+
+{% block group_params %}
+<div class="pure-g">
     <div class="pure-u-1-2">
         {{ form.avail_params.label }}
         <br>
@@ -13,8 +18,8 @@ Edit
         <br>
         {{ form.active_params(size=12) }}
     </div>
-{% endblock %}
-{% block groups %}
+</div>
+<div class="pure-g">
     <div class="pure-u-1-2">
         {{ form.avail_groups.label }}
         <br>
@@ -25,17 +30,20 @@ Edit
         <br>
         {{ form.active_groups(size=12) }}
     </div>
+</div>
 {% endblock %}
 {% block op_ops %}
-    <div class="pure-g">
-        <div class="pure-u-1-1">
-            {{ form.reissue_cert.label }}
-            {{ form.reissue_cert }}
-        </div>
+<div class="pure-g">
+    <div class="pure-u-1-1">
+        {{ form.reissue_cert.label }}
+        {{ form.reissue_cert }}
     </div>
-    <br>
-    <br>
-    {{ form.delete.label }}
-    {{ form.delete }}
+</div>
+<div class="pure-g">
+    <div class="pure-u-1-1">
+        {{ form.delete.label }}
+        {{ form.delete }}
+    </div>
+</div>
 {% endblock %}
 

@@ -3,51 +3,33 @@
 Phone
 {% endblock %}
 {% block content %}
-
-    <h3>{% block op_header %}New{% endblock %} Phone</h3>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <div class="pure-g">
-                <div class="pure-u-1-1">
-                    {{ form.name.label }}
-                    <br>
-                    {{ form.name(size=32) }}
-                    <br>
-                    {{ form.mac_address.label }}
-                    <br>
-                    {{ form.mac_address(size=32) }}
-                    <br>
-                    {{ form.note.label }}
-                    <br>
-                    {{ form.note(size=32) }}
-                </div>
-            </div>
+<h3>{% block op_header %}{% endblock %}</h3>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            {{ form.name.label }}
             <br>
-            <div class="pure-g">
-                {% block params %}
-                    <div class="pure-u-1-1">
-                        {{ form.avail_params.label }}
-                        <br>
-                        {{ form.avail_params(size=12) }}
-                    </div>
-                {% endblock %}
-            </div>
+            {{ form.name(size=32) }}
             <br>
-            <div class="pure-g">
-                {% block groups %}
-                    <div class="pure-u-1-1">
-                        {{ form.avail_groups.label }}
-                        <br>
-                        {{ form.avail_groups(size=12) }}
-                    </div>
-                {% endblock %}
-            </div>
+            {{ form.mac_address.label }}
             <br>
+            {{ form.mac_address(size=32) }}
             <br>
-            {% block op_ops %}
-            {% endblock %}
+            {{ form.note.label }}
             <br>
-            <br>
-            {{ form.submit() }}<br>
-        </form>
+            {{ form.note(size=32) }}
+        </div>
+    </div>
+    <br>
+    {% block group_params %}
+    {% endblock %}
+    <br>
+    <br>
+    {% block op_ops %}
+    {% endblock %}
+    <br>
+    <br>
+    {{ form.submit() }}<br>
+</form>
 {% endblock %}
