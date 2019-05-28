@@ -121,7 +121,7 @@ def new_group():
                 )
             group = Group.create(
                 name=form.name.data, type=grouptype, note=form.note.data, cert_authority=cert_authority
-            ).save()
+            )
 
             add_params_to_group(form.avail_params.data, group)
             add_groups_to_group(form.avail_groups.data, group, 'parents')
