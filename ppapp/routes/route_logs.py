@@ -6,7 +6,7 @@ from ppapp.util.misc import format_mac
 
 
 @app.route("/poly/<dir>/<mac_address>-<type>.<ext>", methods=["GET", "HEAD", "PUT"])
-def put_log(mac_address, dir, type, ext):
+def put_log(dir, mac_address, type, ext):
     formatted_mac_address = format_mac(mac_address)
     if request.method == "PUT":
         query = Phone.select().where(Phone.mac_address == formatted_mac_address)
