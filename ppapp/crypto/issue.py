@@ -108,7 +108,7 @@ def create_cert(
 
     # print('new cert', cert.fingerprint(hashes.SHA256()))
     # Dump to scratch
-    with open("scratch/new_cert.pem", "wb") as f:
+    with open("scratch/latest.crt", "wb") as f:
         f.write(cert.public_bytes(encoding=serialization.Encoding.PEM))
 
     # Return PEM
