@@ -171,7 +171,7 @@ def edit_group(id):
         if form.validate_on_submit():
 
             # Get data
-            # Get Params
+            # Get params
             new_param_ids = form.avail_params.data
             prev_param_ids = form.active_params.data
 
