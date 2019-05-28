@@ -61,7 +61,6 @@ def rsop(mac_address):
         mac_address=mac_address,
         rsop=param_rsop,
         cert_authority_rsop=cert_authority_rsop,
-        BaseParam=BaseParam,
         Group=Group,
         Phone=Phone,
         xml=xml,
