@@ -98,19 +98,35 @@ def new_group():
         GroupType.select().order_by(GroupType.name), GroupType
     )
 
+    cert_authorities = CertAuthority.select()
+
+    form.cert_authority.choices = get_form_choices(cert_authorities, CertAuthority)
+    form.cert_authority.choices.insert(0, (0, ""))
+
+    params = AvailParam.select()
+    groups = Group.select()
+
+    form.avail_params.choices = get_form_choices(params, AvailParam)
+    form.avail_groups.choices = get_form_choices(groups, Group)
+
+
     if request.method == "POST":
         if form.validate_on_submit():
             grouptype = GroupType.get(GroupType.id == form.type.data)
             group = Group.create(
-                name=form.name.data, type=grouptype, note=form.note.data
+                name=form.name.data, type=grouptype, note=form.note.data, cert_authority=form.cert_authority.data
             ).save()
+
+            add_params_to_group(form.avail_params.data, group)
+            add_groups_to_group(form.avail_groups.data, group, 'parents')
+
             flash(
                 "New Group - Name: {}, Type: {}".format(form.name.data, grouptype.name)
             )
             return redirect("/")
         else:
             flash_errors(form)
-    return render_template("new_group.j2", form=form)
+    return render_template("group_new.j2", form=form)
 
 
 @app.route("/edit_group/<id>", methods=["GET", "POST"])
@@ -204,7 +220,6 @@ def edit_group(id):
             return redirect("/")
         else:
             flash_errors(form)
-        return render_template("edit_group.j2", form=form)
 
     elif request.method == "GET":
         form.name.data = group.name
@@ -213,4 +228,4 @@ def edit_group(id):
         if group.cert_authority:
             form.cert_authority.data = group.cert_authority.id
 
-        return render_template("edit_group.j2", form=form)
+    return render_template("group_edit.j2", form=form)

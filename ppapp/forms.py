@@ -110,10 +110,6 @@ class EditGroupTypeForm(NewGroupTypeForm):
     pass
 
 
-class NewGroupForm(GroupForm):
-    pass
-
-
 class CertAuthorityForm(NameNoteSubmitForm, FlaskForm):
     cert = TextAreaField("Cert", validators=[DataRequired()])
     private_key = TextAreaField("Private Key", validators=[DataRequired()])
@@ -121,8 +117,12 @@ class CertAuthorityForm(NameNoteSubmitForm, FlaskForm):
 
 
 class NewCertAuthorityForm(CertAuthorityForm):
-    country_name = StringField("Two Character Country Code", validators=[DataRequired()])
-    state_or_province_name = StringField("State or Province Name", validators=[DataRequired()])
+    country_name = StringField(
+        "Two Character Country Code", validators=[DataRequired()]
+    )
+    state_or_province_name = StringField(
+        "State or Province Name", validators=[DataRequired()]
+    )
     locality_name = StringField("Locality Name", validators=[DataRequired()])
     organization_name = StringField("Organization Name", validators=[DataRequired()])
     cert_revocation_list_uri = StringField("CRL URI")
@@ -136,7 +136,14 @@ class SelectCertAuthorityForm(FlaskForm):
     cert_authority = SelectField("Available CAs", coerce=int, default=0)
 
 
+class NewGroupForm(
+    GroupForm, AddRemoveGroupForm, AddRemoveParamForm, SelectCertAuthorityForm
+):
+    pass
+
+
 class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm, SelectCertAuthorityForm):
+    # TODO: Common with avail_groups in AddRemoveGroupForm
     avail_parents = SelectMultipleField("Available parents", coerce=int)
     active_parents = SelectMultipleField("Active parents", coerce=int)
     avail_children = SelectMultipleField("Available children", coerce=int)

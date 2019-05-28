@@ -1,11 +1,57 @@
 {% extends "group.j2" %}
-{% block op_header %}
-Edit
-{%endblock%}
-{% block op_ops%}
+
+{% block title %}
+Edit Group
+{% endblock %}
+
+{% block op_header %}Edit Group{% endblock %}
+
+{% block group_params %}
+   <div class="pure-g">
+        <div class="pure-u-1-2">
+            {{ form.avail_params.label }}
+            <br>
+            {{ form.avail_params(size=12) }}
+        </div>
+        <div class="pure-u-1-2">
+            {{ form.active_params.label }}
+            <br>
+            {{ form.active_params(size=12, ) }}
+        </div>
+    </div>
     <br>
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            {{ form.avail_children.label }}
+            <br>
+            {{ form.avail_children(size=12) }}
+        </div>
+        <div class="pure-u-1-2">
+            {{ form.active_children.label }}
+            <br>
+            {{ form.active_children(size=12, ) }}
+        </div>
+    </div>
     <br>
-    {{ form.delete.label }}
-    {{ form.delete }}
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            {{ form.avail_parents.label }}
+            <br>
+            {{ form.avail_parents(size=6) }}
+        </div>
+        <div class="pure-u-1-2">
+            {{ form.active_parents.label }}
+            <br>
+            {{ form.active_parents(size=6, ) }}
+        </div>
+    </div>
+{% endblock %}
+{% block op_ops %}
+<div class="pure-g">
+    <div class="pure-u-1-1">
+        {{ form.delete.label }}
+        {{ form.delete }}
+    </div>
+</div>
 {% endblock %}
 
