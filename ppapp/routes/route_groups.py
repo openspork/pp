@@ -113,8 +113,14 @@ def new_group():
     if request.method == "POST":
         if form.validate_on_submit():
             grouptype = GroupType.get(GroupType.id == form.type.data)
+            if form.cert_authority.data == 0:
+                cert_authority = None
+            else:
+                cert_authority = CertAuthority.get(
+                    CertAuthority.id == form.cert_authority.data
+                )
             group = Group.create(
-                name=form.name.data, type=grouptype, note=form.note.data, cert_authority=form.cert_authority.data
+                name=form.name.data, type=grouptype, note=form.note.data, cert_authority=cert_authority
             ).save()
 
             add_params_to_group(form.avail_params.data, group)
