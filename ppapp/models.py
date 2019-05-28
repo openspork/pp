@@ -80,6 +80,7 @@ class ParamLevelParamLevels(BaseModel):
 class AvailParam(BaseModel):
     base_param = ForeignKeyField(BaseParam, backref="avail_params", null=True)
     value = LongTextField()
+    automatic = BooleanField(null=True)
     note = CharField(null=True)
 
 

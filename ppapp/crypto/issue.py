@@ -11,6 +11,7 @@ from ppapp.models import (
     ClientCert,
     BaseParam,
     AvailParam,
+    Phone,
     PhoneAvailParams,
     PhoneActiveClientCert,
 )
@@ -123,6 +124,14 @@ def create_cert(
 
 
 def apply_client_cert(phone, param, value):
+    # Get our CA's name
+    phone_active_client_cert = (
+        PhoneActiveClientCert.select().join(Phone).where(Phone.id == phone).get()
+    )
+
+    cert_authority_name = (
+        phone_active_client_cert.active_client_cert.cert_authority.name
+    )
 
     query = (
         AvailParam.select()
@@ -141,13 +150,10 @@ def apply_client_cert(phone, param, value):
         avail_param = AvailParam.create(
             base_param=base_param,
             value=value,
-            note="Auto-generated due to inherited CA",
+            automatic=True,
+            note="Auto-generated due to inherited CA: %s" % cert_authority_name,
         )
-        PhoneAvailParams.create(
-            phone=phone,
-            avail_param=avail_param,
-            note="Auto-generated due to inherited CA",
-        )
+        PhoneAvailParams.create(phone=phone, avail_param=avail_param)
 
 
 def issue_client_cert(phone):
@@ -170,7 +176,11 @@ def issue_client_cert(phone):
     client_cert_pem, client_key_pem, thumbprint = create_cert(
         cert_authority.cert,
         cert_authority.private_key,
-        url_for('get_cert_revocation_list', thumbprint=cert_authority.thumbprint, _external=True)
+        url_for(
+            "get_cert_revocation_list",
+            thumbprint=cert_authority.thumbprint,
+            _external=True,
+        ),
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(

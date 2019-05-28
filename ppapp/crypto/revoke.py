@@ -35,7 +35,7 @@ def build_crl(cert_authority_pem, private_key_pem, certs_to_revoke=None):
     return cert_revocation_list.public_bytes(encoding=serialization.Encoding.PEM)
 
 
-def revoke_cert(cert_authority, private_key, cert_revocation_list_pem, cert_pem):
+def revoke_cert(cert_authority_pem, private_key_pem, cert_revocation_list_pem, cert_pem):
     revoked_certs = []
     # Load CRL
     cert_revocation_list = x509.load_pem_x509_crl(
@@ -56,7 +56,7 @@ def revoke_cert(cert_authority, private_key, cert_revocation_list_pem, cert_pem)
 
     revoked_certs.append(revoked_cert)
 
-    return build_crl(cert_authority, private_key, revoked_certs)
+    return build_crl(cert_authority_pem, private_key_pem, revoked_certs)
 
 
 def revoke_client_cert(phone):

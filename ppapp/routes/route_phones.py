@@ -14,6 +14,7 @@ from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.param_rsop import gen_param_rsop
 from ppapp.crypto.issue import issue_client_cert, reissue_client_cert
+from ppapp.crypto.revoke import revoke_client_cert
 
 
 @app.route("/new_phone", methods=["GET", "POST"])
@@ -52,8 +53,6 @@ def new_phone():
                     rsop = gen_param_rsop(phone)
                 except Exception as e:
                     flash(str(e))
-
-
 
                 issue_client_cert(phone)
             return redirect("/")
@@ -100,7 +99,27 @@ def edit_phone(id):
                         form.name.data, form.mac_address.data
                     )
                 )
-                # Recursive to delete foreign keys
+                # Find the current active client cert
+                phone_active_client_cert = (
+                    PhoneActiveClientCert.select()
+                    .join(Phone)
+                    .where(Phone.id == phone)
+                    .get()
+                )
+                active_client_cert = phone_active_client_cert.active_client_cert
+                # Revoke the current active client cert
+                revoke_client_cert(phone)
+                # Find auto-generated params
+                avail_params_to_delete = (
+                    AvailParam.select()
+                    .join(PhoneAvailParams)
+                    #.switch(AvailParam)
+                    .join(Phone)
+                    .where((Phone.id == phone) & (AvailParam.automatic == True))
+                )
+                # Recursive to delete foreign keys (due to constraint)
+                for avail_param in avail_params_to_delete:
+                    avail_param.delete_instance(recursive=True)
                 phone.delete_instance(recursive=True)
             else:
                 flash(
