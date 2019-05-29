@@ -56,21 +56,23 @@ class AddRemoveParamForm(FlaskForm):
     )
 
 
-class AddRemoveGroupForm(FlaskForm):
-    # Groups
-    avail_groups = SelectMultipleField("Available groups - Select to Apply", coerce=int)
-    active_groups = SelectMultipleField("Active groups - Select to Remove", coerce=int)
+class AddRemoveParentForm(FlaskForm):
+    avail_parents = SelectMultipleField("Available parent groups - Select to Apply", coerce=int)
+    active_parents = SelectMultipleField("Active parent groups - Select to Remove", coerce=int)
 
+class AddRemoveChildForm(FlaskForm):
+    avail_children = SelectMultipleField("Available child groups - Select to Apply", coerce=int)
+    active_children = SelectMultipleField("Active child groups - Select to Remove", coerce=int)
 
 class PhoneForm(NameNoteSubmitForm):
     mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
 
 
-class NewPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm):
+class NewPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveParentForm):
     pass
 
 
-class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveGroupForm, DeleteForm):
+class EditPhoneForm(PhoneForm, AddRemoveParamForm, AddRemoveParentForm, DeleteForm):
     reissue_cert = BooleanField()
 
 
@@ -137,14 +139,15 @@ class SelectCertAuthorityForm(FlaskForm):
 
 
 class NewGroupForm(
-    GroupForm, AddRemoveGroupForm, AddRemoveParamForm, SelectCertAuthorityForm
+    GroupForm, AddRemoveParentForm, AddRemoveParamForm, SelectCertAuthorityForm
 ):
     pass
 
 
-class EditGroupForm(GroupForm, DeleteForm, AddRemoveParamForm, SelectCertAuthorityForm):
-    # TODO: Common with avail_groups in AddRemoveGroupForm
-    avail_parents = SelectMultipleField("Available parents", coerce=int)
-    active_parents = SelectMultipleField("Active parents", coerce=int)
-    avail_children = SelectMultipleField("Available children", coerce=int)
-    active_children = SelectMultipleField("Active children", coerce=int)
+class EditGroupForm(GroupForm, DeleteForm, AddRemoveChildForm, AddRemoveParentForm, AddRemoveParamForm, SelectCertAuthorityForm):
+    pass
+    # TODO: Common with avail_groups in AddRemoveParentForm
+    # avail_parents = SelectMultipleField("Available parents", coerce=int)
+    # active_parents = SelectMultipleField("Active parents", coerce=int)
+    # avail_children = SelectMultipleField("Available children", coerce=int)
+    # active_children = SelectMultipleField("Active children", coerce=int)

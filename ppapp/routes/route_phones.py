@@ -25,7 +25,7 @@ def new_phone():
     groups = Group.select()
 
     form.avail_params.choices = get_form_choices(params, AvailParam)
-    form.avail_groups.choices = get_form_choices(groups, Group)
+    form.avail_parents.choices = get_form_choices(groups, Group)
 
     if request.method == "POST":
         if form.validate_on_submit():
@@ -46,7 +46,7 @@ def new_phone():
 
                 # Process phone's children
                 add_params_to_phone(form.avail_params.data, phone)
-                add_groups_to_phone(form.avail_groups.data, phone)
+                add_groups_to_phone(form.avail_parents.data, phone)
 
                 # Validate RSoP
                 try:
@@ -78,8 +78,8 @@ def edit_phone(id):
 
     form.avail_params.choices = get_form_choices(params[0], AvailParam)
     form.active_params.choices = get_form_choices(params[1], AvailParam)
-    form.avail_groups.choices = get_form_choices(groups[0], Group)
-    form.active_groups.choices = get_form_choices(groups[1], Group)
+    form.avail_parents.choices = get_form_choices(groups[0], Group)
+    form.active_parents.choices = get_form_choices(groups[1], Group)
 
     if request.method == "POST":
         if form.validate_on_submit():
@@ -87,8 +87,8 @@ def edit_phone(id):
             # Get data
             new_param_ids = form.avail_params.data
             prev_param_ids = form.active_params.data
-            new_group_ids = form.avail_groups.data
-            prev_group_ids = form.active_groups.data
+            new_group_ids = form.avail_parents.data
+            prev_group_ids = form.active_parents.data
 
             if form.reissue_cert.data:
                 reissue_client_cert(phone)

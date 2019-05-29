@@ -2,25 +2,25 @@ from ppapp.models import *
 
 
 def get_phone_groups(phone):
-    active_groups = (
+    active_parents = (
         Group.select()
         .join(PhoneGroups, JOIN.LEFT_OUTER)
         .where(PhoneGroups.phone == phone)
         .order_by(Group.name)
     )
 
-    avail_groups = (
+    avail_parents = (
         Group.select()
         .join(PhoneGroups, JOIN.LEFT_OUTER)
-        .where(Group.id.not_in(active_groups))
+        .where(Group.id.not_in(active_parents))
         .order_by(Group.name)
     )
-    return (avail_groups, active_groups)
+    return (avail_parents, active_parents)
 
 
 def get_group_groups(group, relationship):
     if relationship == "parents":
-        active_groups = (
+        active_parents = (
             Group.select()
             # If we are looking for parents, we are matching on child
             .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
@@ -28,7 +28,7 @@ def get_group_groups(group, relationship):
             .order_by(Group.name)
         )
     elif relationship == "children":
-        active_groups = (
+        active_parents = (
             Group.select()
             # If we are looking for children, we are joining children
             .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.child == Group.id))
@@ -38,20 +38,20 @@ def get_group_groups(group, relationship):
     # Avail is the inverse of whatever is the above
     # Need to check for circular dependency here or elsewhere
 
-    avail_groups = (
+    avail_parents = (
         Group.select()
         .join(GroupGroups, JOIN.LEFT_OUTER, on=(GroupGroups.parent == Group.id))
         # Omit siblings, children & ourselves
         .where(
             (Group.id != group.id)
-            & Group.id.not_in(active_groups)  # Omit ourselves
+            & Group.id.not_in(active_parents)  # Omit ourselves
             & Group.id.not_in(  # Omit children  # Omit parents
                 GroupGroups.select().where(GroupGroups.child == group.id)
             )  # (Where we are not a child)
         )
         .order_by(Group.name)
     )
-    return (avail_groups, active_groups)
+    return (avail_parents, active_parents)
 
 
 def add_groups_to_phone(new_group_ids, phone):

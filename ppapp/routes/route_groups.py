@@ -107,7 +107,7 @@ def new_group():
     groups = Group.select()
 
     form.avail_params.choices = get_form_choices(params, AvailParam)
-    form.avail_groups.choices = get_form_choices(groups, Group)
+    form.avail_parents.choices = get_form_choices(groups, Group)
 
 
     if request.method == "POST":
@@ -124,7 +124,7 @@ def new_group():
             )
 
             add_params_to_group(form.avail_params.data, group)
-            add_groups_to_group(form.avail_groups.data, group, 'parents')
+            add_groups_to_group(form.avail_parents.data, group, 'parents')
 
             flash(
                 "New Group - Name: {}, Type: {}".format(form.name.data, grouptype.name)
