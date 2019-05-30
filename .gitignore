@@ -106,3 +106,4 @@ venv.bak/
 *.cert
 *.key
 new_cert.pem
+latest.crt
