@@ -36,7 +36,9 @@ def new_ca():
                     form.cert.data.encode("ascii"), default_backend()
                 )
                 serialization.load_pem_private_key(
-                    form.private_key.data.encode("ascii"), password=None, backend=default_backend()
+                    form.private_key.data.encode("ascii"),
+                    password=None,
+                    backend=default_backend(),
                 )
             except ValueError as e:
                 flash(e)
@@ -90,10 +92,24 @@ def edit_ca(id):
     if request.method == "POST":
         if form.validate_on_submit():
             if form.delete.data:
-                flash("Deleted - CA: {}".format(cert_authority.name))
+                # Only alow delete if unused (no groups)
+                groups = Group.select().where(Group.cert_authority == cert_authority)
+
+                if groups.exists():
+                    group_string = ""
+                    for group in groups:
+                        group_string += '"%s", ' % group.name
+                    group_string = group_string[:-2]
+                    flash(
+                        'Cannot delete CA "%s" due to active groups: %s.  Please remove the CA from all groups before trying again.'
+                        % (cert_authority.name, group_string)
+                    )
+                    return redirect("/")
+
                 cert_authority.delete_instance(recursive=True)
+                flash("Deleted - CA: {}".format(cert_authority.name))
+
             else:
-                flash("Updated - CA: {}".format(cert_authority.name))
                 # Handle base data
                 cert_authority.name = form.name.data
                 cert_authority.private_key = form.private_key.data
@@ -107,6 +123,7 @@ def edit_ca(id):
                     cert_authority.cert_revocation_list = form.cert_revocation_list.data
                 cert_authority.note = form.note.data
                 cert_authority.save()
+                flash("Updated - CA: {}".format(cert_authority.name))
             return redirect("/")
         else:
             flash_errors(form)
