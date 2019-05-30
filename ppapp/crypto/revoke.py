@@ -2,6 +2,7 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from datetime import datetime, timedelta
+from ppapp import app
 from ppapp.models import (
     ClientCert,
     BaseParam,
@@ -60,10 +61,14 @@ def revoke_cert(cert_authority_pem, private_key_pem, cert_revocation_list_pem, c
 
 
 def revoke_client_cert(phone):
+    
     # Get the current cert
-    active_client_cert = PhoneActiveClientCert.get(
+    query = PhoneActiveClientCert.select().where(
         PhoneActiveClientCert.phone == phone
-    ).active_client_cert
+    )
+
+    # Get the active client cert
+    active_client_cert = PhoneActiveClientCert.get(PhoneActiveClientCert.phone == phone).active_client_cert
 
     # Get current cert PEM
     client_cert_pem = active_client_cert.cert
@@ -82,3 +87,4 @@ def revoke_client_cert(phone):
         cert_authority_pem, private_key_pem, cert_revocation_list_pem, client_cert_pem
     )
     cert_authority.save()
+

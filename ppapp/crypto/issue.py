@@ -5,7 +5,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import padding
 import datetime
-from flask import url_for
+from flask import flash, url_for
+from ppapp import app
 from ppapp.rsop.ca_rsop import CertAuthorityRSoP
 from ppapp.models import (
     ClientCert,
@@ -165,11 +166,13 @@ def issue_client_cert(phone):
 
     # If phone has no active client cert, it is new so use RSoP
     if not query.exists():
-        # Needs to be revisted once new phones can already be group members
-        # Until then bypass
+        # If we have RSoP, use it to set our CA
         cert_authority_rsop = CertAuthorityRSoP(phone)
         if cert_authority_rsop.current_cert_authority:
             cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
+        else:
+            flash('Phone has no CA RSoP!  Cannot issue cert!')
+            return
     else:  # Use the currently active cert
         phone_active_client_cert = query.get()
         cert_authority = phone_active_client_cert.active_client_cert.cert_authority
@@ -219,6 +222,14 @@ def issue_client_cert(phone):
 # 2 - phone has checked back in
 # 3 - previous cert has been revoked
 def reissue_client_cert(phone):
+    # Check if there is an existing cert to revoke
+    query = PhoneActiveClientCert.select().where(
+        PhoneActiveClientCert.phone == phone
+    )
 
-    revoke_client_cert(phone)
+    if query.exists():
+        revoke_client_cert(phone)
+    else:
+        app.logger.info("Phone %s has no cert to revoke!" % phone.name)
+
     issue_client_cert(phone)
