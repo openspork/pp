@@ -32,18 +32,24 @@ def view_ca(id):
     )
 
     # Get client certs
-    client_certs = ClientCert.select().where(ClientCert.cert_authority == cert_authority)
+    client_certs = ClientCert.select().where(
+        ClientCert.cert_authority == cert_authority
+    )
     print(client_certs)
     loaded_client_certs = []
 
     for client_cert in client_certs:
-        loaded_client_certs.append(x509.load_pem_x509_certificate(
-            client_cert.cert.encode("ascii"), default_backend()
-        ))
+        loaded_client_certs.append(
+            x509.load_pem_x509_certificate(
+                client_cert.cert.encode("ascii"), default_backend()
+            )
+        )
 
-    return(render_template("ca_view.j2", cert_revocation_list=cert_revocation_list, client_certs = loaded_client_certs))
-
-
+    return render_template(
+        "ca_view.j2",
+        cert_revocation_list=cert_revocation_list,
+        client_certs=loaded_client_certs,
+    )
 
 
 @app.route("/crl/<thumbprint>")
