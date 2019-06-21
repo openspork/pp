@@ -8,9 +8,9 @@ View CA
 <td><a href="{{ url_for('get_ca', id=cert_authority.id ) | safe }}">Download</a></td>
 <br>
 
-Thumbprint: {{ cert_authority[1] }}
+Thumbprint: {{ cert_authority_info[1] }}
 <br>
-Serial: {{ cert_authority[2]}}
+Serial: {{ cert_authority_info[2]}}
 <br>
 <br>
 <b>Issued Client Certs:</b>
