@@ -34,8 +34,8 @@ class CertAuthority(Cert, NameNoteField):
 class ClientCert(Cert):
     phone = ForeignKeyField(Phone, backref="client_certs")
     cert_authority = ForeignKeyField(
-        CertAuthority, null=True
-    )  # Change this back to False default later
+        CertAuthority, null=False
+    )
 
 
 class PhoneActiveClientCert(BaseModel):
@@ -100,12 +100,12 @@ class Log(BaseModel):
 
 
 class AppLog(Log):
-    phone = ForeignKeyField(Phone, backref="logs", null=True)
+    phone = ForeignKeyField(Phone, backref="logs")
 
 
 class BootLog(Log):
-    phone = ForeignKeyField(Phone, backref="logs", null=True)
+    phone = ForeignKeyField(Phone, backref="logs")
 
 
 class CallLog(Log):
-    phone = ForeignKeyField(Phone, backref="logs", null=True)
+    phone = ForeignKeyField(Phone, backref="logs")
