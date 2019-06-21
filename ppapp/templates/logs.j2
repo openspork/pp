@@ -13,7 +13,7 @@ Phone Logs
 	<tr>
 		<td>{{ boot_log.id }}</td>
 		<td>{{ boot_log.date_time }}</td>
-		<td><a href="{{ url_for('get_log', type='boot', id=boot_log.id) }}">Download</a></td>
+		<td><a href="{{ url_for('get_log', type='boot', id=boot_log.id) | safe }}">Download</a></td>
 	</tr>
 	{% endfor %}
 </table>
@@ -27,7 +27,7 @@ Phone Logs
 	<tr>
 		<td>{{ app_log.id }}</td>
 		<td>{{ app_log.date_time }}</td>
-		<td><a href="{{ url_for('get_log', type='app', id=app_log.id) }}">Download</a></td>
+		<td><a href="{{ url_for('get_log', type='app', id=app_log.id) | safe }}">Download</a></td>
 	</tr>
 	{% endfor %}
 </table>
@@ -41,7 +41,7 @@ Phone Logs
 	<tr>
 		<td>{{ call_log.id }}</td>
 		<td>{{ call_log.date_time }}</td>
-		<td><a href="{{ url_for('get_log', type='call', id=call_log.id) }}">Download</a></td>
+		<td><a href="{{ url_for('get_log', type='call', id=call_log.id) | safe }}">Download</a></td>
 	</tr>
 	{% endfor %}
 </table>

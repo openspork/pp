@@ -7,7 +7,7 @@ from ppapp.util.misc import format_mac
 
 
 @app.route("/logs/<id>")
-def get_logs(id):
+def list_logs(id):
     query = Phone.select().where(Phone.id == id)
     if not query.exists():
         flash("Invalid ID!")
