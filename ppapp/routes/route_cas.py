@@ -27,13 +27,19 @@ def view_ca(id):
 
     # Gather information:
     # Get CA
-    cert_authority_load = x509.load_pem_x509_certificate(cert_authority.cert.encode("ascii"), default_backend())
+    cert_authority_load = x509.load_pem_x509_certificate(
+        cert_authority.cert.encode("ascii"), default_backend()
+    )
     # TODO: Package CA info
     # Create a tuple of client cert information
     # 0 = friendly name
     # 1 = thumbprint
     # 2 = serial number
-    cert_authority_info = (cert_authority.name, format_thumbprint(cert_authority.thumbprint), cert_authority_load.serial_number)
+    cert_authority_info = (
+        cert_authority.name,
+        format_thumbprint(cert_authority.thumbprint),
+        cert_authority_load.serial_number,
+    )
 
     # Get CRL
     cert_revocation_list = x509.load_pem_x509_crl(
@@ -43,7 +49,7 @@ def view_ca(id):
     # Get client certs
     client_certs = ClientCert.select().where(
         ClientCert.cert_authority == cert_authority
-    )    
+    )
 
     # Create a tuple of client cert information
     # 0 = thumbprint
@@ -54,22 +60,26 @@ def view_ca(id):
     client_cert_info = []
     for client_cert in client_certs:
         # Determine if this cert is in our active certs table
-        query = PhoneActiveClientCert.select().where(PhoneActiveClientCert.active_client_cert == client_cert.id)
+        query = PhoneActiveClientCert.select().where(
+            PhoneActiveClientCert.active_client_cert == client_cert.id
+        )
         if not query.exists():
             active = False
         else:
             active = query.get().phone
 
         loaded_cert = x509.load_pem_x509_certificate(
-                client_cert.cert.encode("ascii"), default_backend()
-            )
+            client_cert.cert.encode("ascii"), default_backend()
+        )
         thumbprint = format_thumbprint(loaded_cert.fingerprint(hashes.SHA1()).hex())
         serial_number = loaded_cert.serial_number
-        revoked_cert = cert_revocation_list.get_revoked_certificate_by_serial_number(serial_number)
-        print('revoked cert %s', revoked_cert)
+        revoked_cert = cert_revocation_list.get_revoked_certificate_by_serial_number(
+            serial_number
+        )
+        print("revoked cert %s", revoked_cert)
         if not revoked_cert:
             revoked = False
-            print('revoked!!!')
+            print("revoked!!!")
         else:
             revoked = revoked_cert.revocation_date
         client_cert_info.append((thumbprint, serial_number, active, revoked))
