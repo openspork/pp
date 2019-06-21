@@ -30,11 +30,12 @@ def view_ca(id):
     cert_authority_load = x509.load_pem_x509_certificate(
         cert_authority.cert.encode("ascii"), default_backend()
     )
-    # TODO: Package CA info
-    # Create a tuple of client cert information
+    # TODO: Fully package CA info and display via GUI
+    # Create a tuple of CA information
     # 0 = friendly (pp) name
     # 1 = thumbprint
     # 2 = serial number
+    # Add here
     cert_authority_info = (
         cert_authority.name,
         format_thumbprint(cert_authority.thumbprint),
@@ -86,11 +87,22 @@ def view_ca(id):
 
     return render_template(
         "ca_view.j2",
-        cert_authority=cert_authority_info,
+        cert_authority=cert_authority,
+        cert_authority_info=cert_authority_info,
         cert_revocation_list=cert_revocation_list,
-        client_certs=client_cert_info,
+        client_certs_info=client_cert_info,
     )
 
+@app.route("/ca/<id>")
+def get_ca(id):
+    cert_authority = CertAuthority.get(CertAuthority.id == id)
+    byte_io = BytesIO()
+    byte_io.write(cert_authority.cert.encode())
+    byte_io.seek(0)
+
+    return send_file(
+        byte_io, attachment_filename="%s_%s.pem" % (cert_authority.name, cert_authority.id), as_attachment=True
+    )
 
 @app.route("/crl/<thumbprint>")
 def get_cert_revocation_list(thumbprint):
