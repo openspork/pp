@@ -32,7 +32,7 @@ def view_ca(id):
     )
     # TODO: Package CA info
     # Create a tuple of client cert information
-    # 0 = friendly name
+    # 0 = friendly (pp) name
     # 1 = thumbprint
     # 2 = serial number
     cert_authority_info = (
