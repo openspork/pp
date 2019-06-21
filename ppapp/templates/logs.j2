@@ -1,0 +1,48 @@
+{% extends "base.j2" %}
+{% block title %}
+Phone Logs
+{% endblock %}
+{% block content %}
+<h3>Phone Logs: {{ phone.name }}</h3>
+<b>Boot Logs:</b>
+<table class="pure-table">
+	<th>ID</th>
+	<th>DateTime</th>
+	<th>Download</th>
+	{% for boot_log in boot_logs %}
+	<tr>
+		<td>{{ boot_log.id }}</td>
+		<td>{{ boot_log.date_time }}</td>
+		<td><a href="{{ url_for('get_log', type='boot', id=boot_log.id) }}">Download</a></td>
+	</tr>
+	{% endfor %}
+</table>
+<br>
+<b>App Logs:</b>
+<table class="pure-table">
+	<th>ID</th>
+	<th>DateTime</th>
+	<th>Download</th>
+	{% for app_log in app_logs %}
+	<tr>
+		<td>{{ app_log.id }}</td>
+		<td>{{ app_log.date_time }}</td>
+		<td><a href="{{ url_for('get_log', type='app', id=app_log.id) }}">Download</a></td>
+	</tr>
+	{% endfor %}
+</table>
+<br>
+<b>Call Logs:</b>
+<table class="pure-table">
+	<th>ID</th>
+	<th>DateTime</th>
+	<th>Download</th>
+	{% for call_log in call_logs %}
+	<tr>
+		<td>{{ call_log.id }}</td>
+		<td>{{ call_log.date_time }}</td>
+		<td><a href="{{ url_for('get_log', type='call', id=call_log.id) }}">Download</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

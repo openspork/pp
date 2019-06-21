@@ -113,7 +113,7 @@ def edit_phone(id):
                 avail_params_to_delete = (
                     AvailParam.select()
                     .join(PhoneAvailParams)
-                    #.switch(AvailParam)
+                    # .switch(AvailParam)
                     .join(Phone)
                     .where((Phone.id == phone) & (AvailParam.automatic == True))
                 )

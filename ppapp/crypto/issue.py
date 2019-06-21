@@ -50,17 +50,14 @@ def create_cert(
     )
 
     # If all subject info is present
-    if (
-        country_name
-        and state_or_province_name
-        and locality_name
-        and organization_name
-    ):
-       new_subject = x509.Name(
+    if country_name and state_or_province_name and locality_name and organization_name:
+        new_subject = x509.Name(
             [
                 x509.NameAttribute(NameOID.COMMON_NAME, common_name),
                 x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
-                x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_or_province_name),
+                x509.NameAttribute(
+                    NameOID.STATE_OR_PROVINCE_NAME, state_or_province_name
+                ),
                 x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
                 x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
             ]
@@ -100,9 +97,7 @@ def create_cert(
         .serial_number(x509.random_serial_number())
         .not_valid_before(datetime.datetime.utcnow())
         .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=30))
-        .add_extension(
-            x509.BasicConstraints(ca=is_ca, path_length=None), critical=True
-        )
+        .add_extension(x509.BasicConstraints(ca=is_ca, path_length=None), critical=True)
         .add_extension(
             x509.CRLDistributionPoints([crl_distribution_point]), critical=True
         )
@@ -171,7 +166,7 @@ def issue_client_cert(phone):
         if cert_authority_rsop.current_cert_authority:
             cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
         else:
-            flash('Phone has no CA RSoP!  Cannot issue cert!')
+            flash("Phone has no CA RSoP!  Cannot issue cert!")
             return
     else:  # Use the currently active cert
         phone_active_client_cert = query.get()
@@ -179,14 +174,14 @@ def issue_client_cert(phone):
 
     # Get client cert in PEM to add to DB
     client_cert_pem, client_key_pem, thumbprint = create_cert(
-            cert_authority_pem=cert_authority.cert,
-            private_key_pem=cert_authority.private_key,
-            common_name=phone.mac_address,
-            cert_revocation_list_uri=url_for(
-                "get_cert_revocation_list",
-                thumbprint=cert_authority.thumbprint,
-                _external=True,
-                ),
+        cert_authority_pem=cert_authority.cert,
+        private_key_pem=cert_authority.private_key,
+        common_name=phone.mac_address,
+        cert_revocation_list_uri=url_for(
+            "get_cert_revocation_list",
+            thumbprint=cert_authority.thumbprint,
+            _external=True,
+        ),
     )
     # Create the client cert in DB
     client_cert = ClientCert.create(
@@ -223,9 +218,7 @@ def issue_client_cert(phone):
 # 3 - previous cert has been revoked
 def reissue_client_cert(phone):
     # Check if there is an existing cert to revoke
-    query = PhoneActiveClientCert.select().where(
-        PhoneActiveClientCert.phone == phone
-    )
+    query = PhoneActiveClientCert.select().where(PhoneActiveClientCert.phone == phone)
 
     if query.exists():
         revoke_client_cert(phone)

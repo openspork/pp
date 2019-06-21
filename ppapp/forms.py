@@ -57,12 +57,22 @@ class AddRemoveParamForm(FlaskForm):
 
 
 class AddRemoveParentForm(FlaskForm):
-    avail_parents = SelectMultipleField("Available parent groups - Select to Apply", coerce=int)
-    active_parents = SelectMultipleField("Active parent groups - Select to Remove", coerce=int)
+    avail_parents = SelectMultipleField(
+        "Available parent groups - Select to Apply", coerce=int
+    )
+    active_parents = SelectMultipleField(
+        "Active parent groups - Select to Remove", coerce=int
+    )
+
 
 class AddRemoveChildForm(FlaskForm):
-    avail_children = SelectMultipleField("Available child groups - Select to Apply", coerce=int)
-    active_children = SelectMultipleField("Active child groups - Select to Remove", coerce=int)
+    avail_children = SelectMultipleField(
+        "Available child groups - Select to Apply", coerce=int
+    )
+    active_children = SelectMultipleField(
+        "Active child groups - Select to Remove", coerce=int
+    )
+
 
 class PhoneForm(NameNoteSubmitForm):
     mac_address = StringField("MAC Address", validators=[DataRequired(), MacAddress()])
@@ -127,7 +137,9 @@ class NewCertAuthorityForm(CertAuthorityForm):
     )
     locality_name = StringField("Locality Name", validators=[DataRequired()])
     organization_name = StringField("Organization Name", validators=[DataRequired()])
-    cert_revocation_list_uri = StringField("CRL URI", validators=[DataRequired(),URL()])
+    cert_revocation_list_uri = StringField(
+        "CRL URI", validators=[DataRequired(), URL()]
+    )
 
 
 class EditCertAuthorityForm(CertAuthorityForm, DeleteForm):
@@ -144,7 +156,14 @@ class NewGroupForm(
     pass
 
 
-class EditGroupForm(GroupForm, DeleteForm, AddRemoveChildForm, AddRemoveParentForm, AddRemoveParamForm, SelectCertAuthorityForm):
+class EditGroupForm(
+    GroupForm,
+    DeleteForm,
+    AddRemoveChildForm,
+    AddRemoveParentForm,
+    AddRemoveParamForm,
+    SelectCertAuthorityForm,
+):
     pass
     # TODO: Common with avail_groups in AddRemoveParentForm
     # avail_parents = SelectMultipleField("Available parents", coerce=int)

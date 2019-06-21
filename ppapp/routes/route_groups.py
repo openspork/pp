@@ -109,7 +109,6 @@ def new_group():
     form.avail_params.choices = get_form_choices(params, AvailParam)
     form.avail_parents.choices = get_form_choices(groups, Group)
 
-
     if request.method == "POST":
         if form.validate_on_submit():
             grouptype = GroupType.get(GroupType.id == form.type.data)
@@ -120,11 +119,14 @@ def new_group():
                     CertAuthority.id == form.cert_authority.data
                 )
             group = Group.create(
-                name=form.name.data, type=grouptype, note=form.note.data, cert_authority=cert_authority
+                name=form.name.data,
+                type=grouptype,
+                note=form.note.data,
+                cert_authority=cert_authority,
             )
 
             add_params_to_group(form.avail_params.data, group)
-            add_groups_to_group(form.avail_parents.data, group, 'parents')
+            add_groups_to_group(form.avail_parents.data, group, "parents")
 
             flash(
                 "New Group - Name: {}, Type: {}".format(form.name.data, grouptype.name)
