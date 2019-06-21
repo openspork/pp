@@ -1,0 +1,16 @@
+{% extends "base.j2" %}
+{% block title %}
+View CA
+{% endblock %}
+{% block content %}
+
+{{ cert_revocation_list }}
+
+{% for client_cert in client_certs %}
+	{{ client_cert.serial_number }}
+
+{% endfor %}
+
+
+
+{% endblock %}

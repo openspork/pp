@@ -2,6 +2,7 @@ from io import BytesIO
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
 from flask import flash, send_file, render_template, request, redirect, url_for
 from ppapp import app
 from ppapp.forms import *
@@ -12,6 +13,37 @@ from ppapp.util.view_ops import *
 from ppapp.rsop.ca_rsop import *
 from ppapp.crypto.revoke import build_crl
 from ppapp.crypto.issue import create_cert
+
+
+@app.route("/view_ca/<id>")
+def view_ca(id):
+    query = CertAuthority.select().where(CertAuthority.id == id)
+    if not query.exists():
+        flash("Invalid ID!")
+        return redirect("/")
+    else:
+        cert_authority = query.get()
+
+    # Gather information:
+
+    # Get CRL
+    cert_revocation_list = x509.load_pem_x509_crl(
+        cert_authority.cert_revocation_list.encode("ascii"), default_backend()
+    )
+
+    # Get client certs
+    client_certs = ClientCert.select().where(ClientCert.cert_authority == cert_authority)
+    print(client_certs)
+    loaded_client_certs = []
+
+    for client_cert in client_certs:
+        loaded_client_certs.append(x509.load_pem_x509_certificate(
+            client_cert.cert.encode("ascii"), default_backend()
+        ))
+
+    return(render_template("ca_view.j2", cert_revocation_list=cert_revocation_list, client_certs = loaded_client_certs))
+
+
 
 
 @app.route("/crl/<thumbprint>")
