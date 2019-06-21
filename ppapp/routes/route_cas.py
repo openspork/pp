@@ -77,10 +77,8 @@ def view_ca(id):
         revoked_cert = cert_revocation_list.get_revoked_certificate_by_serial_number(
             serial_number
         )
-        print("revoked cert %s", revoked_cert)
         if not revoked_cert:
             revoked = False
-            print("revoked!!!")
         else:
             revoked = revoked_cert.revocation_date
         client_cert_info.append((thumbprint, serial_number, active, revoked))
@@ -105,7 +103,7 @@ def get_ca(id):
     )
 
 @app.route("/crl/<thumbprint>")
-def get_cert_revocation_list(thumbprint):
+def get_crl(thumbprint):
     cert_authority = CertAuthority.get(CertAuthority.thumbprint == thumbprint)
     byte_io = BytesIO()
     byte_io.write(cert_authority.cert_revocation_list.encode())
