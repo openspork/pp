@@ -3,14 +3,30 @@
 View CA
 {% endblock %}
 {% block content %}
+<h3>CA Info: {{ cert_authority.name }}</h3>
 
-{{ cert_revocation_list }}
+<table>
+	<th>SHA1 Hex Thumbprint</th>
+	<th>Serial #</th>
+	<th>Active?</th>
+	<th>Revoked?</th>
+	{% for client_cert in client_certs %}
+		<tr>
+			<td>{{ client_cert[0] }}</td>
+			<td>{{ client_cert[1] }}</td>
+			<td>
 
-{% for client_cert in client_certs %}
-	{{ client_cert.serial_number }}
+			{% if client_cert[2] %}
+				<a href="{{ url_for('edit_phone', id=client_cert[2].id ) | safe }}">{{ client_cert[2].name }}</a>
+			{% else %}
+				No
+			{% endif %}
+			</td>
+			<td>{{ client_cert[3] }}</td>
+		</tr>
+	{% endfor %}
 
-{% endfor %}
-
+</table>
 
 
 {% endblock %}

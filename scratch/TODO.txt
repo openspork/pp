@@ -1,0 +1,4 @@
+- On group removals, check for CA-orphaned phones
+
+- On group removal / additions, check for CA changes, and reissue
+  - Store CA ID to minimize RSoP calculations?

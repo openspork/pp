@@ -7,6 +7,7 @@ from flask import flash, send_file, render_template, request, redirect, url_for
 from ppapp import app
 from ppapp.forms import *
 from ppapp.models import *
+from ppapp.util.misc import format_thumbprint
 from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
@@ -25,6 +26,11 @@ def view_ca(id):
         cert_authority = query.get()
 
     # Gather information:
+    # Get CA
+    cert_authority = x509.load_pem_x509_crl(
+        cert_authority.cert.encode("ascii"), default_backend()
+    )
+    # TODO
 
     # Get CRL
     cert_revocation_list = x509.load_pem_x509_crl(
@@ -34,21 +40,42 @@ def view_ca(id):
     # Get client certs
     client_certs = ClientCert.select().where(
         ClientCert.cert_authority == cert_authority
-    )
-    print(client_certs)
-    loaded_client_certs = []
+    )    
 
+    # Create a tuple of client cert information
+    # 0 = thumbprint
+    # 1 = serial number
+    # 2 = active (False or Phone)
+    # 3 = revoked date (False or datetime)
+
+    client_cert_info = []
     for client_cert in client_certs:
-        loaded_client_certs.append(
-            x509.load_pem_x509_certificate(
+        # Determine if this cert is in our active certs table
+        query = PhoneActiveClientCert.select().where(PhoneActiveClientCert.active_client_cert == client_cert.id)
+        if not query.exists():
+            active = False
+        else:
+            active = query.get().phone
+
+        loaded_cert = x509.load_pem_x509_certificate(
                 client_cert.cert.encode("ascii"), default_backend()
             )
-        )
+        thumbprint = format_thumbprint(loaded_cert.fingerprint(hashes.SHA1()).hex())
+        serial_number = loaded_cert.serial_number
+        revoked_cert = cert_revocation_list.get_revoked_certificate_by_serial_number(serial_number)
+        print('revoked cert %s', revoked_cert)
+        if not revoked_cert:
+            revoked = False
+            print('revoked!!!')
+        else:
+            revoked = revoked_cert.revocation_date
+        client_cert_info.append((thumbprint, serial_number, active, revoked))
 
     return render_template(
         "ca_view.j2",
+        cert_authority=cert_authority,
         cert_revocation_list=cert_revocation_list,
-        client_certs=loaded_client_certs,
+        client_certs=client_cert_info,
     )
 
 

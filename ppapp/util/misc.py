@@ -4,6 +4,8 @@ from collections import OrderedDict
 def format_mac(mac_address):
     return ":".join(mac_address[i : i + 2] for i in range(0, 12, 2))
 
+def format_thumbprint(thumbprint):
+    return ":".join(thumbprint[i : i + 2] for i in range(0, 40, 2))
 
 class AlphaDict(OrderedDict):
     def __setitem__(self, *args, **kwargs):
