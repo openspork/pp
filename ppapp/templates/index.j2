@@ -72,6 +72,28 @@ Index
 	</table>
 </div>
 <div>
+	<h3> Certificate Authorities </h3>
+	<table class="pure-table">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Note</th>
+			<th>Details</th>
+			<th><a href="{{ url_for('new_ca') | safe }}">New</a></th>
+
+		</tr>
+			{% for cert_authority in cert_authorities %}
+			<tr>
+				<td>{{ cert_authority.id }}</td>
+				<td>{{ cert_authority.name }}</td>
+				<td>{{ cert_authority.note }}</td>
+				<td><a href="{{ url_for('view_ca', id=cert_authority.id ) | safe }}">View</a></td>
+				<td><a href="{{ url_for('edit_ca', id=cert_authority.id ) | safe }}">Edit</a></td>
+			</tr>
+			{% endfor %}
+	</table>
+</div>
+<div>
 	<h3> Group Types </h3>
 	<table class="pure-table">
 		<tr>
@@ -89,26 +111,6 @@ Index
 				<td>{{ group_type.precedence }}</td>
 				<td>{{ group_type.note }}</td>
 				<td><a href="{{ url_for('edit_group_type', id=group_type.id ) | safe }}">Edit</a></td>
-			</tr>
-			{% endfor %}
-	</table>
-</div>
-<div>
-	<h3> Certificate Authorities </h3>
-	<table class="pure-table">
-		<tr>
-			<th>ID</th>
-			<th>Name</th>
-			<th>Note</th>
-			<th><a href="{{ url_for('new_ca') | safe }}">New</a></th>
-
-		</tr>
-			{% for cert_authority in cert_authorities %}
-			<tr>
-				<td>{{ cert_authority.id }}</td>
-				<td>{{ cert_authority.name }}</td>
-				<td>{{ cert_authority.note }}</td>
-				<td><a href="{{ url_for('edit_ca', id=cert_authority.id ) | safe }}">Edit</a></td>
 			</tr>
 			{% endfor %}
 	</table>
