@@ -59,7 +59,11 @@ def revoke_cert(
 
     revoked_certs.append(revoked_cert)
 
-    return build_crl(cert_authority_pem=cert_authority_pem, private_key_pem=private_key_pem, certs_to_revoke=revoked_certs)
+    return build_crl(
+        cert_authority_pem=cert_authority_pem,
+        private_key_pem=private_key_pem,
+        certs_to_revoke=revoked_certs,
+    )
 
 
 def revoke_client_cert(phone):

@@ -178,9 +178,7 @@ def issue_client_cert(phone):
         private_key_pem=cert_authority.private_key,
         common_name=phone.mac_address,
         cert_revocation_list_uri=url_for(
-            "get_crl",
-            thumbprint=cert_authority.thumbprint,
-            _external=True,
+            "get_crl", thumbprint=cert_authority.thumbprint, _external=True
         ),
     )
     # Create the client cert in DB

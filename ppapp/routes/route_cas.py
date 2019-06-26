@@ -95,6 +95,7 @@ def view_ca(id):
         client_certs_info=client_cert_info,
     )
 
+
 @app.route("/ca/<id>")
 def get_ca(id):
     cert_authority = CertAuthority.get(CertAuthority.id == id)
@@ -103,8 +104,11 @@ def get_ca(id):
     byte_io.seek(0)
 
     return send_file(
-        byte_io, attachment_filename="%s_%s.crt" % (cert_authority.name, cert_authority.id), as_attachment=True
+        byte_io,
+        attachment_filename="%s_%s.crt" % (cert_authority.name, cert_authority.id),
+        as_attachment=True,
     )
+
 
 @app.route("/crl/<thumbprint>")
 def get_crl(thumbprint):
