@@ -51,6 +51,7 @@ def new_phone():
                 # Validate RSoP
                 try:
                     rsop = gen_param_rsop(phone)
+                    # TODO: Validate CA RSoP
                 except Exception as e:
                     flash(str(e))
 
