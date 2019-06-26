@@ -32,7 +32,7 @@ class CertAuthority(Cert, NameNoteField):
 
 
 class ClientCert(Cert):
-    #phone = ForeignKeyField(Phone, backref="client_certs")
+    phone = ForeignKeyField(Phone, backref="client_certs")
     cert_authority = ForeignKeyField(CertAuthority, null=False)
 
 
