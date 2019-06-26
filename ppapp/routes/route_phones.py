@@ -13,6 +13,7 @@ from ppapp.util.param_ops import *
 from ppapp.util.group_ops import *
 from ppapp.util.view_ops import *
 from ppapp.rsop.param_rsop import gen_param_rsop
+from ppapp.rsop.ca_rsop import CertAuthorityRSoP
 from ppapp.crypto.issue import issue_client_cert, reissue_client_cert
 from ppapp.crypto.revoke import revoke_client_cert
 
@@ -49,14 +50,14 @@ def new_phone():
                 add_groups_to_phone(form.avail_parents.data, phone)
 
                 # Validate RSoP
-                try:
-                    rsop = gen_param_rsop(phone)
-                    # TODO: Validate CA RSoP
-                except Exception as e:
-                    flash(str(e))
-                    # TODO: Redirect -- don't allow phone creation with RSoP failure
+                # TODO: reload -- don't allow phone with RSoP failure
+                if gen_param_rsop(phone) == {}:
+                    flash("Phone has no parameters applied!")
+                if CertAuthorityRSoP(phone).current_cert_authority == None:
+                    flash("Phone has no inherited CA!")
+                else:
+                    issue_client_cert(phone)
 
-                issue_client_cert(phone)
             return redirect("/")
         else:
             flash_errors(form)
@@ -85,16 +86,7 @@ def edit_phone(id):
 
     if request.method == "POST":
         if form.validate_on_submit():
-
-            # Get data
-            new_param_ids = form.avail_params.data
-            prev_param_ids = form.active_params.data
-            new_group_ids = form.avail_parents.data
-            prev_group_ids = form.active_parents.data
-
-            if form.reissue_cert.data:
-                reissue_client_cert(phone)
-
+            # Handle deletion case
             if form.delete.data:
                 flash(
                     "Deleted - Phone: {}, MAC address: {}".format(
@@ -123,12 +115,18 @@ def edit_phone(id):
                 for avail_param in avail_params_to_delete:
                     avail_param.delete_instance(recursive=True)
                 phone.delete_instance(recursive=True)
+                # Phone deleted, nothing more to process -- return to index
             else:
                 flash(
                     "Updated - Phone: {}, MAC address: {}".format(
                         form.name.data, form.mac_address.data
                     )
                 )
+                # Get data
+                new_param_ids = form.avail_params.data
+                prev_param_ids = form.active_params.data
+                new_group_ids = form.avail_parents.data
+                prev_group_ids = form.active_parents.data
 
                 # Handle base data
                 phone.name = form.name.data
@@ -142,11 +140,19 @@ def edit_phone(id):
                 remove_params_from_phone(prev_param_ids, phone)
                 remove_groups_from_phone(prev_group_ids, phone)
 
+                # Re-fetch phone with saved changes
+                phone = Phone.get(Phone.id == phone)
+
                 # Validate RSoP
-                try:
-                    rsop = gen_param_rsop(phone)
-                except Exception as e:
-                    flash(str(e))
+                # TODO: reload -- don't allow phone with RSoP failure
+                if gen_param_rsop(phone) == {}:
+                    flash("Phone has no parameters applied!")
+                if CertAuthorityRSoP(phone).current_cert_authority == None:
+                    flash("Phone has no inherited CA!")
+                else:
+                    if form.reissue_cert.data:
+                        reissue_client_cert(phone)
+
             return redirect("/")
         else:
             flash_errors(form)

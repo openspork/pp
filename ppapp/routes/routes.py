@@ -52,8 +52,11 @@ def rsop(mac_address):
         try:
             cert_authority_rsop = CertAuthorityRSoP(phone)
             param_rsop = gen_param_rsop(phone)
-            # TODO: Handle error where phone has no config
-            xml = gen_xml(param_rsop)
+            # If we got RSOP back, gen xml
+            if not param_rsop == {}:
+                xml = gen_xml(param_rsop)
+            else:
+                xml = ""
         except Exception as e:
             flash(str(e))
             return redirect("/")

@@ -163,6 +163,9 @@ def issue_client_cert(phone):
     if not query.exists():
         # If we have RSoP, use it to set our CA
         cert_authority_rsop = CertAuthorityRSoP(phone)
+
+        # TODO: this error should now be caught on phone creation & edit
+        # Eventually remove this error handling so as not to be redundant
         if cert_authority_rsop.current_cert_authority:
             cert_authority = cert_authority_rsop.current_cert_authority.cert_authority
         else:
