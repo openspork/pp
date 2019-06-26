@@ -18,6 +18,7 @@ Serial: {{ cert_authority_info[2]}}
 	<th>SHA1 Hex Thumbprint</th>
 	<th>Serial #</th>
 	<th>Active?</th>
+	<th>Phone</th>
 	<th>Revoked?</th>
 	{% for client_cert in client_certs_info %}
 		<tr>
@@ -25,12 +26,15 @@ Serial: {{ cert_authority_info[2]}}
 			<td>{{ client_cert[1] }}</td>
 			<td>
 			{% if client_cert[2] %}
-				<a href="{{ url_for('edit_phone', id=client_cert[2].id ) | safe }}">{{ client_cert[2].name }}</a>
+				<a href="{{ url_for('edit_phone', id=client_cert[3].id ) | safe }}">{{ client_cert[2] }}</a>
 			{% else %}
 				{{ client_cert[2] }}
 			{% endif %}
 			</td>
-			<td>{{ client_cert[3] }}</td>
+			<td>
+			<a href="{{ url_for('edit_phone', id=client_cert[3].id ) | safe }}">{{ client_cert[3].name }}</a>
+			</td>
+			<td>{{ client_cert[4] }}</td>
 		</tr>
 	{% endfor %}
 

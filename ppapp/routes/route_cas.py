@@ -55,8 +55,9 @@ def view_ca(id):
     # Create a tuple of client cert information
     # 0 = thumbprint
     # 1 = serial number
-    # 2 = active (False or Phone)
-    # 3 = revoked date (False or datetime)
+    # 2 = active (True or False)
+    # 3 = phone (Phone or None)
+    # 4 = revoked date (False or datetime)
 
     client_cert_info = []
     for client_cert in client_certs:
@@ -66,8 +67,11 @@ def view_ca(id):
         )
         if not query.exists():
             active = False
+            # Set our phone to be client_cert's phone (Phone or None)
+            phone = client_cert.phone
         else:
-            active = query.get().phone
+            active = True
+            phone = query.get().phone
 
         loaded_cert = x509.load_pem_x509_certificate(
             client_cert.cert.encode("ascii"), default_backend()
@@ -81,7 +85,7 @@ def view_ca(id):
             revoked = False
         else:
             revoked = revoked_cert.revocation_date
-        client_cert_info.append((thumbprint, serial_number, active, revoked))
+        client_cert_info.append((thumbprint, serial_number, active, phone, revoked))
 
     return render_template(
         "ca_view.j2",

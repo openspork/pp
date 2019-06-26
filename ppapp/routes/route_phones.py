@@ -54,6 +54,7 @@ def new_phone():
                     # TODO: Validate CA RSoP
                 except Exception as e:
                     flash(str(e))
+                    # TODO: Redirect -- don't allow phone creation with RSoP failure
 
                 issue_client_cert(phone)
             return redirect("/")
