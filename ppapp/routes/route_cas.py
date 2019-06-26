@@ -99,7 +99,7 @@ def get_ca(id):
     byte_io.seek(0)
 
     return send_file(
-        byte_io, attachment_filename="%s_%s.pem" % (cert_authority.name, cert_authority.id), as_attachment=True
+        byte_io, attachment_filename="%s_%s.crt" % (cert_authority.name, cert_authority.id), as_attachment=True
     )
 
 @app.route("/crl/<thumbprint>")
@@ -110,7 +110,7 @@ def get_crl(thumbprint):
     byte_io.seek(0)
 
     return send_file(
-        byte_io, attachment_filename="%s.pem" % thumbprint, as_attachment=True
+        byte_io, attachment_filename="%s.crt" % thumbprint, as_attachment=True
     )
 
 
