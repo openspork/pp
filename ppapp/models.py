@@ -32,7 +32,7 @@ class CertAuthority(Cert, NameNoteField):
 
 
 class ClientCert(Cert):
-    phone = ForeignKeyField(Phone, backref="client_certs")
+    phone = ForeignKeyField(Phone, backref="client_certs") # This attribute maintains phone, even after cert is no longer active
     cert_authority = ForeignKeyField(CertAuthority, null=False)
 
 
