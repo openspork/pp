@@ -1,5 +1,5 @@
 # pp
-pp is a WIP Polycom Provisioning webapp that allows webapp GUI-based generation of Polycom phone configs.
+pp is a WIP Polycom Provisioning webapp that allows GUI-managed generation of Polycom phone configs.
 
 ## features
 - In-flight phone config generation.
